@@ -4,6 +4,7 @@ var historyDatabaseMessageStoreName = 'messages';
 var historyDatabaseChatStoreId = 'chatId';
 var historyDatabaseMessageSequenceNumber = 'messageSequence';
 var historyDatabaseMessageStoreTimestamp = 'timestamp';
+var historyDatabaseMessageStoreTimestampReceived = historyDatabaseMessageStoreTimestamp + 'Received';
 
 function initHistoryBackend(callback){
   var historyDatabaseRequest = indexedDB.open(historyDatabaseName, 1);

@@ -67,8 +67,9 @@ async function createChat(options){
         case 'response':
         default:
           role = 'assistant';
-          ui = createResponseUi();
+          ui = createResponseUi(message[historyDatabaseMessageStoreTimestampReceived]);
           ui.querySelector('section').innerHTML = md2html(text);
+          finishResponse('finished', message[historyDatabaseMessageStoreTimestamp], ui);
           break;
       }     
       ui.scrollIntoView(false);
@@ -109,9 +110,9 @@ function createRequestUi(text){
   return requestUi;
 }
 
-function createResponseUi(){
+function createResponseUi(timestamp){
   var responseUi = instantiateTemplate('response-ui', {
-    'data-ts-received': Date.now()
+    'data-ts-received': timestamp || Date.now()
   });
   
   var conversation = getConversation();
@@ -129,9 +130,10 @@ async function newChat(){
 }
 
 async function handleResponse(response){
+  var timestamp = Date.now();
   try {
     updateStatus('receiving');
-    responseUi = createResponseUi();
+    responseUi = createResponseUi(timestamp);
     responseUi.setAttribute('data-status', 'in progress');
     responseBuffer = '';
     for await (const chunk of response){
@@ -143,6 +145,7 @@ async function handleResponse(response){
       type: 'response',
       inputUsage: currentChat.model.inputUsage
     };
+    message[historyDatabaseMessageStoreTimestampReceived] = timestamp;
     saveMessage(message);
   }
   catch (err) {
@@ -153,9 +156,10 @@ async function handleResponse(response){
   }
 }
 
-function finishResponse(status){
-  responseUi.setAttribute('data-status', status || 'finished');
-  responseUi.setAttribute('data-ts-finished', Date.now());
+function finishResponse(status, timestamp, ui){
+  ui = ui || responseUi;
+  ui.setAttribute('data-status', status || 'finished');
+  ui.setAttribute('data-ts-finished', timestamp || Date.now());
 }
 
 function handleResponseChunk(chunk){

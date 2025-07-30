@@ -68,7 +68,7 @@ section.conversation {
 
     > section {
 
-      *:last-child::after {
+      > *:last-child::after {
         display: inline-block;
         margin-left: 1em;
         font-family: var( --icon-font-family );
