@@ -1,0 +1,308 @@
+/*
+* "bantering emoji" Icon font Animation
+* Usage:
+*
+*     div.speech::after {
+*       animation-name: bantering_emoji;
+*       animation-duration: 10s;
+*       animation-timing-function: linear;
+*       animation-iteration-count: infinite;
+*     }
+*
+*/
+
+@keyframes bantering_emoji {
+  0% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  3% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  
+  /*************** Ok, */
+  4% { 
+    /* mood-surprised */
+    content: '\ec04'; 
+  }
+  6% { 
+    /* mood-happy */
+    content: '\eaf4'; 
+  }      
+  7% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }
+  
+  11% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  /*************** Lets go! */
+  12% { 
+    /* mood-happy */
+    content: '\eaf4'; 
+  }
+  13% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  14% { 
+    /* mood-surprised */
+    content: '\ec04'; 
+  }
+  15% { 
+    /* mood-surprised */
+    content: '\ec04'; 
+  }
+  16% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  
+  /************* BLINK */
+  17% { 
+    /* mood-smile-beam */
+    content: '\f2e7'; 
+  }
+  19% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  24% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }
+  
+  /************* */
+  25% { 
+    /* mood-surprised */
+    content: '\ec04'; 
+  }
+  26% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  27% { 
+    /* mood-surprised */
+    content: '\ec04'; 
+  }
+  28% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  29% { 
+    /* mood-happy */
+    content: '\eaf4'; 
+  }
+  30% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  } 
+  32% { 
+    /* mood-surprised */
+    content: '\ec04'; 
+  }
+  33% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  36% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }
+  37% { 
+    /* mood-surprised */
+    content: '\ec04'; 
+  }
+  38% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  39% { 
+    /* mood-sing */
+    content: '\f2c7'; 
+  }
+  40% { 
+    /* mood-look-right */
+    content: '\f2c6'; 
+  }      
+  41% { 
+    /* mood-look-right */
+    content: '\f2c6'; 
+  }      
+  42% { 
+    /* mood-sing */
+    content: '\f2c7'; 
+  }
+  43% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  44% { 
+    /* mood-happy */
+    content: '\eaf4'; 
+  }
+  45% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  46% { 
+    /* mood-tongue */
+    content: '\eb95'; 
+  }
+  47% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  49% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+
+  /************* BLINK */
+  50% { 
+    /* mood-smile-beam */
+    content: '\f2e7'; 
+  }
+  51% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  54% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  55% { 
+    /* mood-surprised */
+    content: '\ec04'; 
+  }
+  56% { 
+    /* mood-tongue */
+    content: '\eb95'; 
+  }
+  57% { 
+    /* mood-surprised */
+    content: '\ec04'; 
+  }
+  58% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  59% { 
+    /* mood-happy */
+    content: '\eaf4'; 
+  }
+  60% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  61% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  /************* BLINK */
+  62% { 
+    /* mood-smile-beam */
+    content: '\f2e7'; 
+  }
+  63% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  70% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  } 
+  /************* BLINK */
+  71% { 
+    /* mood-smile-beam */
+    content: '\f2e7'; 
+  }
+  72% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  74% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }
+  75% { 
+    /* mood-surprised */
+    content: '\ec04'; 
+  }
+  76% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }
+  77% { 
+    /* mood-surprised */
+    content: '\ec04'; 
+  }
+  78% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }
+  79% { 
+    /* mood-sing */
+    content: '\f2c7'; 
+  }
+  80% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }
+  81% { 
+    /* mood-happy */
+    content: '\eaf4'; 
+  }
+  82% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }
+  85% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }
+  /************* BLINK */
+  86% { 
+    /* mood-smile-beam */
+    content: '\f2e7'; 
+  }
+  87% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }
+  
+
+  94% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  /************* BLINK */
+  95% { 
+    /* mood-smile-beam */
+    content: '\f2e7'; 
+  }
+  95.5% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  97% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  /************* BLINK */
+  97.5% { 
+    /* mood-smile-beam */
+    content: '\f2e7'; 
+  }
+  98% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }      
+  100% { 
+    /* mood-empty */
+    content: '\eeb5'; 
+  }
+}

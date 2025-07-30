@@ -1,0 +1,48 @@
+details {
+
+  > summary {
+    cursor: default;
+  }
+  
+  > summary::marker {
+    cursor: pointer;
+    font-family: var( --icon-font-family );
+    font-size: var( --icon-small );
+    color: var( --icon-color-subtle );  
+  }
+
+  > summary:hover::marker {
+    color: var( --icon-color-highlight );
+  }
+
+}
+
+details:not( [open] ) {
+  > summary::marker{
+    /* arrow-badge-right */
+    content: '\f60d';
+  }
+}
+
+details[open] {
+  > summary::marker{
+    /* arrow-badge-down */
+    content: '\f60b';
+  }
+}
+
+
+details[role=treeitem]:not( [open] ) {
+  > summary::marker{
+    /* square-rounded-plus */
+    content: '\f63f';
+  }
+}
+
+details[role=treeitem][open] {
+  > summary::marker{
+    /* square-rounded-minus */
+    content: '\f63e';
+  }
+}
+

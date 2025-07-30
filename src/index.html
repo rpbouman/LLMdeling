@@ -1,0 +1,321 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content="Local Banter lets you play with the browser's local LLM."/>
+    <link
+      rel="icon"
+      href="data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiAgd2lkdGg9IjI0IiAgaGVpZ2h0PSIyNCIgIHZpZXdCb3g9IjAgMCAyNCAyNCIgIGZpbGw9Im5vbmUiICBzdHJva2U9ImN1cnJlbnRDb2xvciIgIHN0cm9rZS13aWR0aD0iMiIgIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgIHN0cm9rZS1saW5lam9pbj0icm91bmQiICBjbGFzcz0iaWNvbiBpY29uLXRhYmxlciBpY29ucy10YWJsZXItb3V0bGluZSBpY29uLXRhYmxlci1tZXNzYWdlcyI+PHBhdGggc3Ryb2tlPSJub25lIiBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTIxIDE0bC0zIC0zaC03YTEgMSAwIDAgMSAtMSAtMXYtNmExIDEgMCAwIDEgMSAtMWg5YTEgMSAwIDAgMSAxIDF2MTAiIC8+PHBhdGggZD0iTTE0IDE1djJhMSAxIDAgMCAxIC0xIDFoLTdsLTMgM3YtMTBhMSAxIDAgMCAxIDEgLTFoMiIgLz48L3N2Zz4="
+    />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin/>
+  
+    <title>Local Banter</title>
+
+    <style id="tabler-font"></style>
+    <script>
+    // see: https://cdn.jsdelivr.net/npm/@tabler/icons@3.24.0/
+    // see: https://github.com/tabler/tabler-icons/issues/1310
+    var tablerIconsFontVersion = '3.34.0';
+    var tablerIconsFontUrl = `https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@${tablerIconsFontVersion}/dist/fonts/tabler-icons.woff2?v${tablerIconsFontVersion}`;
+    var preloadLink = document.createElement('link');
+    preloadLink.setAttribute('rel', 'preload');
+    preloadLink.setAttribute('as', 'font');
+    preloadLink.setAttribute('href', tablerIconsFontUrl);
+    preloadLink.setAttribute('crossorigin', 'true');
+    document.head.insertBefore(preloadLink, document.getElementById('tabler-font'));
+    var tablerFontStyleSheet = document.getElementById('tabler-font');
+    document.styleSheets[0].insertRule(`
+      @font-face {
+        font-family: "tabler-icons";
+        font-style: normal;
+        font-weight: 400;
+        font-display: block;
+        src: url("${tablerIconsFontUrl}") format("woff2");
+      }
+    `);
+    </script>
+
+    <link rel="stylesheet" type="text/css" href="Styling/variables.css"/>
+    <link rel="stylesheet" type="text/css" href="Styling/generic.css"/>
+    <link rel="stylesheet" type="text/css" href="Styling/dialog.css"/>
+    <link rel="stylesheet" type="text/css" href="Styling/menu.css"/>
+    <link rel="stylesheet" type="text/css" href="Styling/details.css"/>
+    
+    <link rel="stylesheet" type="text/css" href="Tabs/tabs.css"/>
+    <link rel="stylesheet" type="text/css" href="History/HistoryUi.css"/>
+    <link rel="stylesheet" type="text/css" href="LLMPrompt/LLMPrompt.css"/>
+    <link rel="stylesheet" type="text/css" href="Conversation/Conversation.css"/>
+    
+    <link rel="stylesheet" type="text/css" href="Animations/banter.css"/>
+    <link rel="stylesheet" type="text/css" href="main.css"/>
+    <link rel="stylesheet" type="text/css" href="DragableDialogs/DragableDialogs.css"/>
+        
+    <template id="chatHistoryNode">
+      <details>
+        <summary></summary>
+        <menu role="toolbar">
+          <li role="menuitem">
+            <button 
+              type="button" 
+              value="downloadChat"
+              title="Download this chat..."
+            />
+          </li>
+          <li role="menuitem">
+            <button 
+              type="button" 
+              value="copyChat"
+              title="Copy this chat to the clipboard..."
+            />
+          </li>
+          <li role="menuitem">
+            <button 
+              type="button" 
+              value="regenerateSummary"
+              title="Regenerate the chat summary..."
+            />
+          </li>
+          <li role="menuitem">
+            <button 
+              type="button" 
+              value="restoreChat"
+              title="Continue this chat..."
+            />
+          </li>
+          <li role="menuitem">
+            <button 
+              type="button" 
+              value="deleteChat"
+              title="Delete this chat from the history"
+            />
+          </li>
+        </menu>
+        <div></div>
+      </details>
+    </template>
+    
+    <template id="request-ui">
+      <div 
+        class="request"
+        data-ts-sent=""
+      >
+        <header>
+          <menu role="toolbar">
+          </menu>
+        </header>
+        <section></section>
+        <footer>
+        </footer>
+      </div>
+    </template>
+
+    <template id="response-ui">
+      <div 
+        class="response"
+        data-ts-received=""
+      >
+        <header>
+          <menu role="toolbar">
+          </menu>
+        </header>
+        <section></section>
+        <footer>
+        </footer>
+      </div>
+    </template>
+    
+  </head>
+  <body>
+    <main
+      id="app"
+      data-app-status="booting"
+    >
+    
+      <header>
+        <menu role="toolbar">
+          <li role="menuitem">
+            <label for="new-chat">
+              New Chat
+            </label>
+            <button id="new-chat"/>
+          </li>
+        </menu>
+      </header>
+      
+      <nav id="sidebar">
+        <form role="tablist">
+          <div>
+            <label role="tab" for="chatHistory">Chats</label>
+            <input id="chatHistory" type="radio" name="tabs" checked="true"/>
+            <div role="tabpanel"></div>
+          </div>
+          <div>
+            <label role="tab" for="promptLibrary">Prompts</label>
+            <input id="promptLibrary" type="radio" name="tabs"/>
+            <div role="tabpanel">
+              This is the content for tab2
+            </div>
+          </div>
+        </form>
+      </nav>
+      
+      <section 
+        id="conversation" 
+        class="conversation"
+      ></section>
+      
+      <footer id="statusbar">
+        footer
+      </footer>
+
+      <dialog 
+        class="llm-prompt"
+        id="generic-prompt"
+        aria-labelledby="generic-prompt-title"
+        draggable="true" 
+        popover
+        open
+      >
+        <div>
+          <header>
+            <h1 id="generic-prompt-title">Prompt:</h1>
+            <form role="toolbar">
+              <input 
+                name="windowstate" 
+                type="radio" 
+                value="minimize" 
+                title="Minimize"
+              />
+              <input 
+                name="windowstate" 
+                type="radio" 
+                value="maximize" 
+                title="Maximize"
+              />
+              <input 
+                name="windowstate" 
+                type="radio" 
+                value="restore"  
+                title="Restore" 
+                checked="true"
+              />
+              <!--
+              <button 
+                type="button"
+                popovertarget="generic-prompt"
+                popovertargetaction="hide"
+                title="Close" 
+              />
+              -->
+            </form>
+          </header>
+          <section>
+            <textarea
+              id="prompt-text"
+              name="input-prompt"
+              required
+              placeholder="Type your prompt here..."
+              autofocus="true"
+              tabindex="0"
+            ></textarea>
+          </section>
+          <footer>
+            <form role="toolbar">
+              <button
+                id="send-prompt"
+                type="button"
+                name="send-prompt"
+                tabindex="0"
+              >Send</button>
+              <button
+                id="abort-request"
+                type="button"
+                name="abort-response"
+                tabindex="0"
+              >Cancel</button>
+            </form>
+          </footer>
+        </div>
+      </dialog>      
+    </main>
+
+    <dialog 
+      id="info-dialog"
+      style="
+        height: 200px;
+        width: 300px;
+        top: calc( 50vh - 100px);
+        left: calc( 50vw - 150px);
+      "
+      aria-labelledby="info-dialog-title"
+      draggable="true" 
+      popover
+    >
+      <div>
+        <header>
+          <h1 id="info-dialog-title" data-icon="eac5"></h1>
+          <form role="toolbar">
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="minimize" 
+              title="Minimize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="maximize" 
+              title="Maximize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="restore"  
+              title="Restore" 
+              checked="true"
+            />
+            <button 
+              type="button"
+              popovertarget="info-dialog"
+              popovertargetaction="hide"
+              title="Close" 
+              onclick="closeModal(this)"
+            />
+          </form>
+        </header>
+        <section>
+        </section>
+        <footer>
+          <form role="toolbar">
+            <button
+              id="info-close"
+              type="button"
+              popovertarget="info-dialog"
+              popovertargetaction="hide"
+              tabindex="0"
+              title="Close" 
+              onclick="closeModal(this)"
+            >Ok</button>
+          </form>
+        </footer>
+      </div>
+    </dialog>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+
+    <script src="Dom/dom.js"></script>
+    <script src="Clipboard/clipboard.js"></script>
+    <script src="DragableDialogs/DragableDialogs.js"></script>
+    <script src="Tabs/tabs.js"></script>
+
+    <script src="Summarizer/Summarizer.js"></script>
+    <script src="History/HistoryBackend.js"></script>
+    <script src="History/HistoryUi.js"></script>
+    <script src="Conversation/Conversation.js"></script>
+    <script src="LLMPrompt/LLMPrompt.js"></script>
+    <script src="main.js"></script>
+
+  </body>
+</html>

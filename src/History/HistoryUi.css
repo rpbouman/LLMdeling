@@ -1,0 +1,104 @@
+
+nav#sidebar {
+
+  > form[role=tablist] {
+    > div:has( label[role=tab][for=chatHistory] + input#chatHistory[type=radio] + div[role=tabpanel]) {
+      
+      > label[role=tab][for=chatHistory]::before {
+        /* messages */
+        content: '\eb6c';
+      } 
+
+      > div[role=tabpanel] {
+        padding: .5em;
+                
+        > details {
+          
+          color: var( --foreground-color );
+          font-family: var( --ui-text-font-family );
+          
+          > summary {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            
+            > span {
+              display: inline-block;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              position: relative;
+              top: 4px;
+              width: calc(100% - 16px);
+            }
+          }
+
+          > menu[role=toolbar] {
+            display: inline-block;
+            left: 1em;
+            position: relative;
+            list-style-type: none;
+            margin-block: 0px;
+            padding-inline-start: 0px;
+            margin-top: 6px;
+            margin-bottom: 4px;
+            
+            > li[role=menuitem] {
+
+              > button[value=copyChat]::before {
+                /* copy */
+                content: '\ea7a';
+              }
+
+              > button[value=downloadChat]::before {
+                /* download */
+                content: '\ea96';
+              }
+
+              > button[value=restoreChat]::before {
+                /* restore */
+                content: '\fafd';
+              }
+
+              > button[value=deleteChat]::before {
+                /* trash */
+                content: '\eb41';
+              }
+            }
+          }
+
+          > div {
+            padding: .2em;
+            margin-left: 1em;
+            font-size: smaller;
+            font-family: var( --content-text-font-family );
+            color: 
+          }
+          
+          > div::before {
+            display: block;
+            white-space: nowrap;
+            content: attr(data-timespan) " ("  attr(data-messageCount) " messages)";
+            font-weight: bold;
+            font-size: small;
+          }
+          
+          > div[data-status="in progress"]::after {
+            display: inline-block;
+            margin-left: 1em;
+            font-family: var( --icon-font-family );
+            font-size: var( --icon-normal );
+            /* pencil */
+            content: '\eb04';
+            animation: blink-live 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+          }
+          > div[data-status="ready"]::after {
+            content: '';
+          }
+        }
+      }
+    }
+  }
+
+}
+

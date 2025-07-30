@@ -1,0 +1,85 @@
+section.conversation {
+  overflow-y: scroll;
+  padding-bottom: 1em;
+  
+  > .request, .response {
+    border-style: solid;
+    border-width: 1px;
+    border-color: var( --darkest-border-color );
+    border-radius: 1em;
+    box-shadow: 10px 10px 10px var( --dark-background-color );
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: var( --content-background-color ); 
+    
+    > section {
+      padding-left: 1em;
+      padding-right: 1em;
+    }
+    
+  }
+  
+  > .request {
+    margin-top: 1.2em;
+    margin-left: 200px;
+    margin-right: 50px;
+    border-top-right-radius: 0em;
+  }
+  
+  > .request::before,
+  > .response::after {
+    font-family: var( --icon-font-family );
+    font-size: var( --icon-large );
+    display: inline-block;
+    position: relative;
+  }
+  
+  > .request::before {
+    /* mood-look-left */
+    content: '\f2c5';
+    float: right;
+    top: -.7em;
+    right: -1.2em;
+  }
+  
+  > .response {
+    margin-right: 200px;
+    margin-left: 50px;
+    border-bottom-left-radius: 0em;
+    scroll-margin-bottom: 2em;
+  }
+  
+  > .response::after {
+    /* mood-look-right */
+    content: '\f2c6';
+    float: left;
+    bottom: 0.7em;
+    left: -1.2em;
+  }
+
+  > .response[data-status="in progress"]::after {
+    animation-name: bantering_emoji;
+    animation-duration: 10s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+  
+  > .response[data-status="in progress"] {
+
+    > section {
+
+      *:last-child::after {
+        display: inline-block;
+        margin-left: 1em;
+        font-family: var( --icon-font-family );
+        font-size: var( --icon-normal );
+        /* pencil */
+        content: '\eb04';
+        animation: blink-live 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+      }
+    }
+    
+  }
+  
+
+}

@@ -1,0 +1,430 @@
+<!doctype html>
+<html>
+  <head>
+    <style id="tabler-font"></style>
+    <script>
+    // see: https://cdn.jsdelivr.net/npm/@tabler/icons@3.24.0/
+    // see: https://github.com/tabler/tabler-icons/issues/1310
+    var tablerIconsFontVersion = '3.34.0';
+    var tablerIconsFontUrl = `https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@${tablerIconsFontVersion}/dist/fonts/tabler-icons.woff2?v${tablerIconsFontVersion}`;
+    var preloadLink = document.createElement('link');
+    preloadLink.setAttribute('rel', 'preload');
+    preloadLink.setAttribute('as', 'font');
+    preloadLink.setAttribute('href', tablerIconsFontUrl);
+    preloadLink.setAttribute('crossorigin', 'true');
+    document.head.insertBefore(preloadLink, document.getElementById('tabler-font'));
+    var tablerFontStyleSheet = document.getElementById('tabler-font');
+    document.styleSheets[0].insertRule(`
+      @font-face {
+        font-family: "tabler-icons";
+        font-style: normal;
+        font-weight: 400;
+        font-display: block;
+        src: url("${tablerIconsFontUrl}") format("woff2");
+      }
+    `);
+    </script>
+    <style>
+      div::after {
+        content: '';
+        display: inline-block;
+        position: relative;
+        font-size: 36px;
+        font-family: "tabler-icons";
+      }
+    
+      @keyframes rest{
+        0% { 
+          /* mood-smile */
+          content: '\eaf7'; 
+        }
+        39% { 
+          /* mood-smile */
+          content: '\eaf7'; 
+        }
+        40% { 
+          /* mood-smile-beam */
+          content: '\f2e7'; 
+        }
+        45% { 
+          /* mood-smile-beam */
+          content: '\f2e7'; 
+        }
+        50% { 
+          /* mood-smile */
+          content: '\eaf7'; 
+        }
+        100% { 
+          /* mood-smile */
+          content: '\eaf7'; 
+        }
+      }
+
+      div.rest::after {
+        animation: rest 3s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+      }
+
+      @keyframes banter{
+        0% { 
+          /* mood-happy */
+          content: '\eaf4'; 
+        }
+        10% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }
+        20% { 
+          /* mood-happy */
+          content: '\eaf4'; 
+        }
+        25% { 
+          /* mood-happy */
+          content: '\eaf4'; 
+        }
+        30% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }
+        49% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }
+        50% { 
+          /* mood-surprised */
+          content: '\ec04'; 
+        }
+        55% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }
+        70% { 
+          /* mood-surprised */
+          content: '\ec04'; 
+        }
+        75% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }
+        85% {
+          /* mood-sing */
+          content: '\f2c7'; 
+        }
+        90% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }
+        100% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }
+      }
+      
+      div.banter::after {
+        animation: banter 3s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+      }
+      
+
+      @keyframes speech{
+        0% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        3% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        
+        /*************** Ok, */
+        4% { 
+          /* mood-surprised */
+          content: '\ec04'; 
+        }
+        6% { 
+          /* mood-happy */
+          content: '\eaf4'; 
+        }      
+        7% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }
+        
+        11% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        /*************** Lets go! */
+        12% { 
+          /* mood-happy */
+          content: '\eaf4'; 
+        }
+        13% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        14% { 
+          /* mood-surprised */
+          content: '\ec04'; 
+        }
+        15% { 
+          /* mood-surprised */
+          content: '\ec04'; 
+        }
+        16% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        
+        /************* BLINK */
+        17% { 
+          /* mood-smile-beam */
+          content: '\f2e7'; 
+        }
+        19% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        24% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }
+        
+        /************* */
+        25% { 
+          /* mood-surprised */
+          content: '\ec04'; 
+        }
+        26% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        27% { 
+          /* mood-surprised */
+          content: '\ec04'; 
+        }
+        28% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        29% { 
+          /* mood-happy */
+          content: '\eaf4'; 
+        }
+        30% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        } 
+        32% { 
+          /* mood-surprised */
+          content: '\ec04'; 
+        }
+        33% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        36% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }
+        37% { 
+          /* mood-surprised */
+          content: '\ec04'; 
+        }
+        38% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        39% { 
+          /* mood-surprised */
+          content: '\ec04'; 
+        }
+        40% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        41% { 
+          /* mood-happy */
+          content: '\eaf4'; 
+        }
+        43% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        44% { 
+          /* mood-surprised */
+          content: '\ec04'; 
+        }
+        45% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        46% { 
+          /* mood-tongue */
+          content: '\eb95'; 
+        }
+        47% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        49% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+
+        /************* BLINK */
+        50% { 
+          /* mood-smile-beam */
+          content: '\f2e7'; 
+        }
+        51% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        54% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        55% { 
+          /* mood-surprised */
+          content: '\ec04'; 
+        }
+        56% { 
+          /* mood-tongue */
+          content: '\eb95'; 
+        }
+        57% { 
+          /* mood-surprised */
+          content: '\ec04'; 
+        }
+        58% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        59% { 
+          /* mood-happy */
+          content: '\eaf4'; 
+        }
+        60% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        61% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        /************* BLINK */
+        62% { 
+          /* mood-smile-beam */
+          content: '\f2e7'; 
+        }
+        63% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        70% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        } 
+        /************* BLINK */
+        71% { 
+          /* mood-smile-beam */
+          content: '\f2e7'; 
+        }
+        72% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        74% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }
+        75% { 
+          /* mood-surprised */
+          content: '\ec04'; 
+        }
+        76% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }
+        77% { 
+          /* mood-surprised */
+          content: '\ec04'; 
+        }
+        78% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }
+        79% { 
+          /* mood-sing */
+          content: '\f2c7'; 
+        }
+        80% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }
+        81% { 
+          /* mood-happy */
+          content: '\eaf4'; 
+        }
+        82% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }
+        85% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }
+        /************* BLINK */
+        86% { 
+          /* mood-smile-beam */
+          content: '\f2e7'; 
+        }
+        87% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }
+        
+
+        94% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        /************* BLINK */
+        95% { 
+          /* mood-smile-beam */
+          content: '\f2e7'; 
+        }
+        95.5% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        97% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        /************* BLINK */
+        97.5% { 
+          /* mood-smile-beam */
+          content: '\f2e7'; 
+        }
+        98% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }      
+        100% { 
+          /* mood-empty */
+          content: '\eeb5'; 
+        }
+      }
+      
+      div.speech::after {
+        animation-name: speech;
+        animation-duration: 10s;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="speech"></div>
+  </body>
+</html>

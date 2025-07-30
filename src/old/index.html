@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+  <head>
+    <title>
+      Local Banter
+    </title>
+    <link rel="stylesheet" type="text/css" href="main/main.css"/>
+    <template id="request">
+      <div class="speech-bubble request">
+      </div>
+    </template>
+    
+    <template id="response">
+      <div class="speech-bubble response">
+        <pre></pre>
+      </div>
+    </template>
+        
+    <template id="abortNode">
+      <div class="abortNode">
+      </div>
+    </template>
+    
+  </head>
+  <body>
+    <main 
+      id="app" 
+      role="application" 
+      data-conversation-status="initializing"
+    >
+      <header>
+        <button
+          id="clear"
+        >
+          Clear
+        </button>
+        Local Banter
+      </header>
+      <nav>
+      </nav>
+      <section id="conversation">
+      </section>
+      <footer>
+        <textarea 
+          id="prompt"
+          autofocus="true" 
+          placeholder="Wait...initializing..."
+        ></textarea>
+        <button 
+          id="promptModel"
+          type="button"
+        >Send</button>
+        <button 
+          id="stop"
+          type="button"
+        >Stop</button>
+      </footer>
+    </main>
+    <script src="dom/dom.js"></script>
+    <script src="main/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,101 @@
+dialog.llm-prompt {
+
+  textarea[name="input-prompt"] {
+    border-style:none;      
+    outline-width: 1px;
+    outline-color: var( --light-border-color );
+    outline-style: none;
+  }
+
+  textarea[name="input-prompt"]:focus-visible {
+    outline-width: 1px;
+    outline-color: var( --light-border-color );
+    outline-style: solid;
+  }
+  
+  button[name="send-prompt"] {
+  }
+  
+  button[name="abort-response"] {
+  }
+}
+
+/* 
+  send prompt button should be disabled when the prompt input is invalid
+  
+  Note: adding the required attribute to the input, implies it is invalid when there is no value set.
+  This is an alternative to the :blank pseudoclass
+
+*/
+dialog.llm-prompt:has( textarea[name="input-prompt"]:invalid) 
+{
+  button[name="send-prompt"] {
+    pointer-events: none;
+    color: var( --placeholder-color );
+  }
+  
+}
+
+main:not( [data-app-status=ready] ) {
+
+  dialog.llm-prompt {
+
+    button[name="send-prompt"] {
+      display: none;
+    }
+
+  }
+
+}
+
+main[data-app-status=ready] {
+  
+  dialog.llm-prompt {
+
+    button[name="send-prompt"] {
+      display: unset;
+    }
+
+  }
+
+}
+
+main:not( [data-app-status=receiving], [data-app-status=sent] ) {
+  
+  dialog.llm-prompt {
+    
+    button[name="abort-response"] {
+      display: none;
+    }
+    
+  }
+  
+}
+
+main( [data-app-status=receiving], [data-app-status=sent] ) {
+
+  dialog.llm-prompt {
+    
+    button[name="abort-response"] {
+      display: unset;
+    }
+    
+  }
+
+}
+
+dialog.llm-prompt#generic-prompt {
+  min-width: 195px;
+  min-height: 95px;
+  width: 400px;
+  height: 150px;
+  top: calc(100% - 200px);
+  left: calc(50% - 200px);
+  
+  textarea[name="input-prompt"] {
+    resize: none;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+  }
+  
+}

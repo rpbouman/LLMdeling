@@ -1,0 +1,148 @@
+dialog {
+  resize: both;
+  padding: 0px;
+  border-width: 1px;
+  box-shadow: 10px 10px 10px var( --dark-background-color );
+  font-family: var( --ui-text-font-family );
+  font-size: var( --ui-text-font-size );
+
+  > div {
+    display:flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+
+    > header,
+    > section,
+    > footer  {
+      padding: 2px;    
+    }
+            
+    > header {
+      display: flex;
+      flex-direction: row;
+      border-bottom-style: solid;
+      border-bottom-width: 1px;
+      
+      > h1 {
+        margin: 2px 2px 2px 2px;
+        font-size: var( --ui-text-font-size );
+        flex-grow: 1;
+      }
+      
+      > h1[data-icon]::before {
+        content: attr(data-icon);
+        font-family: var( --icon-font-family );
+        font-size: var( --icon-normal );
+        font-weight: normal;
+        margin-right: 2px;
+      }
+                  
+      > form:has( > input[name=windowstate][type=radio] ) {
+        
+        display: inline-block;
+        position: relative;
+        right: 0px;
+        
+        > input[name=windowstate][type=radio] {
+          appearance: none;
+        }
+        
+        > input[name=windowstate][type=radio] {
+          margin:0px;
+        }
+        
+        > button[popovertargetaction=hide]{
+          background-color: transparent;
+          border-style:none;
+          padding-inline: 2px;
+       }
+        
+        > input[type=radio]::before {
+          display: inline-block;
+          font-family: var( --icon-font-family );
+          font-size: var( --icon-normal );
+          color: var( --icon-color-subtle );
+        }
+
+        > input[type=radio]:hover::before {
+          color: var( --icon-color-highlight );
+        }
+
+        > button[popovertargetaction=hide]::before {
+          font-family: var( --icon-font-family );
+          font-size: var( --icon-normal );
+          /* square-x */        
+          content: "\eb2b";
+        }
+        
+        > input[name=windowstate][type=radio][value=minimize]::before {
+          /* window-minimize */
+          content: "\f1f2";
+        }
+        > input[name=windowstate][type=radio][value=maximize]::before {
+          /* window-maximize */
+          content: "\f1f1";
+        }
+        > input[name=windowstate][type=radio][value=restore]::before {
+          /* app-window */
+          content: "\efe6";
+        }
+        > input[name=windowstate][type=radio][value=close]::before {
+          /* app-window */
+          content: "\efe6";
+        }
+      }  
+      
+      > form:has( > input[name=windowstate][type=radio][value=maximize]:checked ) {
+        > input[name=windowstate][type=radio][value=maximize] {
+          display: none;
+        }
+      }
+
+      > form:has( > input[name=windowstate][type=radio][value=minimize]:checked ) {
+        > input[name=windowstate][type=radio][value=minimize] {
+          display: none;
+        }
+      }
+
+      > form:has( > input[name=windowstate][type=radio][value=restore]:checked ) {
+        > input[name=windowstate][type=radio][value=restore] {
+          display: none;
+        }
+      }
+    }
+    
+    > header::before{
+      font-family: var( --icon-font-family );
+      font-size: var( --icon-normal );
+    }
+    
+    > section {
+      flex-grow: 1;
+      padding: 2px;
+    }  
+    
+    > footer {
+      padding: 2px 2px 2px 2px;
+      text-align: center;
+      
+      border-top-style: solid;
+      border-top-width: 1px;
+      
+      > form[role=toolbar] {
+        margin: auto;
+      }
+      
+    }
+  }
+
+}
+
+dialog:has( > div > header > form > input[name=windowstate][type=radio][value=maximize]:checked ) {
+  width: 100% !important;
+  height: 100% !important;
+  position: absolute;
+  left: 0px !important;
+  top:0px !important;
+}
