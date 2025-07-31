@@ -61,7 +61,7 @@ async function createChat(options){
       var ui;
       switch (type){ 
         case 'request':
-          ui = createRequestUi(text);
+          ui = createRequestUi(text, message[historyDatabaseMessageStoreTimestamp]);
           role = 'user';
           break;
         case 'response':
@@ -99,10 +99,15 @@ function updateTextUiElement(uiElement, text) {
   uiElement.parentNode.scrollIntoView(false);
 }
 
-function createRequestUi(text){
-  var requestUi = instantiateTemplate('request-ui', {
-    'data-ts-sent': Date.now()
-  });
+function createRequestUi(text, timestamp){
+  timestamp = timestamp || Date.now();
+  var requestUi = instantiateTemplate('request-ui');
+  
+  requestUi.querySelector('header')
+  .setAttribute(
+    'data-ts-sent-string', 
+    (new Date(timestamp)).toLocaleString()
+  );
   
   var conversation = getConversation();
   conversation.append(requestUi);
@@ -111,9 +116,14 @@ function createRequestUi(text){
 }
 
 function createResponseUi(timestamp){
-  var responseUi = instantiateTemplate('response-ui', {
-    'data-ts-received': timestamp || Date.now()
-  });
+  timestamp = timestamp || Date.now();
+  var responseUi = instantiateTemplate('response-ui');
+
+  responseUi.querySelector('header')
+  .setAttribute(
+    'data-ts-received-string', 
+    (new Date(timestamp)).toLocaleString()
+  );
   
   var conversation = getConversation();
   conversation.append(responseUi);
@@ -157,9 +167,15 @@ async function handleResponse(response){
 }
 
 function finishResponse(status, timestamp, ui){
+  timestamp = timestamp || Date.now();
   ui = ui || responseUi;
   ui.setAttribute('data-status', status || 'finished');
-  ui.setAttribute('data-ts-finished', timestamp || Date.now());
+  
+  ui.querySelector('footer')
+  .setAttribute(
+    'data-ts-finished-string', 
+    (new Date(timestamp)).toLocaleString()
+  );
 }
 
 function handleResponseChunk(chunk){

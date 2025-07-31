@@ -19,9 +19,7 @@ nav#sidebar {
           
           > summary {
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            
+              
             > span {
               display: inline-block;
               white-space: nowrap;

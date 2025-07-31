@@ -17,6 +17,14 @@ section.conversation {
       padding-right: 1em;
     }
     
+    > footer::before,
+    > header::before {
+      font-weight: bold;
+      font-size: x-small;
+      position: relative;
+      font-family: var( --ui-text-font-family );
+    }
+
   }
   
   > .request {
@@ -24,6 +32,11 @@ section.conversation {
     margin-left: 200px;
     margin-right: 50px;
     border-top-right-radius: 0em;
+
+    > header::before {
+      content: attr( data-ts-sent-string );
+      left: 1em;
+    }
   }
   
   > .request::before,
@@ -33,6 +46,7 @@ section.conversation {
     display: inline-block;
     position: relative;
   }
+    
   
   > .request::before {
     /* mood-look-left */
@@ -47,6 +61,17 @@ section.conversation {
     margin-left: 50px;
     border-bottom-left-radius: 0em;
     scroll-margin-bottom: 2em;
+
+    > header::before {
+      content: attr( data-ts-received-string );
+      left: 1em;
+    }
+    
+    > footer::before {
+      content: attr( data-ts-finished-string );
+      left: 1em;
+    }
+
   }
   
   > .response::after {

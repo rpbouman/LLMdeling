@@ -53,7 +53,9 @@
         
     <template id="chatHistoryNode">
       <details>
-        <summary></summary>
+        <summary>
+          <span></span>
+        </summary>
         <menu role="toolbar">
           <li role="menuitem">
             <button 
@@ -96,10 +98,7 @@
     </template>
     
     <template id="request-ui">
-      <div 
-        class="request"
-        data-ts-sent=""
-      >
+      <div class="request">
         <header>
           <menu role="toolbar">
           </menu>
@@ -111,10 +110,7 @@
     </template>
 
     <template id="response-ui">
-      <div 
-        class="response"
-        data-ts-received=""
-      >
+      <div class="response">
         <header>
           <menu role="toolbar">
           </menu>

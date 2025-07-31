@@ -5,13 +5,9 @@ function getChatHistoryTabPanel(){
   return getTabPanel(chatHistoryTabId); 
 }
 
-function updateChatStatistics(contents, messages){
-  contents.setAttribute('data-messagecount', messages.length);
-  
-  var first = messages[0];
-  var last = messages[messages.length - 1];
-  var start = new Date(first[historyDatabaseMessageStoreTimestamp]);
-  var end = new Date(last[historyDatabaseMessageStoreTimestamp]);
+function formatFromToTimestamps(from, to){
+  var start = new Date(from);
+  var end = new Date(to);
   var startISO = start.toISOString();
   var endISO = end.toISOString();
   var startParts = startISO.split(/[T\.]/);
@@ -31,6 +27,17 @@ function updateChatStatistics(contents, messages){
   else {
     timespan = `${startParts[0]} ${startParts[1]} - ${endParts[0]} ${endParts[1]}`; 
   }
+  return timespan;
+}
+
+function updateChatStatistics(contents, messages){
+  contents.setAttribute('data-messagecount', messages.length);
+  
+  var first = messages[0];
+  var last = messages[messages.length - 1];
+  var start = first[historyDatabaseMessageStoreTimestamp];
+  var end = last[historyDatabaseMessageStoreTimestamp];
+  var timespan = formatFromToTimestamps(start, end);
   contents.setAttribute('data-timespan', timespan);
 }
 
@@ -195,9 +202,10 @@ function createHistoryUiChatNode(chatRecord, append){
   var ts = chatRecord[historyDatabaseMessageStoreTimestamp];
   summary.title = `${(new Date(ts)).toISOString()}: ${chatRecord.text}`;
   
-  //var span = summary.querySelector('span');
-  //span.innerText = chatRecord.text;
-  summary.innerText = chatRecord.text;
+  var span = summary.querySelector('span');
+  // note: do not use textContent!! If the text contains line breaks they will be rendered as <br>. 
+  // by explicitly adding a text node, we avoid that.
+  span.appendChild( document.createTextNode(chatRecord.text) );
   
   var chatHistoryTabPanel = getChatHistoryTabPanel();
   
