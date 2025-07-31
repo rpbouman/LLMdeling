@@ -140,11 +140,8 @@ function deleteChatHandler(event){
   chatNode.parentNode.removeChild(chatNode);
 }
 
-async function copyChatHandler(event){
-  var chatNode = getChatNodeFromButtonEvent(event);
-  var chatId = getChatIdFromChatNode(chatNode);
+async function extractAndCompileChat(chatId){
   var messages = await getChatMessages(chatId);
-  
   var lines = [];
   messages.forEach(function(message){
     var type = message.type;
@@ -161,12 +158,22 @@ async function copyChatHandler(event){
     lines.push('')
   });
   var plaintText = lines.join('\r\n');
-  copyToClipboard(plaintText, 'text/plain');
+  return plaintText;
+}
+
+async function copyChatHandler(event){
+  var chatNode = getChatNodeFromButtonEvent(event);
+  var chatId = getChatIdFromChatNode(chatNode);
+  var plainText = await extractAndCompileChat(chatId);
+  copyToClipboard(plainText, 'text/plain');
 }
 
 async function downloadChatHandler(event){
   var chatNode = getChatNodeFromButtonEvent(event);
   var chatId = getChatIdFromChatNode(chatNode);
+  var plainText = await extractAndCompileChat(chatId);
+  var fileName = `LLMdeling_${chatId}.md`;
+  downloadBlob(plainText, fileName, 'text/markdown');
 }
 
 async function regenerateSummaryHandler(event){
