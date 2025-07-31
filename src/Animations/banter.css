@@ -298,8 +298,12 @@
     content: '\f2e7'; 
   }
   98% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+    /* mood-look-down */
+    content: '\fd37'; 
+  }      
+  99% { 
+    /* mood-look-down */
+    content: '\fd37'; 
   }      
   100% { 
     /* mood-empty */

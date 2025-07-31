@@ -52,6 +52,7 @@ function chromeFlags(){
 
 async function init(){
   initDragableDialogs();
+  initMarked();
   var available = await checkModelAvailability();
   if (!available) {
     return;

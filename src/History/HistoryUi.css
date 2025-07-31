@@ -42,25 +42,7 @@ nav#sidebar {
             margin-bottom: 4px;
             
             > li[role=menuitem] {
-
-              > button[value=copyChat]::before {
-                /* copy */
-                content: '\ea7a';
-              }
-
-              > button[value=downloadChat]::before {
-                /* download */
-                content: '\ea96';
-              }
-
-              > button[value=restoreChat]::before {
-                /* restore */
-                content: '\fafd';
-              }
-
-              > button[value=deleteChat]::before {
-                /* trash */
-                content: '\eb41';
+              > button[type=button] {
               }
             }
           }

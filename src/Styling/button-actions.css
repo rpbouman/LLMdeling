@@ -1,0 +1,36 @@
+/**
+* action buttons (as opposed to submit buttons) have type=button
+*/
+button[type=button] {
+  
+}
+
+button[type=button][name=copy]::before {
+  /* copy */
+  content: '\ea7a';
+}
+
+button[type=button][name=download]::before {
+  /* download */
+  content: '\ea96';
+}
+
+button[type=button][name=restore]::before {
+  /* restore */
+  content: '\fafd';
+}
+
+button[type=button][name=delete]::before {
+  /* trash */
+  content: '\eb41';
+}
+
+button[type=button][name=summarize]::before {
+  /* list-details */
+  content: '\ef40';
+}
+
+button[type=button][name=translate]::before {
+  /* alphabet-korean */
+  content: '\ff2c';
+}

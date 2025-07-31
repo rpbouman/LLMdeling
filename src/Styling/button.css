@@ -1,0 +1,13 @@
+button {
+  cursor: pointer;
+}
+
+button::before {
+  font-family: var( --icon-font-family );
+  font-size: var( --icon-medium );
+  color: var( --icon-color-subtle );
+}
+
+button:hover::before {
+  color: var( --icon-color-highlight );
+}

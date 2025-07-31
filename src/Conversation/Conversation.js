@@ -47,6 +47,8 @@ async function createChat(options){
   newChat[historyDatabaseChatStoreId] = options[historyDatabaseChatStoreId] || crypto.randomUUID();
   newChat[historyDatabaseMessageSequenceNumber] = options[historyDatabaseMessageSequenceNumber] || 0;
   
+  currentChat = newChat;
+  
   var conversation = getConversation();
   conversation.innerHTML = '';
   
@@ -54,6 +56,7 @@ async function createChat(options){
     var initialPrompts = modelOptions.initialPrompts;
     for (var i = 0; i < options.conversation.length; i++){
       var message = options.conversation[i];
+      newChat[historyDatabaseMessageSequenceNumber] = message[historyDatabaseMessageSequenceNumber];
       var text = message.text;
       var type = message.type;
       var initialPrompt = {content: text};
@@ -68,7 +71,7 @@ async function createChat(options){
         default:
           role = 'assistant';
           ui = createResponseUi(message[historyDatabaseMessageStoreTimestampReceived]);
-          ui.querySelector('section').innerHTML = md2html(text);
+          updateTextUiElement(ui.querySelector('section'), text);
           finishResponse('finished', message[historyDatabaseMessageStoreTimestamp], ui);
           break;
       }     
@@ -87,43 +90,136 @@ function getConversation(){
   return byId('conversation');
 }
 
-function md2html(text){
-  var mkHtml = marked.parse(text);
-  var html = DOMPurify.sanitize(mkHtml);
-  return html;
-}
-
 function updateTextUiElement(uiElement, text) {
   var html = md2html(text)
   uiElement.innerHTML = html;
   uiElement.parentNode.scrollIntoView(false);
+
+  var parentNode = uiElement.parentNode;
+  parentNode.querySelector('input[type=hidden]').value = text;
+  
+  if (parentNode.className !== 'response') {
+    return;
+  }
+
+  var markdownHighlightedHtml = hljs.highlight(text, {language: 'markdown'}).value;
+  parentNode.querySelector(':scope > pre > code.language-markdown').innerHTML = markdownHighlightedHtml;
+  
+  var htmlHighlightedHtml = hljs.highlight(html, {language: 'html'}).value;
+  parentNode.querySelector(':scope > pre > code.language-html').innerHTML = htmlHighlightedHtml;
+  
+}
+
+function bindMessageActionHandlers(container){
+  var actionButtons = container.querySelectorAll(':scope *[role=menuitem] > button[type=button]');
+  for (var i = 0; i < actionButtons.length; i++){
+    var actionButton = actionButtons.item(i);
+    actionButton.addEventListener('click', messageActionHandler);
+  } 
+}
+
+function extractMessage(messageUi, actionCategory){
+  var contentType = 'text/markdown';
+  var extension = 'md';
+  var messageText = messageUi.querySelector('input[type=hidden]').value;
+  switch (actionCategory){
+    case 'copy':
+    case 'download':
+      if (messageUi.className === 'response') {        
+        var markdownFormatted = messageUi.querySelector('input[type=radio][name=format][value=markdown]');
+        if (markdownFormatted.checked) {
+          // if we're in markdown mode, we can just output the raw response
+        }
+        else {
+          // if we're not in markdown mode, our output will be formatted (html). 
+          contentType = 'text/html';
+          extension = 'html';
+          // but, the user can either be viewing the rendered html, or the html code view.
+          // since its lame to have them return the same result, we will apply highlighting to the html code view.
+          var highlighting = messageUi.querySelector('input[type=radio][name=format][value=html]').checked;
+          
+          messageText = md2html(messageText, highlighting);
+        }
+      }
+      break;
+    default:
+  }
+  return {
+    content: messageText,
+    type: contentType,
+    extension: extension
+  };
+}
+
+function messageActionHandler(event){
+  var target = event.target;
+  var actionCategory = target.name;
+  var action = target.value;
+  
+  var messageUi = target;
+  
+  var conversation = getConversation();
+  while (messageUi && messageUi.parentNode !== conversation) {
+    messageUi = messageUi.parentNode;
+  }
+  if (!messageUi) {
+    return;
+  }
+  var chatId = messageUi.getAttribute('data-' + historyDatabaseChatStoreId);
+  var messageSequenceNumber = messageUi.getAttribute('data-' + historyDatabaseMessageSequenceNumber);
+
+  var message = extractMessage(messageUi, actionCategory);
+  var content = message.content;
+  var contentType = message.contentType;
+  var extension = message.extension;
+  switch (actionCategory) {
+    case 'download':
+      var fileName = `LLMdeling_${chatId}_${messageUi.className}_${messageSequenceNumber}.${extension}`;
+      downloadBlob(content, fileName, contentType);
+      break;
+    case 'copy':
+      copyToClipboard(content, 'text/plain');
+      break;
+  }
+}
+
+function getMessageAttributes(){
+  var attributes = {};
+  [historyDatabaseChatStoreId, historyDatabaseMessageSequenceNumber].forEach(function(attribute){
+    attributes['data-' + attribute] = currentChat[attribute];
+  });  
+  return attributes;
 }
 
 function createRequestUi(text, timestamp){
   timestamp = timestamp || Date.now();
-  var requestUi = instantiateTemplate('request-ui');
   
-  requestUi.querySelector('header')
-  .setAttribute(
+  var requestUi = instantiateTemplate('request-ui', getMessageAttributes());
+
+  var header = requestUi.querySelector('header');
+  header.setAttribute(
     'data-ts-sent-string', 
     (new Date(timestamp)).toLocaleString()
-  );
+  );  
+  bindMessageActionHandlers(header);
   
+  updateTextUiElement(requestUi.querySelector('section'), text);
+
   var conversation = getConversation();
   conversation.append(requestUi);
-  updateTextUiElement(requestUi.querySelector('section'), text);
   return requestUi;
 }
 
 function createResponseUi(timestamp){
   timestamp = timestamp || Date.now();
-  var responseUi = instantiateTemplate('response-ui');
+  var responseUi = instantiateTemplate('response-ui', getMessageAttributes());
 
-  responseUi.querySelector('header')
-  .setAttribute(
+  var header = responseUi.querySelector('header');  
+  header.setAttribute(
     'data-ts-received-string', 
     (new Date(timestamp)).toLocaleString()
   );
+  bindMessageActionHandlers(header);
   
   var conversation = getConversation();
   conversation.append(responseUi);
@@ -131,7 +227,7 @@ function createResponseUi(timestamp){
 }
 
 async function newChat(){
-  currentChat = await createChat();
+  await createChat();
   var conversation = getConversation();
   conversation.innerHTML = '';
   var textArea = getPromptTextArea();

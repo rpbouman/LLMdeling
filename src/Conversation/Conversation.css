@@ -29,9 +29,9 @@ section.conversation {
     > header {
       > menu[role=toolbar] {
         display: inline-block;
-        right: 1em;
         position: relative;
         list-style-type: none;
+        float: right;
         margin-block: 0px;
         padding-inline-start: 0px;
         margin-top: 6px;
@@ -54,12 +54,6 @@ section.conversation {
     > header::before {
       content: attr( data-ts-sent-string );
       left: 1em;
-
-      > menu[role=toolbar] {
-        > li[role=menuitem] {
-
-        }
-      }
             
     }
   }
@@ -92,6 +86,24 @@ section.conversation {
       > menu[role=toolbar] {
         > li[role=menuitem] {
 
+          > form[role=menubar]:has( input[role=menuitem][type=radio] ) {
+            
+            > input[role=menuitem][type=radio][name=format][value=formatted]::before {
+              /* typography */
+              content: '\ebc5';
+            }
+
+            > input[role=menuitem][type=radio][name=format][value=markdown]::before {
+              /* markdown */
+              content: '\ec41';
+            }
+            
+            > input[role=menuitem][type=radio][name=format][value=html]::before {
+              /* html */
+              content: '\f7b1';
+            }
+          }
+
         }
       }
     }
@@ -117,7 +129,6 @@ section.conversation {
           display: inline-block;
           padding: .2em;
           
-
           border-style: solid;
           border-width: 1px;
           border-color: white;
@@ -131,6 +142,62 @@ section.conversation {
 
     }
   }
+  
+  > .response {
+    > section,
+    > pre:has( > code ) {
+      margin: 1em;
+      display: none;
+      
+      > code {
+        width: calc( 100% - 2em );
+        border-style: solid;
+        border-width: 1px;
+        border-color: var( --dark-border-color );
+        border-radius: .8em;
+      }
+    }
+  }
+  
+  /* if the formatted option is checked, then the section is displayed, but the code blocks are not */
+  > .response:has(
+    > header 
+      > menu[role=toolbar]
+        > li[role=menuitem]
+          > form[role=menubar]
+            > input[role=menuitem][type=radio][name=format][value=formatted]:checked
+  ){
+    > section {
+      display: block;
+    }
+  }
+
+  /* if the markdown option is checked, then the markdown code block is displayed */
+  > .response:has(
+    > header 
+      > menu[role=toolbar]
+        > li[role=menuitem]
+          > form[role=menubar]
+            > input[role=menuitem][type=radio][name=format][value=markdown]:checked
+  ){
+    > pre:has( > code.language-markdown ) {
+      display: block;
+    }
+  }
+
+  /* if the html option is checked, then the html code block is displayed */
+  > .response:has(
+    > header 
+      > menu[role=toolbar]
+        > li[role=menuitem]
+          > form[role=menubar]
+            > input[role=menuitem][type=radio][name=format][value=html]:checked
+  ){
+    > pre:has( > code.language-html ) {
+      display: block;
+    }
+  }
+
   
   > .response::after {
     /* mood-look-right */

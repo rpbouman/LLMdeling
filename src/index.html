@@ -41,6 +41,8 @@
     <link rel="stylesheet" type="text/css" href="Styling/generic.css"/>
     <link rel="stylesheet" type="text/css" href="Styling/dialog.css"/>
     <link rel="stylesheet" type="text/css" href="Styling/menu.css"/>
+    <link rel="stylesheet" type="text/css" href="Styling/button.css"/>
+    <link rel="stylesheet" type="text/css" href="Styling/button-actions.css"/>
     <link rel="stylesheet" type="text/css" href="Styling/details.css"/>
     
     <link rel="stylesheet" type="text/css" href="Tabs/tabs.css"/>
@@ -61,6 +63,7 @@
           <li role="menuitem">
             <button 
               type="button" 
+              name="download"
               value="downloadChat"
               title="Download this chat..."
             />
@@ -68,6 +71,7 @@
           <li role="menuitem">
             <button 
               type="button" 
+              name="copy"
               value="copyChat"
               title="Copy this chat to the clipboard..."
             />
@@ -75,6 +79,7 @@
           <li role="menuitem">
             <button 
               type="button" 
+              name="refresh"
               value="regenerateSummary"
               title="Regenerate the chat summary..."
             />
@@ -82,6 +87,7 @@
           <li role="menuitem">
             <button 
               type="button" 
+              name="restore"
               value="restoreChat"
               title="Continue this chat..."
             />
@@ -89,6 +95,7 @@
           <li role="menuitem">
             <button 
               type="button" 
+              name="delete"
               value="deleteChat"
               title="Delete this chat from the history"
             />
@@ -105,46 +112,47 @@
             <li role="menuitem">
               <button 
                 type="button" 
+                name="download"
                 value="downloadPrompt"
-                name="downloadPrompt"
                 title="Download this prompt..."
               />
             </li>
             <li role="menuitem">
               <button 
                 type="button" 
-                value="copyChat"
-                name="copyChat"
+                name="copy"
+                value="copyPrompt"
                 title="Copy this prompt to the clipboard..."
               />
             </li>
             <li role="menuitem">
               <button 
                 type="button" 
+                name="save"
                 value="savePrompt"
-                name="savePrompt"
                 title="Save this prompt to the prompt library..."
               />
             </li>
             <li role="menuitem">
               <button 
                 type="button" 
+                name="refine"
                 value="refinePrompt"
-                name="refinePrompt"
                 title="Refine this prompt with the prompt wizard..."
               />
             </li>
             <li role="menuitem">
               <button 
                 type="button" 
+                name="translate"
                 value="translatePrompt"
-                name="translatePrompt"
                 title="Translate this prompt..."
               />
             </li>
           </menu>
         </header>
         <section></section>
+        <input type="hidden"/>
         <footer>
         </footer>
       </div>
@@ -157,38 +165,48 @@
             <li role="menuitem">
               <button 
                 type="button" 
+                name="download"
                 value="downloadResponse"
-                name="downloadResponse"
                 title="Download this response..."
               />
             </li>
             <li role="menuitem">
               <button 
                 type="button" 
+                name="copy"
                 value="copyResponse"
-                name="copyResponse"
                 title="Copy this response to the clipboard..."
               />
             </li>
             <li role="menuitem">
+              <form role="menubar">
+                <input role="menuitem" type="radio" name="format" value="formatted" checked title="View formatted"/>
+                <input role="menuitem" type="radio" name="format" value="markdown" title="View Markdown code"/>
+                <input role="menuitem" type="radio" name="format" value="html" title="View HTML code"/>
+              </form>
+            </li>
+            <li role="menuitem">
               <button 
                 type="button" 
+                name="summarize"
                 value="summarizeResponse"
-                name="summarizeResponse"
                 title="Summarize this response..."
               />
             </li>
             <li role="menuitem">
               <button 
                 type="button" 
+                name="translate"
                 value="translateResponse"
-                name="translateResponse"
                 title="Translate this response..."
               />
             </li>
           </menu>
         </header>
         <section></section>
+        <pre><code class="hljs language-markdown"></code></pre>
+        <pre><code class="hljs language-html"></code></pre>
+        <input type="hidden"/>
         <footer>
         </footer>
       </div>
@@ -403,6 +421,7 @@
 
     <script src="Dom/dom.js"></script>
     <script src="Clipboard/clipboard.js"></script>
+    <script src="Downloader/Downloader.js"></script>
     <script src="DragableDialogs/DragableDialogs.js"></script>
     <script src="Tabs/tabs.js"></script>
 
@@ -411,6 +430,7 @@
     <script src="History/HistoryUi.js"></script>
     <script src="Conversation/Conversation.js"></script>
     <script src="LLMPrompt/LLMPrompt.js"></script>
+    <script src="Formatting/Formatting.js"></script>
     <script src="main.js"></script>
 
   </body>
