@@ -54,6 +54,7 @@ section.conversation {
     float: right;
     top: -.7em;
     right: -1.2em;
+    filter: drop-shadow(12px 15px 7px black);
   }
   
   > .response {
@@ -71,7 +72,32 @@ section.conversation {
       content: attr( data-ts-finished-string );
       left: 1em;
     }
+    
+    > section {
+      
+      
+      pre:has( > code ):not( code:nth-child(2) ) {
+        display: block;
 
+        > code {
+          display: inline-block;
+          padding: .2em;
+          
+          background-color: black;
+          color: white;
+
+          border-style: solid;
+          border-width: 1px;
+          border-color: white;
+
+          outline-style: solid;
+          outline-width: 1px;
+          outline-color: black;
+        }
+        
+      }
+
+    }
   }
   
   > .response::after {
@@ -80,6 +106,7 @@ section.conversation {
     float: left;
     bottom: 0.7em;
     left: -1.2em;
+    filter: drop-shadow(12px 15px 7px black);
   }
 
   > .response[data-status="in progress"]::after {
