@@ -2,7 +2,8 @@ section.conversation {
   overflow-y: scroll;
   padding-bottom: 1em;
   
-  > .request, .response {
+  > .request, 
+  > .response {
     border-style: solid;
     border-width: 1px;
     border-color: var( --darkest-border-color );
@@ -17,12 +18,29 @@ section.conversation {
       padding-right: 1em;
     }
     
-    > footer::before,
-    > header::before {
+    > header::before,
+    > footer::before {
       font-weight: bold;
       font-size: x-small;
       position: relative;
       font-family: var( --ui-text-font-family );
+    }
+
+    > header {
+      > menu[role=toolbar] {
+        display: inline-block;
+        right: 1em;
+        position: relative;
+        list-style-type: none;
+        margin-block: 0px;
+        padding-inline-start: 0px;
+        margin-top: 6px;
+        margin-bottom: 4px;
+        
+        > li[role=menuitem] {
+          button[name=]
+        }
+      }
     }
 
   }
@@ -36,6 +54,13 @@ section.conversation {
     > header::before {
       content: attr( data-ts-sent-string );
       left: 1em;
+
+      > menu[role=toolbar] {
+        > li[role=menuitem] {
+
+        }
+      }
+            
     }
   }
   
@@ -63,9 +88,18 @@ section.conversation {
     border-bottom-left-radius: 0em;
     scroll-margin-bottom: 2em;
 
+    > header {
+      > menu[role=toolbar] {
+        > li[role=menuitem] {
+
+        }
+      }
+    }
+
     > header::before {
       content: attr( data-ts-received-string );
       left: 1em;
+
     }
     
     > footer::before {
@@ -83,8 +117,6 @@ section.conversation {
           display: inline-block;
           padding: .2em;
           
-          background-color: black;
-          color: white;
 
           border-style: solid;
           border-width: 1px;
