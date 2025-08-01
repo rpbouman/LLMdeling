@@ -46,9 +46,9 @@ async function sendPrompt(){
     };
     message.modelParams = modelParams;
   }
-  
-  saveMessage(message);
-  
+  var detectedLanguage = await detectLanguage(message.text);
+  message.detectedLanguage = detectedLanguage;
+  saveMessage(message);  
   updateStatus('sending');
   createRequestUi(text);
   

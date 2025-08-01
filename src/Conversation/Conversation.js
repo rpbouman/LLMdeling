@@ -196,7 +196,7 @@ function createRequestUi(text, timestamp){
   
   var requestUi = instantiateTemplate('request-ui', getMessageAttributes());
 
-  var header = requestUi.querySelector('header');
+  var header = requestUi.querySelector('header');  
   header.setAttribute(
     'data-ts-sent-string', 
     (new Date(timestamp)).toLocaleString()
@@ -204,7 +204,7 @@ function createRequestUi(text, timestamp){
   bindMessageActionHandlers(header);
   
   updateTextUiElement(requestUi.querySelector('section'), text);
-
+  
   var conversation = getConversation();
   conversation.append(requestUi);
   return requestUi;
@@ -245,13 +245,14 @@ async function handleResponse(response){
     for await (const chunk of response){
       handleResponseChunk(chunk);
     }
-
     var message = {
       text: responseBuffer,
       type: 'response',
       inputUsage: currentChat.model.inputUsage
     };
     message[historyDatabaseMessageStoreTimestampReceived] = timestamp;
+    var detectedLanguage = await detectLanguage(message.text);
+    message.detectedLanguage = detectedLanguage;    
     saveMessage(message);
   }
   catch (err) {

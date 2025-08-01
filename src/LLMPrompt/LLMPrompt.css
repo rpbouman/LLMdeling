@@ -14,9 +14,21 @@ dialog.llm-prompt {
   }
   
   button[name="send-prompt"] {
+    
+  }
+
+  button[name="send-prompt"]::before {
+    /* send */
+    content: '\eb1e';
   }
   
   button[name="abort-response"] {
+    
+  }
+
+  button[name="abort-response"]::before {
+    /* cancel */
+    content: '\ff11';
   }
 }
 

@@ -1,6 +1,7 @@
 function updateStatus(status){
   var app = byId('app');
   app.setAttribute('data-app-status', status);
+  console.log(`status: ${status}`);
 }
 
 function initUi(){

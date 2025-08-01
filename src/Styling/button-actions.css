@@ -34,3 +34,8 @@ button[type=button][name=translate]::before {
   /* alphabet-korean */
   content: '\ff2c';
 }
+
+button[type=button][name=wizard]::before {
+  /* wand */
+  content: '\ebcb';
+}
