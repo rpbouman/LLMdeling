@@ -1,11 +1,15 @@
 button {
   cursor: pointer;
+  padding-inline-start: 4px;
+  padding-inline-end: 4px;
 }
 
 button::before {
   font-family: var( --icon-font-family );
-  font-size: var( --icon-medium );
+  font-size: var( --icon-small );
   color: var( --icon-color-subtle );
+  margin-left: -2px;
+  margin-right: 2px;
 }
 
 button:hover::before {

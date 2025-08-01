@@ -36,10 +36,7 @@ section.conversation {
         padding-inline-start: 0px;
         margin-top: 6px;
         margin-bottom: 4px;
-        
-        > li[role=menuitem] {
-          button[name=]
-        }
+        margin-right: 6px;
       }
     }
 
@@ -143,6 +140,8 @@ section.conversation {
     }
   }
   
+  /* styling of the various output formats */
+  
   > .response {
     > section,
     > pre:has( > code ) {
@@ -208,6 +207,15 @@ section.conversation {
     filter: drop-shadow(12px 15px 7px black);
   }
 
+  /* when receiving a response, the emoji appears to be waiting */
+  > .response[data-status="waiting for response"]::after {
+    animation-name: waiting_for_response_emoji;
+    animation-duration: 10s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  /* when receiving a response, the emoji appears to be talking */
   > .response[data-status="in progress"]::after {
     animation-name: bantering_emoji;
     animation-duration: 10s;
@@ -215,18 +223,32 @@ section.conversation {
     animation-iteration-count: infinite;
   }
   
+  /* when receiving a response, actions that require a complete response (translate, summary) are not available adn not visible */
   > .response[data-status="in progress"] {
 
     > section {
 
-      > *:last-child::after {
+      > *:last-child:not( :has(*) )::after {
         display: inline-block;
         margin-left: 1em;
         font-family: var( --icon-font-family );
         font-size: var( --icon-normal );
-        /* pencil */
-        content: '\eb04';
-        animation: blink-live 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+        content: '';
+        animation-name: blinking-pencil;
+        animation-duration: 1s;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+      }
+    }
+
+    > header {
+      > menu[role=toolbar] {
+        > li[role=menuitem] {
+          button[type=button] {
+            pointer-events: none;
+            opacity: 0;
+          }
+        }
       }
     }
     

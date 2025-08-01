@@ -1,5 +1,5 @@
 var historyDatabase;
-var historyDatabaseName = 'LocalBanterChatHistory';
+var historyDatabaseName = 'LLMdeling';
 var historyDatabaseMessageStoreName = 'messages';
 var historyDatabaseChatStoreId = 'chatId';
 var historyDatabaseMessageSequenceNumber = 'messageSequence';
@@ -233,7 +233,7 @@ function getChatMessages(chatId){
 
 function saveMessage(message){
   message[historyDatabaseChatStoreId] = currentChat[historyDatabaseChatStoreId];
-  message[historyDatabaseMessageSequenceNumber] = ++currentChat[historyDatabaseMessageSequenceNumber];  
+  message[historyDatabaseMessageSequenceNumber] = currentChat[historyDatabaseMessageSequenceNumber];
   storeMessageInHistory(message);
   if (message[historyDatabaseMessageSequenceNumber] === 1) {
     createHistoryUiChatNode(message, false);

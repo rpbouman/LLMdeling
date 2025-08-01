@@ -217,7 +217,7 @@ function createResponseUi(timestamp){
   var header = responseUi.querySelector('header');  
   header.setAttribute(
     'data-ts-received-string', 
-    (new Date(timestamp)).toLocaleString()
+    (new Date(timestamp)).toLocaleString(),
   );
   bindMessageActionHandlers(header);
   
@@ -236,29 +236,33 @@ async function newChat(){
 }
 
 async function handleResponse(response){
-  var timestamp = Date.now();
+  responseBuffer = '';
+  var message = {
+    text: responseBuffer,
+    type: 'response',
+    inputUsage: currentChat.model.inputUsage
+  };
+  message[historyDatabaseMessageStoreTimestampReceived] = Date.now();
+  message[historyDatabaseMessageSequenceNumber] = ++currentChat[historyDatabaseMessageSequenceNumber];
   try {
     updateStatus('receiving');
-    responseUi = createResponseUi(timestamp);
-    responseUi.setAttribute('data-status', 'in progress');
-    responseBuffer = '';
+    responseUi = createResponseUi(message[historyDatabaseMessageStoreTimestampReceived]);
+    responseUi.setAttribute('data-status', 'waiting for response');
     for await (const chunk of response){
+      if (responseUi.getAttribute('data-status') === 'waiting for response') {
+        responseUi.setAttribute('data-status', 'in progress');
+      }
       handleResponseChunk(chunk);
+      message.text = responseBuffer;
     }
-    var message = {
-      text: responseBuffer,
-      type: 'response',
-      inputUsage: currentChat.model.inputUsage
-    };
-    message[historyDatabaseMessageStoreTimestampReceived] = timestamp;
     var detectedLanguage = await detectLanguage(message.text);
-    message.detectedLanguage = detectedLanguage;    
+    message.detectedLanguage = detectedLanguage;
     saveMessage(message);
   }
   catch (err) {
   }
   finally {
-    finishResponse('finished');
+    finishResponse('finished', message[historyDatabaseMessageStoreTimestamp], responseUi);
     updateStatus('ready');
   }
 }

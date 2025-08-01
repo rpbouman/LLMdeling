@@ -35,9 +35,9 @@ async function sendPrompt(){
   if (!currentChat) {
     currentChat = await newChat();
   }
+  message[historyDatabaseMessageSequenceNumber] = ++currentChat[historyDatabaseMessageSequenceNumber];
   var model = currentChat.model;
-  if (!currentChat[historyDatabaseMessageSequenceNumber]) {
-    currentChat[historyDatabaseMessageSequenceNumber] = 0;
+  if (currentChat[historyDatabaseMessageSequenceNumber] === 1) {
     message.chatOptions = currentChat.options;
     var modelParams = {
       inputQuota: model.inputQuota,
@@ -63,7 +63,7 @@ async function sendPrompt(){
   });  
   
   var response = model.promptStreaming(text, requestOptions);
-  updateStatus('sent');
+  updateStatus('waiting for response');
   handleResponse(response);
 }
 

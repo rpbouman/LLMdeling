@@ -1,0 +1,29 @@
+/**
+* This is an animation of a blinking pencil with some dots in front of it.
+*           
+* > div[data-status="in progress"]::after {
+*   display: inline-block;
+*   margin-left: 1em;
+*   font-family: var( --icon-font-family );
+*   font-size: var( --icon-normal );
+*   animation-name: blinking-pencil;
+*   animation-duration: 1s;
+*   animation-timing-function: linear;
+*   animation-iteration-count: infinite;
+* }
+**/
+
+@keyframes blinking-pencil {
+  0% { 
+    /* line-dotted and pencil */
+    content: '\eea8\eb04';
+  }
+  50% { 
+    /* line-dotted */
+    content: '\eea8';
+  }
+  100% { 
+    /* line-dotted and pencil */
+    content: '\eea8\eb04';
+  }
+}

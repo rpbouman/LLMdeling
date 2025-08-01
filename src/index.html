@@ -51,7 +51,9 @@
     <link rel="stylesheet" type="text/css" href="Conversation/Conversation.css"/>
     
     <link rel="stylesheet" type="text/css" href="Animations/banter.css"/>
-    <link rel="stylesheet" type="text/css" href="main.css"/>
+    <link rel="stylesheet" type="text/css" href="Animations/waiting-for-response.css"/>
+    <link rel="stylesheet" type="text/css" href="Animations/blinking-pencil.css"/>
+    <link rel="stylesheet" type="text/css" href="Main/main.css"/>
     <link rel="stylesheet" type="text/css" href="DragableDialogs/DragableDialogs.css"/>
         
     <template id="chatHistoryNode">
@@ -179,13 +181,6 @@
               />
             </li>
             <li role="menuitem">
-              <form role="menubar">
-                <input role="menuitem" type="radio" name="format" value="formatted" checked title="View formatted"/>
-                <input role="menuitem" type="radio" name="format" value="markdown" title="View Markdown code"/>
-                <input role="menuitem" type="radio" name="format" value="html" title="View HTML code"/>
-              </form>
-            </li>
-            <li role="menuitem">
               <button 
                 type="button" 
                 name="summarize"
@@ -200,6 +195,13 @@
                 value="translateResponse"
                 title="Translate this response..."
               />
+            </li>
+            <li role="menuitem">
+              <form role="menubar">
+                <input role="menuitem" type="radio" name="format" value="formatted" checked title="View formatted"/>
+                <input role="menuitem" type="radio" name="format" value="markdown" title="View Markdown code"/>
+                <input role="menuitem" type="radio" name="format" value="html" title="View HTML code"/>
+              </form>
             </li>
           </menu>
         </header>
@@ -435,7 +437,7 @@
     <script src="Conversation/Conversation.js"></script>
     <script src="LLMPrompt/LLMPrompt.js"></script>
     <script src="Formatting/Formatting.js"></script>
-    <script src="main.js"></script>
+    <script src="Main/main.js"></script>
 
   </body>
 </html>

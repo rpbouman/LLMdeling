@@ -68,10 +68,13 @@ nav#sidebar {
             margin-left: 1em;
             font-family: var( --icon-font-family );
             font-size: var( --icon-normal );
-            /* pencil */
-            content: '\eb04';
-            animation: blink-live 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+            content: '';
+            animation-name: blinking-pencil;
+            animation-duration: 1s;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
           }
+
           > div[data-status="ready"]::after {
             content: '';
           }
