@@ -5,6 +5,16 @@ button[type=button] {
   
 }
 
+button[name="send"]::before {
+  /* send */
+  content: '\eb1e';
+}
+
+button[name="abort"]::before {
+  /* cancel */
+  content: '\ff11';
+}
+
 button[type=button][name=copy]::before {
   /* copy */
   content: '\ea7a';

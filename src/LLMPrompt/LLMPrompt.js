@@ -78,13 +78,13 @@ function getPromptTextArea(){
 }
 
 function initLLMPrompts(){
-  var sendPromptButtons = document.querySelectorAll('dialog.llm-prompt button[name="send-prompt"]');
+  var sendPromptButtons = document.querySelectorAll('dialog.llm-prompt button[value="send-prompt"]');
   for (var i = 0; i < sendPromptButtons.length; i++){
     sendPromptButton = sendPromptButtons.item(i);
     sendPromptButton.addEventListener('click', sendPrompt);
   }
   
-  var abortResponseButtons = document.querySelectorAll('dialog.llm-prompt button[name="abort-response"]');
+  var abortResponseButtons = document.querySelectorAll('dialog.llm-prompt button[value="abort-response"]');
   for (var i = 0; i < abortResponseButtons.length; i++){
     abortResponseButton = abortResponseButtons.item(i);
     abortResponseButton.addEventListener('click', abortRequest);

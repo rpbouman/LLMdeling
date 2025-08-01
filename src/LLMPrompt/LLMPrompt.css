@@ -13,23 +13,14 @@ dialog.llm-prompt {
     outline-style: solid;
   }
   
-  button[name="send-prompt"] {
+  button[name="send"] {
     
-  }
-
-  button[name="send-prompt"]::before {
-    /* send */
-    content: '\eb1e';
   }
   
-  button[name="abort-response"] {
+  button[name="abort"] {
     
   }
 
-  button[name="abort-response"]::before {
-    /* cancel */
-    content: '\ff11';
-  }
 }
 
 /* 
@@ -52,7 +43,7 @@ main:not( [data-app-status=ready] ) {
 
   dialog.llm-prompt {
 
-    button[name="send-prompt"] {
+    button[name=send] {
       display: none;
     }
 
@@ -64,7 +55,7 @@ main[data-app-status=ready] {
   
   dialog.llm-prompt {
 
-    button[name="send-prompt"] {
+    button[name=send] {
       display: unset;
     }
 
@@ -76,7 +67,7 @@ main:not( [data-app-status=receiving], [data-app-status=sent] ) {
   
   dialog.llm-prompt {
     
-    button[name="abort-response"] {
+    button[name=abort] {
       display: none;
     }
     
@@ -88,7 +79,7 @@ main( [data-app-status=receiving], [data-app-status=sent] ) {
 
   dialog.llm-prompt {
     
-    button[name="abort-response"] {
+    button[name=abort] {
       display: unset;
     }
     

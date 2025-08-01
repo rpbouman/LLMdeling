@@ -46,6 +46,7 @@ dialog {
         
         > input[name=windowstate][type=radio] {
           appearance: none;
+          outline: none;
         }
         
         > input[name=windowstate][type=radio] {
