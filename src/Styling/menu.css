@@ -8,7 +8,7 @@ menu[role=toolbar] {
     display: inline-block;
     list-style: none;
     
-    > label[for]::after {
+    > label[for]:has( +*:is( input, button, textarea, select ) )::after {
       content: ':'
     }
     
@@ -28,35 +28,35 @@ menu[role=toolbar] {
       padding: .2em;
       background-color: var( --medium-background-color );
     }
+
+    /*  */
+    form[role=menubar]:has( input[role=menuitem][type=radio] ) {
+      
+      border-style: solid;
+      border-width: 1px;
+      border-color: var( --dark-border-color );
+      border-radius: .5em;
+      
+      
+      > input[role=menuitem][type=radio] {
+        appearance: none;
+      }
+       
+      > input[role=menuitem][type=radio]::before {
+        font-family: var( --icon-font-family );
+        font-size: var( --icon-medium );
+        color: var( --icon-color-subtle );
+      }
+
+      > input[role=menuitem][type=radio]:checked::before {
+      }
+
+      > input[role=menuitem][type=radio]:hover::before,
+      > input[role=menuitem][type=radio]:checked::before {
+        color: var( --icon-color-highlight );
+      }
+
+    }
     
   }
-}
-
-
-form[role=menubar]:has( input[role=menuitem][type=radio] ) {
-  
-  border-style: solid;
-  border-width: 1px;
-  border-color: var( --dark-border-color );
-  border-radius: .5em;
-  
-  
-  > input[role=menuitem][type=radio] {
-    appearance: none;
-  }
-   
-  > input[role=menuitem][type=radio]::before {
-    font-family: var( --icon-font-family );
-    font-size: var( --icon-medium );
-    color: var( --icon-color-subtle );
-  }
-
-  > input[role=menuitem][type=radio]:checked::before {
-  }
-
-  > input[role=menuitem][type=radio]:hover::before,
-  > input[role=menuitem][type=radio]:checked::before {
-    color: var( --icon-color-highlight );
-  }
-
 }

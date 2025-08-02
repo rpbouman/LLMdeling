@@ -1,4 +1,8 @@
 function byId(id){
+  var id = id.trim();
+  if (id.startsWith('#')){
+    id = id.slice(1);
+  }
   return document.getElementById(id);
 }
 
@@ -309,14 +313,10 @@ function optionsHtml(options, groupsSortKey){
       group1 = groupsSortKey[group1] || group1;
     }
     
-    var label1 = getOptionLabel(option1);
-    
     var group2 = option2.group;
     if (group2 && groupsSortKey) {
       group2 = groupsSortKey[group2] || group2;
     }
-    
-    var label2 = getOptionLabel(option2);
     
     if (!group1 && group2 || group1 > group2) {
       return 1;
@@ -326,11 +326,14 @@ function optionsHtml(options, groupsSortKey){
       return -1;
     }
     
-    if (label1 > label2){
+    var sortKey1 = option1.sortKey || getOptionLabel(option1);
+    var sortKey2 = option2.sortKey || getOptionLabel(option1);
+    
+    if (sortKey1 > sortKey2){
       return 1;
     }
     else 
-    if (label1 < label2){
+    if (sortKey1 < sortKey2){
       return -1;
     }
     
@@ -360,12 +363,12 @@ function optionsHtml(options, groupsSortKey){
   return options.html;
 }
 
-function populateSelect(selector, options){
+function populateSelect(selector, options, groupSortKeys){
   if (typeof selector === 'string'){
     selector = document.querySelector(selector);
   }
   if (typeof selector !== 'object' || selector.tagName !== 'SELECT'){
     throw new Error(`No SELECT element`);
   }
-  selector.innerHTML = optionsHtml(options);
+  selector.innerHTML = optionsHtml(options, groupSortKeys);
 }

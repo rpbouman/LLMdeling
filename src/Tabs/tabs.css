@@ -21,6 +21,8 @@ form[role=tablist] {
       position: relative;
       padding: .0em .2em 0em .2em;
       top: -2px;
+      border-top-left-radius: 1em;
+      border-top-right-radius: .5em;
     }
 
     > label[role=tab]::before {

@@ -61,6 +61,34 @@ function initLanguages(){
   });
 }
 
+function sourceLanguageChangedHandler(event){
+}
+
+function liveTranslationChangedHandler(event){
+}
+
+function targetLanguageChangedHandler(event){
+}
+
+async function handleTranslateClicked(event){
+  var untranslatedText = byId('sourceLanguage-text').value;
+  
+  var sourceLanguage = byId('sourceLanguage-picker').value;
+  var targetLanguage = byId('targetLanguage-picker').value;
+  
+  var translatedTextStream = await translate(
+    untranslatedText, {
+    sourceLanguage: sourceLanguage,
+    targetLanguage: targetLanguage
+  });
+  var targetLanguage = byId('targetLanguage-text');
+  var translatedText = '';
+  for await (const chunk of translatedTextStream){
+    translatedText += chunk;
+    targetLanguage.value = translatedText;
+  }
+}
+
 async function initTranslationDialog(){
   var languages = await initLanguages();
   
@@ -77,7 +105,11 @@ async function initTranslationDialog(){
     return preferredLanguages;
   },{});
   
-  var fromLanguages = [''];
+  var fromLanguages = [{
+    value: 'auto', 
+    label: '(none)', 
+    group: 'Auto-detected'
+  }];
   var toLanguages = [];
   
   Object.keys(languages)
@@ -91,7 +123,8 @@ async function initTranslationDialog(){
     var languageName = languages[languageCode];
     var option = {
       value: languageCode,
-      label: languageName
+      label: languageName,
+      group: 'Pick a language'
     };
     fromLanguages.push(option);
     
@@ -99,13 +132,20 @@ async function initTranslationDialog(){
     if (toLanguageOption.value === defaultLanguage){
       toLanguageOption.selected = true;
     }
-    if (typeof preferredLanguages[languageCode] !== 'undefined') {
-      toLanguageOption.group = 'Preferred';
-    }
+    toLanguageOption.group = typeof preferredLanguages[languageCode] === 'undefined' ? 'Other' : 'Preferred';
     toLanguages.push(toLanguageOption);
   });
   
   populateSelect('#sourceLanguage-picker', fromLanguages);
-  populateSelect('#targetLanguage-picker', toLanguages);
+  populateSelect('#targetLanguage-picker', toLanguages, {
+    'Preferred': '1',
+    'Other': '2'
+  });
+
+  byId('sourceLanguage-picker').addEventListener('change', sourceLanguageChangedHandler);
+
+  byId('liveTranslation').addEventListener('change', liveTranslationChangedHandler);
+  byId('targetLanguage-picker').addEventListener('change', targetLanguageChangedHandler);
+  byId('translate').addEventListener('click', handleTranslateClicked);
   
 }  

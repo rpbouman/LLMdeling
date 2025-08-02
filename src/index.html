@@ -463,6 +463,17 @@
             <menu role="toolbar">
               <li role="menuitem">
                 <label 
+                  title="Upload a text to translate..."
+                  for="uploadSourceText"
+                >
+                  <input
+                    type="file"
+                    id="uploadSourceText"
+                  />
+                </label>
+              </li>            
+              <li role="menuitem">
+                <label 
                   for="sourceLanguage-picker"
                   title="Select the language of the text that is to be translated."
                 >From</label>
@@ -474,27 +485,6 @@
                 </select>
               </li>
               <li role="menuitem">
-                <label 
-                  for="sourceLanguage-autodetect"
-                  title="Check to automatically detect the language of the text that is to be translated."
-                >Auto-detect</label>
-                <input 
-                  type="checkbox" 
-                  id="sourceLanguage-autodetect" 
-                  name="autodetect"
-                  checked="true"
-                  title="Check to automatically detect the language of the text that is to be translated."
-                />
-              </li>
-            </menu>
-            <textarea 
-              id="sourceLanguage-text"
-              autofocus
-            ></textarea>
-          </div>
-          <div>
-            <menu role="toolbar">
-              <li role="menuitem">
                 <label for ="targetLanguage-picker">To</label>
                 <select id="targetLanguage-picker" name="language">
                 </select>
@@ -503,7 +493,7 @@
                 <label 
                   for="liveTranslation"
                   title="Check to automatically update the translation."
-                >Live translation</label>
+                >Auto-translate</label>
                 <input 
                   type="checkbox" 
                   id="liveTranslation" 
@@ -521,6 +511,37 @@
                   title="Click to translate."
                 />
               </li>
+            </menu>
+            <textarea 
+              id="sourceLanguage-text"
+              autofocus
+            ></textarea>
+          </div>
+          <div>          
+            <menu role="toolbar">
+              <li role="menuitem">
+                <button 
+                  type="button" 
+                  name="download"
+                  value="downloadTargetText"
+                  title="Download the translated text..."
+                />
+              </li>
+              <li role="menuitem">
+                <button 
+                  type="button" 
+                  name="copy"
+                  value="copyChat"
+                  title="Copy this chat to the clipboard..."
+                />
+              </li>
+              <li role="menuitem">
+                <form role="menubar">
+                  <input role="menuitem" type="radio" name="format" value="formatted" checked title="View formatted"/>
+                  <input role="menuitem" type="radio" name="format" value="markdown" title="View Markdown code"/>
+                  <input role="menuitem" type="radio" name="format" value="html" title="View HTML code"/>
+                </form>
+              </li>              
             </menu>
             <textarea id="targetLanguage-text"></textarea>
           </div>

@@ -25,6 +25,11 @@ button[type=button][name=copy]::before {
   content: '\ea7a';
 }
 
+button[type=button][name=upload]::before {
+  /* upload */
+  content: '\eb47';
+}
+
 button[type=button][name=download]::before {
   /* download */
   content: '\ea96';
@@ -54,3 +59,4 @@ button[type=button][name=wizard]::before {
   /* confetti */
   content: '\ee46';
 }
+

@@ -20,6 +20,8 @@ section.conversation {
     
     > header::before,
     > footer::before {
+
+      flex-grow: 1;
       font-weight: bold;
       font-size: x-small;
       position: relative;
@@ -27,59 +29,11 @@ section.conversation {
     }
 
     > header {
-      > menu[role=toolbar] {
-        display: inline-block;
-        position: relative;
-        list-style-type: none;
-        float: right;
-        margin-block: 0px;
-        padding-inline-start: 0px;
-        margin-top: 6px;
-        margin-bottom: 4px;
-        margin-right: 6px;
-      }
-    }
-
-  }
-  
-  > .request {
-    margin-top: 1.2em;
-    margin-left: 200px;
-    margin-right: 50px;
-    border-top-right-radius: 0em;
-
-    > header::before {
-      content: attr( data-ts-sent-string );
-      left: 1em;
-            
-    }
-  }
-  
-  > .request::before,
-  > .response::after {
-    font-family: var( --icon-font-family );
-    font-size: var( --icon-large );
-    display: inline-block;
-    position: relative;
-  }
-    
-  
-  > .request::before {
-    /* mood-look-left */
-    content: '\f2c5';
-    float: right;
-    top: -.7em;
-    right: -1.2em;
-    filter: drop-shadow(12px 15px 7px black);
-  }
-  
-  > .response {
-    margin-right: 200px;
-    margin-left: 50px;
-    border-bottom-left-radius: 0em;
-    scroll-margin-bottom: 2em;
-
-    > header {
+      display: flex;
+      flex-direction: row;
+      align-items: end;
+      padding-right: .5em;
+      
       > menu[role=toolbar] {
         > li[role=menuitem] {
 
@@ -103,15 +57,51 @@ section.conversation {
               content: '\f7b1';
             }
           }
-
         }
       }
     }
 
+  }
+  
+  > .request {
+    margin-left: 200px;
+    margin-right: 50px;
+    border-bottom-right-radius: 0em;
+
+    > header::before {
+      content: attr( data-ts-sent-string );
+      left: 1em;
+            
+    }
+  }
+  
+  > .request::after,
+  > .response::after {
+    font-family: var( --icon-font-family );
+    font-size: var( --icon-large );
+    display: inline-block;
+    position: relative;
+  }
+    
+  
+  > .request::after {
+    /* mood-look-left */
+    content: '\f2c5';
+    float: right;
+    top: -.7em;
+    right: -1.2em;
+    filter: drop-shadow(12px 15px 7px black);
+  }
+  
+  > .response {
+    margin-right: 200px;
+    margin-left: 50px;
+    border-bottom-left-radius: 0em;
+    scroll-margin-bottom: 2em;
+
     > header::before {
       content: attr( data-ts-received-string );
       left: 1em;
-
     }
     
     > footer::before {
@@ -121,7 +111,7 @@ section.conversation {
     
     > section {
       
-      
+      /* code blocks inside the formatted output */
       pre:has( > code ):not( code:nth-child(2) ) {
         display: block;
 
@@ -144,11 +134,15 @@ section.conversation {
   }
   
   /* styling of the various output formats */
+  > .response {
+    > pre:has( > code ) {
+      margin: 1em;
+    }
+  }
   
   > .response {
     > section,
     > pre:has( > code ) {
-      margin: 1em;
       display: none;
       
       > code {

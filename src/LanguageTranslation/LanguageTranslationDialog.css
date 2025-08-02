@@ -23,13 +23,13 @@ dialog#translation-dialog {
             > label:has( + select ) {
               white-space: nowrap;
               display: inline-block;
-              width: 2.5em;
             }
           }
         }
         
         > textarea {
           flex-grow: 1;
+          margin-top: 2px;
           resize: none; 
           width:calc(100% - 5px); 
           height: calc( 100% - 1em);
