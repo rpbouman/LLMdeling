@@ -40,7 +40,7 @@ section.conversation {
           > form[role=menubar]:has( input[role=menuitem][type=radio] ) {
 
             position:relative;
-            top: 3px;
+            top: 1px;
 
             > input[role=menuitem][type=radio][name=format][value=formatted]::before {
               /* typography */

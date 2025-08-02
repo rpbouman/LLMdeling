@@ -28,7 +28,9 @@ form[role=tablist] {
     > label[role=tab]::before {
       font-family: var( --icon-font-family );
       font-size: var( --icon-medium );
-      margin-right: 2px;
+      margin: 0px 2px 0px 2px;
+      top: 2px;
+      position: relative;
       font-weight: normal;
     }
     

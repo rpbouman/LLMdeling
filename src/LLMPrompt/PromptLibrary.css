@@ -1,0 +1,12 @@
+nav#sidebar {
+
+  > form[role=tablist] {
+    > div:has( label[role=tab][for=promptLibrary] + input#promptLibrary[type=radio] + div[role=tabpanel]) {
+      
+      > label[role=tab][for=promptLibrary]::before {
+        /* IconMessageQuestion */
+        content: '\f98b';
+      } 
+    }
+  }
+}

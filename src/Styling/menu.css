@@ -40,6 +40,7 @@ menu[role=toolbar] {
       
       > input[role=menuitem][type=radio] {
         appearance: none;
+        margin: 0px 1px 0px 1px;
       }
        
       > input[role=menuitem][type=radio]::before {
