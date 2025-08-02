@@ -1,14 +1,18 @@
 menu[role=menubar],
 menu[role=toolbar] {
-  margin-block-start: .5em;
-  margin-block-end: .5em;
-  padding-inline-start: .5em;
+  margin-block-start: 2px;
+  margin-block-end: 2px;
+  padding-inline-start: 2px;
   
   > li {
     display: inline-block;
     list-style: none;
     
-    > button {
+    > label[for]::after {
+      content: ':'
+    }
+    
+    > button:empty {
       appearance: none;
       border-style: none;
       background-color: transparent;
@@ -35,6 +39,7 @@ form[role=menubar]:has( input[role=menuitem][type=radio] ) {
   border-width: 1px;
   border-color: var( --dark-border-color );
   border-radius: .5em;
+  
   
   > input[role=menuitem][type=radio] {
     appearance: none;

@@ -2,6 +2,27 @@ var responseUi;
 var responseBuffer;
 var currentChat;
 
+function setMessageUiLanguage(messageUi, detectedLanguage){
+  var section = messageUi.querySelector('section');
+  section.setAttribute('lang', detectedLanguage.detectedLanguage);
+  var attributeValue = JSON.stringify(detectedLanguage, null, 0);
+  section.setAttribute('data-detected-language', attributeValue);
+}
+
+function getMessageUiLanguage(messageUi){
+  var section = messageUi.querySelector('section');
+  var detectedLanguage = section.getAttribute('data-detected-language');
+  if (detectedLanguage) {
+    try {
+      detectedLanguage = JSON.parse(detectedLanguage);
+    }
+    catch(e){
+      detectedLanguage = undefined;
+    }
+  }
+  return detectedLanguage;  
+}
+
 async function checkModelAvailability(){
   return new Promise(async function(resolve, reject){
     if (typeof LanguageModel === 'undefined') {
@@ -74,7 +95,10 @@ async function createChat(options){
           updateTextUiElement(ui.querySelector('section'), text);
           finishResponse('finished', message[historyDatabaseMessageStoreTimestamp], ui);
           break;
-      }     
+      }
+      if (message.detectedLanguage) {
+        setMessageUiLanguage(ui, message.detectedLanguage);
+      }
       ui.scrollIntoView(false);
       initialPrompt.role = role;
       initialPrompts.push(initialPrompt);
@@ -180,6 +204,22 @@ function messageActionHandler(event){
     case 'copy':
       copyToClipboard(content, 'text/plain');
       break;
+    case 'translate':
+      var translationDialog = target.popoverTargetElement;
+      translationDialog.querySelector('textarea#text-to-translate').value = content;
+      var detectedLanguage = getMessageUiLanguage(messageUi);
+      if (detectedLanguage) {
+        detectedLanguage = detectedLanguage.detectedLanguage;
+      }
+      else {
+        detectedLanguage = '';
+      }
+      translationDialog.querySelector('select#translate-from-language-picker').value = detectedLanguage;
+      translationDialog.querySelector('button#translate').click();
+      //target.popoverTargetElement.returnValue = '';
+      //target.popoverTargetElement.show();
+      
+      break;
   }
 }
 
@@ -256,7 +296,10 @@ async function handleResponse(response){
       message.text = responseBuffer;
     }
     var detectedLanguage = await detectLanguage(message.text);
-    message.detectedLanguage = detectedLanguage;
+    if (detectedLanguage) {
+      message.detectedLanguage = detectedLanguage;
+      setMessageUiLanguage(responseUi, detectedLanguage);      
+    }
     saveMessage(message);
   }
   catch (err) {

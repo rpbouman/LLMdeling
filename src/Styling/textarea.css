@@ -1,0 +1,12 @@
+textarea { 
+  border-style:none;      
+  outline-width: 1px;
+  outline-color: var( --light-border-color );
+  outline-style: solid;
+}
+
+textarea:focus-visible {
+  outline-width: 1px;
+  outline-color: var( --dark-border-color );
+  outline-style: solid;
+}

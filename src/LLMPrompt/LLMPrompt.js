@@ -50,8 +50,10 @@ async function sendPrompt(){
   message.detectedLanguage = detectedLanguage;
   saveMessage(message);  
   updateStatus('sending');
-  createRequestUi(text);
-  
+  var messageUi = createRequestUi(text);
+  if (detectedLanguage){
+    setMessageUiLanguage(messageUi, detectedLanguage);
+  }
   textArea.value = '';
   textArea.focus();
   

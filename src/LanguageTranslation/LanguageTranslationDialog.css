@@ -1,0 +1,54 @@
+dialog#message-translation-dialog {
+  height: 200px;
+  width: 300px;
+  top: calc( 50vh - 100px);
+  left: calc( 50vw - 150px);
+
+  > div {
+
+    > section {
+      display: flex;
+      flex-direction: column;
+
+      > div {
+        
+        display: flex;
+        flex-direction: column;
+        
+        > menu[role=toolbar] {
+
+          > li {
+
+            > label:has( + select ) {
+              white-space: nowrap;
+              display: inline-block;
+              width: 2.5em;
+            }
+          }
+        }
+        
+        > textarea {
+          flex-grow: 1;
+          resize: none; 
+          width:calc(100% - 5px); 
+          height: calc( 100% - 1em);
+        }
+      }
+
+      > div:first-child {
+        resize: vertical;
+        overflow: hidden;
+        padding-bottom: .2em;
+      }
+      
+      > div:last-child {
+        border-top-style:solid;
+        border-top-width:1px;
+        flex-grow: 1;
+      }
+      
+    }
+
+  }
+  
+}

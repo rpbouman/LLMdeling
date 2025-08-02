@@ -84,7 +84,10 @@ section.conversation {
         > li[role=menuitem] {
 
           > form[role=menubar]:has( input[role=menuitem][type=radio] ) {
-            
+
+            position:relative;
+            top: 3px;
+
             > input[role=menuitem][type=radio][name=format][value=formatted]::before {
               /* typography */
               content: '\ebc5';

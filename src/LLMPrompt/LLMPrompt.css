@@ -1,26 +1,5 @@
 dialog.llm-prompt {
 
-  textarea[name="input-prompt"] {
-    border-style:none;      
-    outline-width: 1px;
-    outline-color: var( --light-border-color );
-    outline-style: none;
-  }
-
-  textarea[name="input-prompt"]:focus-visible {
-    outline-width: 1px;
-    outline-color: var( --light-border-color );
-    outline-style: solid;
-  }
-  
-  button[name="send"] {
-    
-  }
-  
-  button[name="abort"] {
-    
-  }
-
 }
 
 /* 

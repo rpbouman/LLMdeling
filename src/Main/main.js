@@ -6,6 +6,7 @@ function updateStatus(status){
 
 function initUi(){
   initLLMPrompts();
+  initTranslationDialog();
   byId('new-chat').addEventListener('click', newChat);
 }
 

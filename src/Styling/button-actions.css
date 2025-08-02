@@ -5,6 +5,11 @@ button[type=button] {
   
 }
 
+button[name="confirm"]::before {
+  /* check */
+  content: '\ea5e';
+}
+
 button[name="send"]::before {
   /* send */
   content: '\eb1e';
@@ -41,11 +46,11 @@ button[type=button][name=summarize]::before {
 }
 
 button[type=button][name=translate]::before {
-  /* alphabet-korean */
-  content: '\ff2c';
+  /* language  */
+  content: '\ebbe';
 }
 
 button[type=button][name=wizard]::before {
-  /* wand */
-  content: '\ebcb';
+  /* confetti */
+  content: '\ee46';
 }

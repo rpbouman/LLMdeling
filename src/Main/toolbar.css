@@ -1,0 +1,23 @@
+main#app {
+
+  > header {
+    
+    > menu[role=toolbar] {
+
+      > li[role=menuitem] {
+
+        > button#new-chat {
+          
+        }
+
+        > button#new-chat::before {
+          /* IconMessagePlus */
+          content: '\ec9a';
+        }
+      }
+    }
+  }  
+}
+
+
+

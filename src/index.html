@@ -43,17 +43,20 @@
     <link rel="stylesheet" type="text/css" href="Styling/menu.css"/>
     <link rel="stylesheet" type="text/css" href="Styling/button.css"/>
     <link rel="stylesheet" type="text/css" href="Styling/button-actions.css"/>
+    <link rel="stylesheet" type="text/css" href="Styling/textarea.css"/>
     <link rel="stylesheet" type="text/css" href="Styling/details.css"/>
     
     <link rel="stylesheet" type="text/css" href="Tabs/tabs.css"/>
     <link rel="stylesheet" type="text/css" href="History/HistoryUi.css"/>
     <link rel="stylesheet" type="text/css" href="LLMPrompt/LLMPrompt.css"/>
     <link rel="stylesheet" type="text/css" href="Conversation/Conversation.css"/>
+    <link rel="stylesheet" type="text/css" href="LanguageTranslation/LanguageTranslationDialog.css"/>
     
     <link rel="stylesheet" type="text/css" href="Animations/banter.css"/>
     <link rel="stylesheet" type="text/css" href="Animations/waiting-for-response.css"/>
     <link rel="stylesheet" type="text/css" href="Animations/blinking-pencil.css"/>
     <link rel="stylesheet" type="text/css" href="Main/main.css"/>
+    <link rel="stylesheet" type="text/css" href="Main/toolbar.css"/>
     <link rel="stylesheet" type="text/css" href="DragableDialogs/DragableDialogs.css"/>
         
     <template id="chatHistoryNode">
@@ -149,6 +152,8 @@
                 name="translate"
                 value="translatePrompt"
                 title="Translate this prompt..."
+                popovertarget="message-translation-dialog"
+                popovertargetaction="show"
               />
             </li>
           </menu>
@@ -194,6 +199,8 @@
                 name="translate"
                 value="translateResponse"
                 title="Translate this response..."
+                popovertarget="message-translation-dialog"
+                popovertargetaction="show"                
               />
             </li>
             <li role="menuitem">
@@ -224,10 +231,12 @@
       <header>
         <menu role="toolbar">
           <li role="menuitem">
-            <label for="new-chat">
-              New Chat
-            </label>
-            <button id="new-chat"/>
+            <button 
+              type="button"
+              id="new-chat"
+              name="new"
+              value="new-chat"
+            >New Chat</button>
           </li>
         </menu>
       </header>
@@ -268,7 +277,10 @@
       >
         <div>
           <header>
-            <h1 id="generic-prompt-title">Prompt:</h1>
+            <h1 
+              id="generic-prompt-title" 
+              data-icon="&#63883;"
+            >Prompt:</h1>
             <form role="toolbar">
               <input 
                 name="windowstate" 
@@ -345,7 +357,10 @@
     >
       <div>
         <header>
-          <h1 id="info-dialog-title" data-icon="eac5"></h1>
+          <h1 
+            id="info-dialog-title" 
+            data-icon="&#60101;"
+          ></h1>
           <form role="toolbar">
             <input 
               name="windowstate" 
@@ -381,7 +396,7 @@
           <form role="toolbar">
             <button
               id="info-close"
-              name=""
+              name="confirm"
               type="button"
               popovertarget="info-dialog"
               popovertargetaction="hide"
@@ -393,36 +408,97 @@
         </footer>
       </div>
     </dialog>
+    
+    <dialog 
+      id="message-translation-dialog"
+      aria-labelledby="message-translation-dialog-title"
+      draggable="true" 
+      popover
+    >
+      <div>
+        <header>
+          <h1 
+            id="message-translation-dialog-title" 
+            data-icon="&#60350;"
+          >Translate...</h1>
+          <form role="toolbar">
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="minimize" 
+              title="Minimize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="maximize" 
+              title="Maximize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="restore"  
+              title="Restore" 
+              checked="true"
+            />
+            <button 
+              type="button"
+              popovertarget="message-translation-dialog"
+              popovertargetaction="hide"
+              title="Close" 
+              onclick="closeModal(this)"
+            />
+          </form>
+        </header>
+        <section>
+          <div>
+            <menu role="toolbar">
+              <li role="menuitem">
+                <label for ="translate-from-language-picker">From</label>
+                <select id="translate-from-language-picker" name="language">
+                </select>
+              </li>
+              <li role="menuitem">
+                <button
+                  id="translate"
+                  name="translate"
+                />
+              </li>
+            </menu>
+            <textarea 
+              id="text-to-translate"
+              autofocus
+            ></textarea>
+          </div>
+          <div>
+            <menu role="toolbar">
+              <li role="menuitem">
+                <label for ="translate-to-language-picker">To</label>
+                <select id="translate-to-language-picker" name="language">
+                </select>
+              </li>
+            </menu>
+            <textarea id="translated-text"></textarea>
+          </div>
+        </section>
+        <footer>
+          <form role="toolbar">
+            <button
+              name="confirm"
+              type="button"
+              tabindex="0"
+              title="Close" 
+            >Ok</button>
+          </form>
+        </footer>
+      </div>
+    </dialog>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/marked-highlight@2.2.2/lib/index.umd.min.js"></script>
     <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
-    <script>
-    /**
-    * Setup for highlighting code blocks.
-    *   This requires "marked-highlight" a plugin for marked to allow code blocks to be handled separately.
-    *   But "marked-highlight" only enables separate processing of code blocks, the actual highlighting is down by highlight.js
-    * 
-    * See: 
-    *   https://marked.js.org/using_pro#extensions
-    *   https://www.npmjs.com/package/marked-highlight
-    *   https://highlightjs.readthedocs.io/en/latest/readme.html#id3
-    */
-    const { Marked } = globalThis.marked;
-    const { markedHighlight } = globalThis.markedHighlight;
-    const marked = new Marked(
-      markedHighlight({
-        emptyLangClass: 'hljs',
-        langPrefix: 'hljs language-',
-        highlight(code, lang, info) {
-          const language = hljs.getLanguage(lang) ? lang : 'plaintext';
-          return hljs.highlight(code, { language }).value;
-        }
-      })
-    );    
-    </script>
 
     <script src="Dom/dom.js"></script>
     <script src="Clipboard/clipboard.js"></script>
@@ -430,7 +506,8 @@
     <script src="DragableDialogs/DragableDialogs.js"></script>
     <script src="Tabs/tabs.js"></script>
 
-    <script src="LanguageDetector/LanguageDetector.js"></script>
+    <script src="LanguageDetection/LanguageDetection.js"></script>
+    <script src="LanguageTranslation/LanguageTranslation.js"></script>
     <script src="Summarizer/Summarizer.js"></script>
     <script src="History/HistoryBackend.js"></script>
     <script src="History/HistoryUi.js"></script>
@@ -438,6 +515,28 @@
     <script src="LLMPrompt/LLMPrompt.js"></script>
     <script src="Formatting/Formatting.js"></script>
     <script src="Main/main.js"></script>
+    
+    <script>
+      byId('message-translation-dialog')
+      .addEventListener('show', function(event){
+        //debugger;
+      });
+      
+      byId('message-translation-dialog').querySelector('button[name=confirm]')
+      .addEventListener('click', function(event){
+        //debugger;
+      });
+      
+      byId('message-translation-dialog')
+      .addEventListener('close', function(event){
+        //debugger;
+      })
+
+      byId('message-translation-dialog')
+      .addEventListener('toggle', function(event){
+        //debugger;
+      })
+    </script>
 
   </body>
 </html>

@@ -31,9 +31,9 @@ dialog {
       }
       
       > h1[data-icon]::before {
-        content: attr(data-icon);
+        content: attr( data-icon );
         font-family: var( --icon-font-family );
-        font-size: var( --icon-normal );
+        font-size: var( --icon-small );
         font-weight: normal;
         margin-right: 2px;
       }
@@ -146,4 +146,7 @@ dialog:has( > div > header > form > input[name=windowstate][type=radio][value=ma
   position: absolute;
   left: 0px !important;
   top:0px !important;
+}
+
+dialog[popover]{
 }
