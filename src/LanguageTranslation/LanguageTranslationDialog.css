@@ -1,10 +1,11 @@
-dialog#message-translation-dialog {
-  height: 200px;
-  width: 300px;
-  top: calc( 50vh - 100px);
-  left: calc( 50vw - 150px);
+dialog#translation-dialog {
+  height: 480px;
+  width: 640px;
+  top: calc( 50vh - 240px);
+  left: calc( 50vw - 320px);
 
-  > div {
+  > div,
+  > form {
 
     > section {
       display: flex;
@@ -39,6 +40,7 @@ dialog#message-translation-dialog {
         resize: vertical;
         overflow: hidden;
         padding-bottom: .2em;
+        height: 220px;
       }
       
       > div:last-child {

@@ -6,6 +6,13 @@ function letterIterator(callback){
   }
 }
 
+function toLanguageCode(localeString){
+  try {
+    return (new Intl.Locale(localeString)).language;
+  }
+  catch(e){
+  }
+}
 /**
 * This is to establish a list of languages for tranlation
 *
@@ -21,17 +28,12 @@ function initLanguages(){
     var locale;
     
     // check if the 2-letter language code is valid
-    try {
-      locale = new Intl.Locale(candidateLanguageCode);
-    }
-    catch(e){
-      //not valid, skip it
-      console.error(candidateLanguageCode);
+    // get the language code for this locale
+    var languageCode = toLanguageCode(candidateLanguageCode);
+    if (languageCode === undefined){
+      console.warn(`Invalid language code ${candidateLanguageCode}`);
       return;
     }
-    
-    // get the language code for this locale
-    var languageCode = locale.language;
     if (languageCode.length > 2) {
       // if the language code is not a 2-letter code, skip it
       return;
@@ -62,37 +64,48 @@ function initLanguages(){
 async function initTranslationDialog(){
   var languages = await initLanguages();
   
-  function optionHtml(value, label){
-    return `<option value="${value}" label="${label}">${label}</option>`;
-  }
+  var defaultLanguage = toLanguageCode(navigator.language);
   
-  var options = Object
-  .keys(languages)
+  var preferredLanguages = (navigator.languages || [])
+  .reduce(function(preferredLanguages, localeString, index){
+    var languageCode = toLanguageCode(localeString);
+    
+    if (languageCode !== undefined && typeof preferredLanguages[languageCode] === 'undefined') {
+      preferredLanguages[languageCode] = index;
+    }
+    
+    return preferredLanguages;
+  },{});
+  
+  var fromLanguages = [''];
+  var toLanguages = [];
+  
+  Object.keys(languages)
+  //remove language codes for which we couldn't obtain a display name
   .filter(function(languageCode){
-    return languageCode !== languages[languageCode];
-  })
-  .sort(function(a, b){
-    a = languages[a];
-    b = languages[b];
-    if ( a > b ){
-      return 1;
-    }
-    else
-    if ( a < b ){
-      return -1;
-    }
-    return 0;
-  })
-  .map(function(languageCode){
     var languageName = languages[languageCode];
-    return optionHtml(languageCode, languageName);
+    return languageName !== languageCode;
+  })
+  //make option objects for the from and to language pickers
+  .forEach(function(languageCode){
+    var languageName = languages[languageCode];
+    var option = {
+      value: languageCode,
+      label: languageName
+    };
+    fromLanguages.push(option);
+    
+    var toLanguageOption = Object.assign({}, option);
+    if (toLanguageOption.value === defaultLanguage){
+      toLanguageOption.selected = true;
+    }
+    if (typeof preferredLanguages[languageCode] !== 'undefined') {
+      toLanguageOption.group = 'Preferred';
+    }
+    toLanguages.push(toLanguageOption);
   });
-
-  options = optionHtml('', '') + options;
-
-  var fromLanguagePicker = byId('translate-from-language-picker');
-  fromLanguagePicker.innerHTML = options;
   
-  var toLanguagePicker = byId('translate-to-language-picker');
-  toLanguagePicker.innerHTML = options;
+  populateSelect('#sourceLanguage-picker', fromLanguages);
+  populateSelect('#targetLanguage-picker', toLanguages);
+  
 }  

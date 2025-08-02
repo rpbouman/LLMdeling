@@ -152,7 +152,7 @@
                 name="translate"
                 value="translatePrompt"
                 title="Translate this prompt..."
-                popovertarget="message-translation-dialog"
+                popovertarget="translation-dialog"
                 popovertargetaction="show"
               />
             </li>
@@ -199,7 +199,7 @@
                 name="translate"
                 value="translateResponse"
                 title="Translate this response..."
-                popovertarget="message-translation-dialog"
+                popovertarget="translation-dialog"
                 popovertargetaction="show"                
               />
             </li>
@@ -237,6 +237,14 @@
               name="new"
               value="new-chat"
             >New Chat</button>
+            <button 
+              type="button"
+              id="translate-tool"
+              name="translate"
+              value="translate-tool"
+              popovertarget="translation-dialog"
+              popovertargetaction="toggle"
+            >Translate</button>
           </li>
         </menu>
       </header>
@@ -410,15 +418,15 @@
     </dialog>
     
     <dialog 
-      id="message-translation-dialog"
-      aria-labelledby="message-translation-dialog-title"
+      id="translation-dialog"
+      aria-labelledby="translation-dialog-title"
       draggable="true" 
       popover
     >
       <div>
         <header>
           <h1 
-            id="message-translation-dialog-title" 
+            id="translation-dialog-title" 
             data-icon="&#60350;"
           >Translate...</h1>
           <form role="toolbar">
@@ -443,7 +451,7 @@
             />
             <button 
               type="button"
-              popovertarget="message-translation-dialog"
+              popovertarget="translation-dialog"
               popovertargetaction="hide"
               title="Close" 
               onclick="closeModal(this)"
@@ -454,31 +462,67 @@
           <div>
             <menu role="toolbar">
               <li role="menuitem">
-                <label for ="translate-from-language-picker">From</label>
-                <select id="translate-from-language-picker" name="language">
+                <label 
+                  for="sourceLanguage-picker"
+                  title="Select the language of the text that is to be translated."
+                >From</label>
+                <select 
+                  id="sourceLanguage-picker" 
+                  name="sourceLanguage"
+                  title="Select the language of the text that is to be translated."
+                >
                 </select>
               </li>
               <li role="menuitem">
-                <button
-                  id="translate"
-                  name="translate"
+                <label 
+                  for="sourceLanguage-autodetect"
+                  title="Check to automatically detect the language of the text that is to be translated."
+                >Auto-detect</label>
+                <input 
+                  type="checkbox" 
+                  id="sourceLanguage-autodetect" 
+                  name="autodetect"
+                  checked="true"
+                  title="Check to automatically detect the language of the text that is to be translated."
                 />
               </li>
             </menu>
             <textarea 
-              id="text-to-translate"
+              id="sourceLanguage-text"
               autofocus
             ></textarea>
           </div>
           <div>
             <menu role="toolbar">
               <li role="menuitem">
-                <label for ="translate-to-language-picker">To</label>
-                <select id="translate-to-language-picker" name="language">
+                <label for ="targetLanguage-picker">To</label>
+                <select id="targetLanguage-picker" name="language">
                 </select>
               </li>
+              <li role="menuitem">
+                <label 
+                  for="liveTranslation"
+                  title="Check to automatically update the translation."
+                >Live translation</label>
+                <input 
+                  type="checkbox" 
+                  id="liveTranslation" 
+                  name="autodetect"
+                  checked="true"
+                  title="Check to automatically update the translation."
+                />
+              </li>
+              <li role="menuitem">
+                <button
+                  id="translate"
+                  type="button"
+                  name="translate"
+                  value="translate"
+                  title="Click to translate."
+                />
+              </li>
             </menu>
-            <textarea id="translated-text"></textarea>
+            <textarea id="targetLanguage-text"></textarea>
           </div>
         </section>
         <footer>
@@ -508,6 +552,7 @@
 
     <script src="LanguageDetection/LanguageDetection.js"></script>
     <script src="LanguageTranslation/LanguageTranslation.js"></script>
+    <script src="LanguageTranslation/Translator.js"></script>
     <script src="Summarizer/Summarizer.js"></script>
     <script src="History/HistoryBackend.js"></script>
     <script src="History/HistoryUi.js"></script>
@@ -516,27 +561,5 @@
     <script src="Formatting/Formatting.js"></script>
     <script src="Main/main.js"></script>
     
-    <script>
-      byId('message-translation-dialog')
-      .addEventListener('show', function(event){
-        //debugger;
-      });
-      
-      byId('message-translation-dialog').querySelector('button[name=confirm]')
-      .addEventListener('click', function(event){
-        //debugger;
-      });
-      
-      byId('message-translation-dialog')
-      .addEventListener('close', function(event){
-        //debugger;
-      })
-
-      byId('message-translation-dialog')
-      .addEventListener('toggle', function(event){
-        //debugger;
-      })
-    </script>
-
   </body>
 </html>

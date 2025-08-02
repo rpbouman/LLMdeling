@@ -206,7 +206,7 @@ function messageActionHandler(event){
       break;
     case 'translate':
       var translationDialog = target.popoverTargetElement;
-      translationDialog.querySelector('textarea#text-to-translate').value = content;
+      translationDialog.querySelector('textarea#sourceLanguage-text').value = content;
       var detectedLanguage = getMessageUiLanguage(messageUi);
       if (detectedLanguage) {
         detectedLanguage = detectedLanguage.detectedLanguage;
@@ -214,11 +214,8 @@ function messageActionHandler(event){
       else {
         detectedLanguage = '';
       }
-      translationDialog.querySelector('select#translate-from-language-picker').value = detectedLanguage;
-      translationDialog.querySelector('button#translate').click();
-      //target.popoverTargetElement.returnValue = '';
-      //target.popoverTargetElement.show();
-      
+      translationDialog.querySelector('select#sourceLanguage-picker').value = detectedLanguage;
+      translationDialog.querySelector('button#translate').click();      
       break;
   }
 }

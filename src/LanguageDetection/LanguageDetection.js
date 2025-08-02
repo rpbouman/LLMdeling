@@ -31,8 +31,8 @@ async function getLanguageDetector(downloadProgessListener){
 }
 
 async function detectLanguages(text, downloadProgessListener){
-  var languageDetector = await getLanguageDetector(downloadProgessListener);
-  var results = await languageDetector.detect(text);
+  var languageDetector = await getLanguageDetector( downloadProgessListener );
+  var results = await languageDetector.detect( text );
   return results;
 }
 
@@ -44,7 +44,7 @@ function applyEliminationResultsToLanguageDetectionResults(results, rules){
   var filteredResults = [].concat(results);
   while (
     Boolean( rulesToApply.length ) && 
-    Boolean( filteredResults.length )
+    Boolean( filteredResults.length > 1)
   ) {
     var rule = rulesToApply.shift();
     filteredResults = rule.call(null, filteredResults);
@@ -54,6 +54,13 @@ function applyEliminationResultsToLanguageDetectionResults(results, rules){
 
 function eliminateLanguageDetectionResults(results, extraRules) {
   var defaultRules = [
+    // this rule eliminates everything that has less than 50% confidence.
+    function(results){
+      return results.filter(function(result){
+        return result.confidence > .5;
+      });
+    },
+    // this rule calculates the average confidence, and eliminates all that have less than the average
     function(results){
       var sum = results.reduce(function(acc, curr){
         acc += curr.confidence;
@@ -74,10 +81,10 @@ function eliminateLanguageDetectionResults(results, extraRules) {
   return results;
 }
 
-async function detectLanguage(text){
+async function detectLanguage(text, downloadProgessListener){
   var languages;
   try {
-    languages = await detectLanguages(text);
+    languages = await detectLanguages(text, downloadProgessListener);
   }
   catch(e){
     console.error(e);

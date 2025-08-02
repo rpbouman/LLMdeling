@@ -6,7 +6,7 @@ dialog {
   font-family: var( --ui-text-font-family );
   font-size: var( --ui-text-font-size );
 
-  > div {
+  > *:is(div, form) {
     display:flex;
     flex-direction: column;
     width: 100%;
@@ -140,7 +140,7 @@ dialog {
 
 }
 
-dialog:has( > div > header > form > input[name=windowstate][type=radio][value=maximize]:checked ) {
+dialog:has( > *:is( div, form ) > header > form > input[name=windowstate][type=radio][value=maximize]:checked ) {
   width: 100% !important;
   height: 100% !important;
   position: absolute;
