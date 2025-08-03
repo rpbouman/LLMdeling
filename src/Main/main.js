@@ -53,6 +53,7 @@ function chromeFlags(){
 }
 
 async function init(){
+  initFormState();
   initDragableDialogs();
   initMarked();
   var available = await checkModelAvailability();

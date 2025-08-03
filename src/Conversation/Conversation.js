@@ -85,7 +85,11 @@ async function createChat(options){
       var ui;
       switch (type){ 
         case 'request':
-          ui = createRequestUi(text, message[historyDatabaseMessageStoreTimestamp]);
+          ui = createRequestUi(
+            text, 
+            message[historyDatabaseMessageStoreTimestamp], 
+            message[historyDatabaseMessageMeasuredInputUsage]
+          );
           role = 'user';
           break;
         case 'response':
@@ -205,17 +209,21 @@ function messageActionHandler(event){
       copyToClipboard(content, 'text/plain');
       break;
     case 'translate':
-      var translationDialog = target.popoverTargetElement;
-      translationDialog.querySelector('textarea#sourceLanguage-text').value = content;
       var detectedLanguage = getMessageUiLanguage(messageUi);
       if (detectedLanguage) {
         detectedLanguage = detectedLanguage.detectedLanguage;
       }
       else {
-        detectedLanguage = '';
+        detectedLanguage = 'auto';
       }
-      translationDialog.querySelector('select#sourceLanguage-picker').value = detectedLanguage;
-      translationDialog.querySelector('button#translate').click();      
+      setTranslationDialogState({
+        // we found that the translator cannot handle markdown. 
+        // (It will translate the text but strip the newlines, obliterating the markup.
+        // the workaround is to format as html, and translate that: html markup is preserved
+        // (Of course, if you need the translation in markdown, you will have to then convert html back to markdown
+        'text': md2html(content, false),
+        'sourceLanguage': detectedLanguage
+      })
       break;
   }
 }
@@ -228,16 +236,16 @@ function getMessageAttributes(){
   return attributes;
 }
 
-function createRequestUi(text, timestamp){
+function createRequestUi(text, timestamp, measuredInputUsage){
   timestamp = timestamp || Date.now();
   
   var requestUi = instantiateTemplate('request-ui', getMessageAttributes());
 
   var header = requestUi.querySelector('header');  
-  header.setAttribute(
-    'data-ts-sent-string', 
-    (new Date(timestamp)).toLocaleString()
-  );  
+  setAttributes(header, {
+    'data-ts-sent-string': (new Date(timestamp)).toLocaleString(),
+    'data-measured-input-usage': measuredInputUsage
+  });  
   bindMessageActionHandlers(header);
   
   updateTextUiElement(requestUi.querySelector('section'), text);
@@ -277,8 +285,8 @@ async function handleResponse(response){
   var message = {
     text: responseBuffer,
     type: 'response',
-    inputUsage: currentChat.model.inputUsage
   };
+  message[historyDatabaseMessageModelInputUsage] = currentChat.model.inputUsage;
   message[historyDatabaseMessageStoreTimestampReceived] = Date.now();
   message[historyDatabaseMessageSequenceNumber] = ++currentChat[historyDatabaseMessageSequenceNumber];
   try {

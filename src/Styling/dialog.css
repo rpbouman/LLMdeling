@@ -1,5 +1,7 @@
 dialog {
   resize: both;
+  /* scrolling should be taken care of inside the dialog - not by the dialog itself. */
+  overflow: hidden; 
   padding: 0px;
   border-width: 1px;
   box-shadow: 10px 10px 10px var( --dark-background-color );

@@ -7,7 +7,7 @@ button {
 label:has( > input[type=file] )::before,
 button::before {
   font-family: var( --icon-font-family );
-  font-size: var( --icon-small );
+  font-size: var( --icon-medium );
   color: var( --icon-color-subtle );
   margin-left: -2px;
   margin-right: 2px;

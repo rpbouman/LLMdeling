@@ -29,13 +29,18 @@ menu[role=toolbar] {
       background-color: var( --medium-background-color );
     }
 
-    /*  */
+    /* This is a set of togglebuttons of sorts */
     form[role=menubar]:has( input[role=menuitem][type=radio] ) {
-      
-      border-style: solid;
-      border-width: 1px;
-      border-color: var( --dark-border-color );
+      padding: 0px 2px 0px 2px;
       border-radius: .5em;
+      
+      background-color: buttonface;
+      color: buttontext;
+      display: inline-block;
+      box-sizing: border-box;
+      border-width: 1px;
+      border-style: outset;
+      border-color: buttonborder;
       
       
       > input[role=menuitem][type=radio] {

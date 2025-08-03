@@ -6,6 +6,35 @@ function byId(id){
   return document.getElementById(id);
 }
 
+function el(elementsOrSelector, scope){
+  if (scope) {
+    scope = el(scope);
+    
+    if (!scope) {
+      return undefined;
+    }
+
+    if (typeof elementsOrSelector !== 'string') {
+      throw new Error(`The selector argument must be a css selector string if the scope is passed as second argument`);
+    }
+  }
+  else 
+  if (typeof elementsOrSelector === 'string') {
+    scope = document;
+  }
+  else 
+  if (elementsOrSelector instanceof NodeList) {
+    return elementsOrSelector;
+  }
+  else
+  if (elementsOrSelector instanceof NodeList){
+    return elementsOrSelector;
+  }
+  
+  var els = scope.querySelectorAll(elementOrSelector);
+  return els;
+}
+
 function createEl(tagName, attributes, content){
   var el = document.createElement(tagName);
   if (content) {

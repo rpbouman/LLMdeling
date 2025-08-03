@@ -52,6 +52,7 @@
     <link rel="stylesheet" type="text/css" href="LLMPrompt/PromptLibrary.css"/>
     <link rel="stylesheet" type="text/css" href="Conversation/Conversation.css"/>
     <link rel="stylesheet" type="text/css" href="LanguageTranslation/LanguageTranslationDialog.css"/>
+    <link rel="stylesheet" type="text/css" href="Formatting/formats.css"/>
     
     <link rel="stylesheet" type="text/css" href="Animations/banter.css"/>
     <link rel="stylesheet" type="text/css" href="Animations/waiting-for-response.css"/>
@@ -80,6 +81,14 @@
               name="copy"
               value="copyChat"
               title="Copy this chat to the clipboard..."
+            />
+          </li>
+          <li role="menuitem">
+            <button 
+              type="button" 
+              name="print"
+              value="printChat"
+              title="Send this chat to the printer..."
             />
           </li>
           <li role="menuitem">
@@ -129,6 +138,14 @@
                 name="copy"
                 value="copyPrompt"
                 title="Copy this prompt to the clipboard..."
+              />
+            </li>
+            <li role="menuitem">
+              <button 
+                type="button" 
+                name="print"
+                value="printPrompt"
+                title="Send this prompt to the printer..."
               />
             </li>
             <li role="menuitem">
@@ -184,6 +201,14 @@
                 name="copy"
                 value="copyResponse"
                 title="Copy this response to the clipboard..."
+              />
+            </li>
+            <li role="menuitem">
+              <button 
+                type="button" 
+                name="print"
+                value="printResponse"
+                title="Send this response to the printer..."
               />
             </li>
             <li role="menuitem">
@@ -321,6 +346,19 @@
             </form>
           </header>
           <section>
+            <menu role="toolbar">
+              <li role="menuitem">
+                <label 
+                  title="Upload a text to use as prompt..."
+                  for="uploadPrompt"
+                >
+                  <input
+                    type="file"
+                    id="uploadPrompt"
+                  />
+                </label>
+              </li>            
+            </menu>
             <textarea
               id="prompt-text"
               name="input-prompt"
@@ -460,91 +498,114 @@
           </form>
         </header>
         <section>
-          <div>
-            <menu role="toolbar">
-              <li role="menuitem">
-                <label 
-                  title="Upload a text to translate..."
-                  for="uploadSourceText"
-                >
-                  <input
-                    type="file"
-                    id="uploadSourceText"
+          <form name="translateDialogSettingForm">
+            <input 
+              type="hidden" 
+              name="state"
+            />
+            <header>
+              <menu role="toolbar">
+                <li role="menuitem">
+                  <label 
+                    title="Upload a text to translate..."
+                    for="uploadSourceText"
+                  >
+                    <input
+                      id="uploadSourceText"
+                      name="uploadSourceText"
+                      type="file"
+                      multiple="false"
+                      accept=".csv,.html,.md,text/*,.txt,.xml"
+                    />
+                  </label>
+                </li>            
+                <li role="menuitem">
+                  <label 
+                    for="sourceLanguage-picker"
+                    title="Select the language of the text that is to be translated."
+                  >From</label>
+                  <select 
+                    id="sourceLanguage-picker" 
+                    name="sourceLanguage-picker"
+                    title="Select the language of the text that is to be translated."
+                  >
+                  </select>
+                  <input 
+                    type="hidden" 
+                    name="sourceLanguage"
+                    id="sourceLanguage"
                   />
-                </label>
-              </li>            
-              <li role="menuitem">
-                <label 
-                  for="sourceLanguage-picker"
-                  title="Select the language of the text that is to be translated."
-                >From</label>
-                <select 
-                  id="sourceLanguage-picker" 
-                  name="sourceLanguage"
-                  title="Select the language of the text that is to be translated."
-                >
-                </select>
-              </li>
-              <li role="menuitem">
-                <label for ="targetLanguage-picker">To</label>
-                <select id="targetLanguage-picker" name="language">
-                </select>
-              </li>
-              <li role="menuitem">
-                <label 
-                  for="liveTranslation"
-                  title="Check to automatically update the translation."
-                >Auto-translate</label>
-                <input 
-                  type="checkbox" 
-                  id="liveTranslation" 
-                  name="autodetect"
-                  checked="true"
-                  title="Check to automatically update the translation."
-                />
-              </li>
-              <li role="menuitem">
-                <button
-                  id="translate"
-                  type="button"
-                  name="translate"
-                  value="translate"
-                  title="Click to translate."
-                />
-              </li>
-            </menu>
+                </li>
+                <li role="menuitem">
+                  <label for ="targetLanguage-picker">To</label>
+                  <select 
+                    id="targetLanguage-picker" 
+                    name="targetLanguage-picker"
+                  >
+                  </select>
+                </li>
+                <li role="menuitem">
+                  <label 
+                    for="liveTranslation"
+                    title="Check to automatically update the translation."
+                  >Auto-translate</label>
+                  <input 
+                    id="liveTranslation" 
+                    name="autodetect"
+                    type="checkbox" 
+                    checked="true"
+                    title="Check to automatically update the translation."
+                  />
+                </li>
+                <li role="menuitem">
+                  <button
+                    id="translate"
+                    name="translate"
+                    type="button"
+                    value="translate"
+                    title="Click to translate."
+                  />
+                </li>
+              </menu>
+            </header>
             <textarea 
               id="sourceLanguage-text"
+              name="sourceLanguage-text"
               autofocus
             ></textarea>
-          </div>
-          <div>          
-            <menu role="toolbar">
-              <li role="menuitem">
-                <button 
-                  type="button" 
-                  name="download"
-                  value="downloadTargetText"
-                  title="Download the translated text..."
-                />
-              </li>
-              <li role="menuitem">
-                <button 
-                  type="button" 
-                  name="copy"
-                  value="copyChat"
-                  title="Copy this chat to the clipboard..."
-                />
-              </li>
-              <li role="menuitem">
-                <form role="menubar">
-                  <input role="menuitem" type="radio" name="format" value="formatted" checked title="View formatted"/>
-                  <input role="menuitem" type="radio" name="format" value="markdown" title="View Markdown code"/>
-                  <input role="menuitem" type="radio" name="format" value="html" title="View HTML code"/>
-                </form>
-              </li>              
-            </menu>
-            <textarea id="targetLanguage-text"></textarea>
+          </form>
+          <div class="response">
+            <header>
+              <menu role="toolbar">
+                <li role="menuitem">
+                  <button 
+                    type="button" 
+                    name="download"
+                    value="downloadTargetText"
+                    title="Download the translated text..."
+                  />
+                </li>
+                <li role="menuitem">
+                  <button 
+                    type="button" 
+                    name="copy"
+                    value="copyChat"
+                    title="Copy this chat to the clipboard..."
+                  />
+                </li>
+                <li role="menuitem">
+                  <form role="menubar">
+                    <input role="menuitem" type="radio" name="format" value="formatted" checked title="View formatted"/>
+                    <input role="menuitem" type="radio" name="format" value="markdown" title="View Markdown code"/>
+                    <input role="menuitem" type="radio" name="format" value="html" title="View HTML code"/>
+                  </form>
+                </li>              
+              </menu>
+            </header>
+            <section></section>
+            <pre><code class="hljs language-markdown"></code></pre>
+            <pre><code class="hljs language-html"></code></pre>
+            <input type="hidden" id="targetLanguage-text" name="targetLanguage-text"/>
           </div>
         </section>
         <footer>
@@ -571,6 +632,7 @@
     <script src="Downloader/Downloader.js"></script>
     <script src="DragableDialogs/DragableDialogs.js"></script>
     <script src="Tabs/tabs.js"></script>
+    <script src="FormState/FormState.js"></script>
 
     <script src="LanguageDetection/LanguageDetection.js"></script>
     <script src="LanguageTranslation/LanguageTranslation.js"></script>

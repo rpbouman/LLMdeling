@@ -1,0 +1,112 @@
+menu[role=toolbar], menu[role=menubar] {
+  > li[role=menuitem] {
+
+    > form[role=menubar]:has( input[role=menuitem][type=radio] ) {
+
+      position:relative;
+      top: 1px;
+
+      > input[role=menuitem][type=radio][name=format][value=formatted]::before {
+        /* typography */
+        content: '\ebc5';
+      }
+
+      > input[role=menuitem][type=radio][name=format][value=markdown]::before {
+        /* markdown */
+        content: '\ec41';
+      }
+      
+      > input[role=menuitem][type=radio][name=format][value=html]::before {
+        /* html */
+        content: '\f7b1';
+      }
+    }
+  }
+}
+
+/* styling of the various output formats */
+.response {
+  
+  /* these are the "top-level" code views for markdown and html */
+  > pre:has( > code ) {
+    margin: 1em;
+  }
+  
+  > section {
+    
+    /* code blocks inside the formatted output */
+    pre:has( > code ):not( code:nth-child(2) ) {
+      display: block;
+
+      > code {
+        display: inline-block;
+        padding: .2em;
+        
+        border-style: solid;
+        border-width: 1px;
+        border-color: white;
+
+        outline-style: solid;
+        outline-width: 1px;
+        outline-color: black;
+      }
+      
+    }
+
+  }
+  
+}
+  
+.response {
+  > section,
+  > pre:has( > code ) {
+    display: none;
+    
+    > code {
+      width: calc( 100% - 2em );
+      border-style: solid;
+      border-width: 1px;
+      border-color: var( --dark-border-color );
+      border-radius: .8em;
+    }
+  }
+}
+
+/* if the formatted option is checked, then the section is displayed, but the code blocks are not */
+.response:has(
+  > header 
+    > menu[role=toolbar]
+      > li[role=menuitem]
+        > form[role=menubar]
+          > input[role=menuitem][type=radio][name=format][value=formatted]:checked
+){
+  > section {
+    display: block;
+  }
+}
+
+/* if the markdown option is checked, then the markdown code block is displayed */
+.response:has(
+  > header 
+    > menu[role=toolbar]
+      > li[role=menuitem]
+        > form[role=menubar]
+          > input[role=menuitem][type=radio][name=format][value=markdown]:checked
+){
+  > pre:has( > code.language-markdown ) {
+    display: block;
+  }
+}
+
+/* if the html option is checked, then the html code block is displayed */
+.response:has(
+  > header 
+    > menu[role=toolbar]
+      > li[role=menuitem]
+        > form[role=menubar]
+          > input[role=menuitem][type=radio][name=format][value=html]:checked
+){
+  > pre:has( > code.language-html ) {
+    display: block;
+  }
+}

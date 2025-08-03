@@ -70,14 +70,14 @@ dialog.llm-prompt#generic-prompt {
   min-width: 195px;
   min-height: 95px;
   width: 400px;
-  height: 150px;
-  top: calc(100% - 200px);
+  height: 200px;
+  top: calc(100% - 250px);
   left: calc(50% - 200px);
   
   textarea[name="input-prompt"] {
     resize: none;
     width: calc(100% - 4px);
-    height: calc(100% - 4px);
+    height: calc(100% - 28px);
   }
   
 }

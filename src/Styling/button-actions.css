@@ -60,3 +60,12 @@ button[type=button][name=wizard]::before {
   content: '\ee46';
 }
 
+button[type=button][name=print]::before {
+  /* printer */
+  content: '\eb0e';
+}
+
+button[type=button][name=save]::before {
+  /* device-floppy */
+  content: '\eb62';
+}

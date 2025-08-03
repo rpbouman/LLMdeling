@@ -11,18 +11,25 @@ dialog#translation-dialog {
       display: flex;
       flex-direction: column;
 
-      > div {
+      > *:is(div, form) {
         
         display: flex;
         flex-direction: column;
         
-        > menu[role=toolbar] {
+        > header {
+          border-bottom-style: solid;
+          border-bottom-width: 1px;
+          border-bottom-color: var( --dark-border-color ); 
 
-          > li {
+          > menu[role=toolbar] {
 
-            > label:has( + select ) {
-              white-space: nowrap;
-              display: inline-block;
+            
+            > li {
+
+              > label:has( + select ) {
+                white-space: nowrap;
+                display: inline-block;
+              }
             }
           }
         }
@@ -33,22 +40,29 @@ dialog#translation-dialog {
           resize: none; 
           width:calc(100% - 5px); 
           height: calc( 100% - 1em);
-        }
+        }        
       }
 
-      > div:first-child {
+      > *:is(div, form):first-child {
         resize: vertical;
         overflow: hidden;
         padding-bottom: .2em;
         height: 220px;
       }
       
-      > div:last-child {
+      > *:is(div, form):last-child {
         border-top-style:solid;
         border-top-width:1px;
         flex-grow: 1;
       }
       
+      > div.response {
+        > section,
+        > pre {
+          height: 100%;
+          overflow: scroll;  
+        }
+      }
     }
 
   }

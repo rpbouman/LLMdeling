@@ -61,7 +61,143 @@ function initLanguages(){
   });
 }
 
-function sourceLanguageChangedHandler(event){
+function getTranslationDialog(){
+  var translationDialog = byId('translation-dialog');
+  return translationDialog;
+}
+
+async function handleTranslateClicked(event){
+  var target = event.target;
+  var form = target.form;
+  var formElements = form.elements;
+  
+  var untranslatedText = formElements['sourceLanguage-text'].value;
+  
+  var sourceLanguage = formElements['sourceLanguage'].value;
+  var targetLanguage = formElements['targetLanguage-picker'].value;
+  
+  var translatedTextStream = await translate(
+    untranslatedText, {
+    sourceLanguage: sourceLanguage,
+    targetLanguage: targetLanguage
+  });
+  var ui = getTranslationDialog().querySelector('div.response');
+  handleResponseStream(translatedTextStream, ui);
+}
+
+async function handleResponseStream(reponseStream, ui){
+  var responseText = '';
+  var rawOutputUi = ui.querySelector('input[type=hidden]');
+  var formattedOutputUi = ui.querySelector(':scope > section');
+  var markdownOutputUi = ui.querySelector(':scope > pre > code.language-markdown');
+  var htmlCodeOutputUi = ui.querySelector(':scope > pre > code.language-html');
+  
+  for await (const chunk of reponseStream){
+    responseText += chunk;
+    
+    if (formattedOutputUi) {
+      var html = md2html(responseText)
+      formattedOutputUi.innerHTML = html;
+      formattedOutputUi.scrollIntoView(false);
+    }
+
+    if (markdownOutputUi){
+      var markdownHighlightedHtml = hljs.highlight(responseText, {language: 'markdown'}).value;
+      markdownOutputUi.innerHTML = markdownHighlightedHtml;
+      markdownOutputUi.scrollIntoView(false);
+    }
+
+    if (htmlCodeOutputUi){
+      var htmlHighlightedHtml = hljs.highlight(html, {language: 'html'}).value;
+      htmlCodeOutputUi.innerHTML = htmlHighlightedHtml;
+      htmlCodeOutputUi.scrollIntoView(false);
+    }
+  }
+  
+}
+
+// this can be called when a change in the dialog could potentially require language detection.
+// examples of changes that would require calling this:
+// - if the value of language picker changes from a chosen language to 'auto'
+// - if the value of the language picker is auto and the sourceText changes
+function triggerSourceLanguageDetection(){
+  var form = getTranslationDialog().querySelector('form[name=translateDialogSettingForm]');
+  var formElements = form.elements;
+  
+  var sourceLanguagePicker = formElements['sourceLanguage-picker'];
+  var sourceLanguage = sourceLanguagePicker.value; 
+
+  if (sourceLanguage === 'auto'){
+    // picking the 'auto' option will initiate language detection
+    // so whatever is the current value of the detected language reflected in the label should be reset
+    var selectedOption = sourceLanguagePicker.options[sourceLanguagePicker.selectedIndex];
+    selectedOption.label = '(none)';
+  }
+
+  // copy the chosen language to the hidden source language control
+  var sourceLanguageElement = formElements['sourceLanguage'];
+  
+  // if the picked value and the current one are the same we need not update 
+  if (sourceLanguageElement.value === sourceLanguage) {
+    return;
+  }
+  
+  // update the hidden sourceLanguage
+  sourceLanguageElement.value = sourceLanguage;
+  dispatchChangeEvent(sourceLanguageElement);
+}
+
+function sourceTextChangedHandler(event){
+  var sourceTextElement = event.target;
+  var form = sourceTextElement.form;
+  var formElements = form.elements;
+  
+  //since the text changed we might need to auto-detect again
+  triggerSourceLanguageDetection();
+}
+
+function sourceLanguagePickerChangedHandler(event){
+  triggerSourceLanguageDetection();
+}
+
+async function sourceLanguageChangedHandler(event){
+  var sourceLanguageElement = event.target;
+  var sourceLanguage = sourceLanguageElement.value;
+
+  var form = sourceLanguageElement.form;
+  var formElements = form.elements;
+  var sourceLanguagePicker = formElements['sourceLanguage-picker'];
+  
+  if (sourceLanguage === 'auto') {
+    try {
+      var sourceText = formElements['sourceLanguage-text'].value;
+      var detectedLanguage = await detectLanguage(sourceText);
+      sourceLanguage = detectedLanguage.detectedLanguage;
+    }
+    catch(e){
+    }
+
+    if (sourceLanguage !== 'auto'){
+      sourceLanguageElement.value = sourceLanguage;
+      dispatchChangeEvent(sourceLanguageElement);
+    }
+  }
+  else
+  if (sourceLanguagePicker.value === 'auto') {
+    var detectedLanguageLabel;
+    var options = sourceLanguagePicker.options;
+    var selectedOption;
+    for (var i = 0; i < options.length; i++){
+      var option = options.item(i);
+      if (option.value !== sourceLanguage) {
+        continue;
+      }
+      detectedLanguageLabel = option.label + ' (detected)';
+      break;
+    }
+    selectedOption = options[sourceLanguagePicker.selectedIndex];
+    selectedOption.label = detectedLanguageLabel;
+  }
 }
 
 function liveTranslationChangedHandler(event){
@@ -70,23 +206,30 @@ function liveTranslationChangedHandler(event){
 function targetLanguageChangedHandler(event){
 }
 
-async function handleTranslateClicked(event){
-  var untranslatedText = byId('sourceLanguage-text').value;
+async function translationDialogStateChanged(event){
+  var target = event.target;
+  var form = target.form;
+  var formElements = form.elements;
   
-  var sourceLanguage = byId('sourceLanguage-picker').value;
-  var targetLanguage = byId('targetLanguage-picker').value;
+  var detail = event.detail;
+  var previousState = detail.previousState;
+  var currentState = detail.currentState;
+  var stateChange = detail.stateChange;
   
-  var translatedTextStream = await translate(
-    untranslatedText, {
-    sourceLanguage: sourceLanguage,
-    targetLanguage: targetLanguage
-  });
-  var targetLanguage = byId('targetLanguage-text');
-  var translatedText = '';
-  for await (const chunk of translatedTextStream){
-    translatedText += chunk;
-    targetLanguage.value = translatedText;
-  }
+  var element, elementName;
+  
+  elementName = 'uploadSourceText';
+  if (stateChange[elementName]){
+    element = formElements[elementName];
+    var files = element.files;
+    if (files.length === 1 ){
+      var file = files[0];
+      var text = await file.text();
+      var sourceLanguageText = formElements['sourceLanguage-text'];
+      sourceLanguageText.value = text;
+      dispatchChangeEvent(sourceLanguageText);
+    }
+  }    
 }
 
 async function initTranslationDialog(){
@@ -141,11 +284,32 @@ async function initTranslationDialog(){
     'Preferred': '1',
     'Other': '2'
   });
-
-  byId('sourceLanguage-picker').addEventListener('change', sourceLanguageChangedHandler);
-
-  byId('liveTranslation').addEventListener('change', liveTranslationChangedHandler);
-  byId('targetLanguage-picker').addEventListener('change', targetLanguageChangedHandler);
-  byId('translate').addEventListener('click', handleTranslateClicked);
   
-}  
+  byId('sourceLanguage-text').addEventListener('change', sourceTextChangedHandler, true);
+  byId('sourceLanguage-picker').addEventListener('change', sourceLanguagePickerChangedHandler, true);
+  byId('sourceLanguage').addEventListener('change', sourceLanguageChangedHandler, true);
+  byId('liveTranslation').addEventListener('change', liveTranslationChangedHandler, true);
+  byId('targetLanguage-picker').addEventListener('change', targetLanguageChangedHandler, true);
+
+  byId('translate').addEventListener('click', handleTranslateClicked, true);
+
+  getTranslationDialog().querySelector(stateElementSelector).addEventListener('change', translationDialogStateChanged, true);
+}
+
+function setTranslationDialogState(state){
+  var translationDialog = getTranslationDialog();
+  var dialogState = getFormStateInfo(translationDialog).currentState;
+  delete dialogState['uploadSourceText'];
+  if (state.text){
+    dialogState['sourceLanguage-text'] = state.text;
+  }
+  
+  var sourceLanguage = state.sourceLanguage || 'auto';
+  dialogState['sourceLanguage-picker'] = sourceLanguage;
+  dialogState['sourceLanguage'] = sourceLanguage;
+
+  if (state.targetLanguage){
+    dialogState['targetLanguage-picker'] = state.targetLanguage;
+  }
+  setFormState(translationDialog, dialogState);
+}

@@ -6,9 +6,10 @@ function abortRequest(){
   updateStatus('aborting');
   var message = {
     text: responseBuffer,
-    type: 'abort',
-    inputUsage: currentChat.model.inputUsage
+    type: 'abort'
   };
+  message[historyDatabaseMessageModelInputUsage] = currentChat.model.inputUsage;
+
   saveMessage(message);
   try {
     currentChat.requestAbortController.abort();
@@ -18,6 +19,17 @@ function abortRequest(){
   finishResponse('aborted');
   currentChat.requestAbortController = new AbortController();
   updateStatus('ready');
+}
+
+async function mesaureInputUsage(model, input) {
+  var measuredInputUsage;
+  try {
+    measuredInputUsage = await model.measureInputUsage(input);
+  }
+  catch(e){
+    measuredInputUsage = e.message;
+  }
+  return measuredInputUsage
 }
 
 async function sendPrompt(){
@@ -37,6 +49,9 @@ async function sendPrompt(){
   }
   message[historyDatabaseMessageSequenceNumber] = ++currentChat[historyDatabaseMessageSequenceNumber];
   var model = currentChat.model;
+  
+  var measuredInputUsage = await mesaureInputUsage(model, text);
+  message[historyDatabaseMessageMeasuredInputUsage] = measuredInputUsage;
   if (currentChat[historyDatabaseMessageSequenceNumber] === 1) {
     message.chatOptions = currentChat.options;
     var modelParams = {
@@ -50,7 +65,7 @@ async function sendPrompt(){
   message.detectedLanguage = detectedLanguage;
   saveMessage(message);  
   updateStatus('sending');
-  var messageUi = createRequestUi(text);
+  var messageUi = createRequestUi(text, undefined, measuredInputUsage);
   if (detectedLanguage){
     setMessageUiLanguage(messageUi, detectedLanguage);
   }
