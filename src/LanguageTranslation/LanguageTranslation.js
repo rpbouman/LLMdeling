@@ -171,8 +171,46 @@ function sourceTextChangedHandler(event){
   triggerSourceLanguageDetection();
 }
 
-function sourceLanguagePickerChangedHandler(event){
+function updateTargetLanguagePicker(){
+}
+
+async function sourceLanguagePickerChangedHandler(event){
   triggerSourceLanguageDetection();
+  
+  var target = event.target;
+  var form = target.form;
+  var formElements = form.elements;
+  
+  var sourceLanguage = target.value;
+  if (sourceLanguage === 'auto'){
+    sourceLanguage = formElements['sourceLanguage'].value;
+  }
+  
+  var targetLanguagePicker = formElements['targetLanguage-picker'];
+  var promises = [];
+  var options = targetLanguagePicker.options;
+  for (var i = 0; i < options.length; i++){
+    var option = options.item(i);
+    var promise = getTranslatorInfo({
+      sourceLanguage: sourceLanguage,
+      targetLanguage: option.value
+    });
+    promises.push(promise);
+  }
+  
+  var results = await Promise.all(promises);
+  for (var i = 0; i < results.length; i++){
+    var option = options.item(i);
+    var translatorInfo = results[i];
+    switch(translatorInfo.availability){
+      case 'unavailable':
+      case 'no such API':
+       option.disabled = true;
+        break;
+      default:
+        option.disabled = false;
+    }
+  }
 }
 
 async function sourceLanguageChangedHandler(event){

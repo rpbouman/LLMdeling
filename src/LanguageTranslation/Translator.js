@@ -3,6 +3,37 @@
 var translators = {
 };
 
+async function getTranslatorInfo(translatorOptions, downloadProgessListener){
+  var translatorKey = getTranslatorKey(translatorOptions);
+  var translator = translators[translatorKey];
+  var translatorInfo = {
+    options: translatorOptions,
+    translatorKey: translatorKey,
+    translator: undefined,
+    availability: undefined
+  };
+  
+  if (translator){
+    translatorInfo.translator = translator;
+    translatorInfo.availability = 'available';
+    return translatorInfo;
+  }
+  
+  if (typeof Translator === 'undefined'){
+    translatorInfo.availability = 'no such API';
+    return translatorInfo;
+  }
+  
+  var availability = await Translator.availability(translatorOptions);
+  translatorInfo.availability = availability;
+  return translatorInfo;
+}
+
+function getTranslatorKey(translatorOptions){
+  var translatorKey = JSON.stringify(translatorOptions);
+  return translatorKey;
+}
+
 async function translate(text, options, downloadProgessListener){
   var props = {
     sourceLanguage: undefined,
@@ -33,15 +64,14 @@ async function translate(text, options, downloadProgessListener){
     translatorOptions.targetLanguage = detectedLanguage;;
   }
   
-  var translatorKey = JSON.stringify(translatorOptions);
-  var translator = translators[translatorKey];
-  
-  if (!translator){
-    if (typeof Translator === 'undefined') {
+  var translatorInfo = await getTranslatorInfo(translatorOptions, downloadProgessListener);
+  var translator;
+  if (!translatorInfo.translator){
+    var availability = translatorInfo.availability;
+    if (availability === 'no such API') {
       throw new Error(`This browser does not support the Summarizer global.`);
     }
 
-    var availability = await Translator.availability(translatorOptions);
     if (availability === 'unavailable') {
       throw new Error(`There is no Translator available for ${translatorOptions.sourceLanguage} -> ${translatorOptions.targetLanguage}.`);
     }
@@ -53,7 +83,7 @@ async function translate(text, options, downloadProgessListener){
     }
 
     translator = await Translator.create(translatorOptions);
-    translators[translatorKey] = translator;
+    translators[translatorInfo.translatorKey] = translator;
   }
   
   var translation = translator.translateStreaming(text);
