@@ -24,6 +24,13 @@ menu[role=toolbar], menu[role=menubar] {
   }
 }
 
+.response, .request {
+  > section {
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+}
+
 /* styling of the various output formats */
 .response {
   

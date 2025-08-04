@@ -88,7 +88,7 @@ function initFormState(){
       dispatchChangeEvent(stateElement, formStateInfo);
     }
     
-    stateElement.value = JSON.stringify(currentState);
+    stateElement.value = JSON.stringify(formStateInfo.currentState);
   };
   
   var stateManagedForms = document.querySelectorAll(`form:has( ${stateElementSelector} )`);

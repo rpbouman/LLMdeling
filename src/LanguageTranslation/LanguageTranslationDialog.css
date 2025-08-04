@@ -10,6 +10,7 @@ dialog#translation-dialog {
     > section {
       display: flex;
       flex-direction: column;
+      overflow: hidden;
 
       > *:is(div, form) {
         
@@ -20,6 +21,7 @@ dialog#translation-dialog {
           border-bottom-style: solid;
           border-bottom-width: 1px;
           border-bottom-color: var( --dark-border-color ); 
+          flex-shrink: 0;
 
           > menu[role=toolbar] {
 
@@ -35,14 +37,13 @@ dialog#translation-dialog {
         }
         
         > textarea {
-          flex-grow: 1;
+          flex: 1;
           margin-top: 2px;
           resize: none; 
-          width:calc(100% - 5px); 
-          height: calc( 100% - 1em);
         }        
       }
 
+      /* The top pane of the translation dialog can be resized  */
       > *:is(div, form):first-child {
         resize: vertical;
         overflow: hidden;
@@ -53,15 +54,22 @@ dialog#translation-dialog {
       > *:is(div, form):last-child {
         border-top-style:solid;
         border-top-width:1px;
-        flex-grow: 1;
+        flex: 1;
+        overflow: hidden;
       }
       
       > div.response {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        overflow: hidden;
+        
         > section,
         > pre {
-          height: 100%;
+          flex: 1;
           overflow: scroll;  
         }
+        
       }
     }
 

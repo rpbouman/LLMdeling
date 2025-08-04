@@ -221,7 +221,7 @@ function messageActionHandler(event){
         // (It will translate the text but strip the newlines, obliterating the markup.
         // the workaround is to format as html, and translate that: html markup is preserved
         // (Of course, if you need the translation in markdown, you will have to then convert html back to markdown
-        'text': md2html(content, false),
+        'text': content,
         'sourceLanguage': detectedLanguage
       })
       break;

@@ -12,12 +12,7 @@ section.conversation {
     margin-top: 10px;
     margin-bottom: 10px;
     background-color: var( --content-background-color ); 
-    
-    > section {
-      padding-left: 1em;
-      padding-right: 1em;
-    }
-    
+        
     > header::before,
     > footer::before {
 

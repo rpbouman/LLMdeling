@@ -356,7 +356,7 @@ function optionsHtml(options, groupsSortKey){
     }
     
     var sortKey1 = option1.sortKey || getOptionLabel(option1);
-    var sortKey2 = option2.sortKey || getOptionLabel(option1);
+    var sortKey2 = option2.sortKey || getOptionLabel(option2);
     
     if (sortKey1 > sortKey2){
       return 1;

@@ -72,12 +72,18 @@ async function handleTranslateClicked(event){
   var formElements = form.elements;
   
   var untranslatedText = formElements['sourceLanguage-text'].value;
+  console.log(`\nTranslating text:\n`);
+  console.log(untranslatedText);
+  var untranslatedPreProcessedText = preProcessTranslatorInputText(untranslatedText);
+  console.log('\nPreprocessed\n');
+  console.log(untranslatedPreProcessedText);
+  //var untranslatedPreProcessedText = untranslatedText;
   
   var sourceLanguage = formElements['sourceLanguage'].value;
   var targetLanguage = formElements['targetLanguage-picker'].value;
   
   var translatedTextStream = await translate(
-    untranslatedText, {
+    untranslatedPreProcessedText, {
     sourceLanguage: sourceLanguage,
     targetLanguage: targetLanguage
   });
@@ -87,6 +93,8 @@ async function handleTranslateClicked(event){
 
 async function handleResponseStream(reponseStream, ui){
   var responseText = '';
+  var postProcessedText;
+  
   var rawOutputUi = ui.querySelector('input[type=hidden]');
   var formattedOutputUi = ui.querySelector(':scope > section');
   var markdownOutputUi = ui.querySelector(':scope > pre > code.language-markdown');
@@ -95,14 +103,18 @@ async function handleResponseStream(reponseStream, ui){
   for await (const chunk of reponseStream){
     responseText += chunk;
     
+    // this reverses the input pre processing.
+    postProcessedText = postProcessTranslatorOutputText(responseText);
+    //var postProcessedText = responseText;
+    
+    var html = md2html(postProcessedText)
     if (formattedOutputUi) {
-      var html = md2html(responseText)
       formattedOutputUi.innerHTML = html;
       formattedOutputUi.scrollIntoView(false);
     }
 
     if (markdownOutputUi){
-      var markdownHighlightedHtml = hljs.highlight(responseText, {language: 'markdown'}).value;
+      var markdownHighlightedHtml = hljs.highlight(postProcessedText, {language: 'markdown'}).value;
       markdownOutputUi.innerHTML = markdownHighlightedHtml;
       markdownOutputUi.scrollIntoView(false);
     }
@@ -113,7 +125,10 @@ async function handleResponseStream(reponseStream, ui){
       htmlCodeOutputUi.scrollIntoView(false);
     }
   }
-  
+  console.log('\nReceived translation:\n');
+  console.log(responseText);
+  console.log('\nPostprocessed translation:\n');
+  console.log(postProcessedText);
 }
 
 // this can be called when a change in the dialog could potentially require language detection.
@@ -296,14 +311,60 @@ async function initTranslationDialog(){
   getTranslationDialog().querySelector(stateElementSelector).addEventListener('change', translationDialogStateChanged, true);
 }
 
+// the translartor has an issue with linebreaks - they get removed.
+// this is a real pita when the input text is markdown
+// but, we noticed that HTML remains unscathed. 
+function preProcessTranslatorInputText(text){
+  var preProcessedText = text.replace(/\r\n|\r|\n/g, function(match){
+    var breakTag;
+    switch (match){
+      case '\r\n':
+        breakTag = '<x:crlf/>';
+        break;
+      case '\r':
+        breakTag = '<x:cr/>';
+        break;
+      case '\n':
+        breakTag = '<x:lf/>';
+        break;
+    }
+    return breakTag;
+  });
+  return preProcessedText;
+}
+
+function postProcessTranslatorOutputText(text) {
+  var postProcessedText = text.replace(/<x:crlf\/>|<x:cr\/>|<x:lf\/>/g, function(match){
+    var lineBreak;
+    match = match.trim();
+    switch (match){
+      case '<x:crlf/>':
+        lineBreak = '\r\n';
+        break;
+      case '<x:cr/>':
+        lineBreak = '\r';
+        break;
+      case '<x:lf/>':
+        lineBreak = '\n';
+        break;
+    }
+    return lineBreak;
+  });
+  return postProcessedText;
+}
+
 function setTranslationDialogState(state){
   var translationDialog = getTranslationDialog();
   var dialogState = getFormStateInfo(translationDialog).currentState;
   delete dialogState['uploadSourceText'];
-  if (state.text){
-    dialogState['sourceLanguage-text'] = state.text;
-  }
+
+  var text = state.text;
   
+  if (text){
+    dialogState['sourceLanguage-text'] = text;
+  }
+  delete state.formatting;
+    
   var sourceLanguage = state.sourceLanguage || 'auto';
   dialogState['sourceLanguage-picker'] = sourceLanguage;
   dialogState['sourceLanguage'] = sourceLanguage;
