@@ -2,6 +2,13 @@ var responseUi;
 var responseBuffer;
 var currentChat;
 
+function setMessageUiMeta(messageUi, message) {
+  if (message.detectedLanguage){
+    setMessageUiLanguage(messageUi, message.detectedLanguage);
+  }
+  messageUi.querySelector('header').setAttribute('data-model-input-usage', message.inputUsage);
+}
+
 function setMessageUiLanguage(messageUi, detectedLanguage){
   var section = messageUi.querySelector('section');
   section.setAttribute('lang', detectedLanguage.detectedLanguage);
@@ -272,6 +279,17 @@ function createResponseUi(timestamp){
 }
 
 async function newChat(){
+  if (currentChat){
+    try {
+      if (currentChat.model) {
+        currentChat.model.destroy();
+      }
+    }
+    catch(e){
+      console.error(e);
+      debugger;
+    }
+  }
   await createChat();
   var conversation = getConversation();
   conversation.innerHTML = '';
@@ -286,7 +304,6 @@ async function handleResponse(response){
     text: responseBuffer,
     type: 'response',
   };
-  message[historyDatabaseMessageModelInputUsage] = currentChat.model.inputUsage;
   message[historyDatabaseMessageStoreTimestampReceived] = Date.now();
   message[historyDatabaseMessageSequenceNumber] = ++currentChat[historyDatabaseMessageSequenceNumber];
   try {
@@ -300,14 +317,17 @@ async function handleResponse(response){
       handleResponseChunk(chunk);
       message.text = responseBuffer;
     }
+    message[historyDatabaseMessageModelInputUsage] = currentChat.model.inputUsage;
     var detectedLanguage = await detectLanguage(message.text);
     if (detectedLanguage) {
       message.detectedLanguage = detectedLanguage;
-      setMessageUiLanguage(responseUi, detectedLanguage);      
     }
+    setMessageUiMeta(responseUi, message);      
     saveMessage(message);
   }
   catch (err) {
+    console.error(err);
+    debugger;
   }
   finally {
     finishResponse('finished', message[historyDatabaseMessageStoreTimestamp], responseUi);
