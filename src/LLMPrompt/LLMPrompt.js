@@ -94,17 +94,43 @@ function getPromptTextArea(){
   return textArea;
 }
 
+async function uploadPrompt(event){
+  var target = event.target;
+  var files = target.files;
+  if (files.length === 0) {
+    return;
+  }
+  
+  var dialog = target;
+  while (dialog && dialog.tagName !== 'DIALOG') {
+    dialog = dialog.parentNode;
+  }
+  if (!dialog){
+    return;
+  }
+  
+  var file = files.item(0);
+  var input = dialog.querySelector('*:is( textarea, input)[name=input-prompt]');
+  input.value = await file.text();
+}
+
 function initLLMPrompts(){
   var sendPromptButtons = document.querySelectorAll('dialog.llm-prompt button[value="send-prompt"]');
   for (var i = 0; i < sendPromptButtons.length; i++){
-    sendPromptButton = sendPromptButtons.item(i);
+    var sendPromptButton = sendPromptButtons.item(i);
     sendPromptButton.addEventListener('click', sendPrompt);
   }
   
   var abortResponseButtons = document.querySelectorAll('dialog.llm-prompt button[value="abort-response"]');
   for (var i = 0; i < abortResponseButtons.length; i++){
-    abortResponseButton = abortResponseButtons.item(i);
+    var abortResponseButton = abortResponseButtons.item(i);
     abortResponseButton.addEventListener('click', abortRequest);
+  }
+  
+  var uploadPromptFileInputs = document.querySelectorAll('dialog.llm-prompt input[type=file][name="uploadPromptText"]');
+  for (var i = 0; i < uploadPromptFileInputs.length; i++){
+    var uploadPromptFileInput = uploadPromptFileInputs.item(i);
+    uploadPromptFileInput.addEventListener('change', uploadPrompt);
   }
   
 }
