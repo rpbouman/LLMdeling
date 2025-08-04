@@ -46,7 +46,6 @@ menu[role=toolbar], menu[role=menubar] {
       display: block;
 
       > code {
-        display: inline-block;
         padding: .2em;
         
         border-style: solid;
