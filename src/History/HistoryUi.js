@@ -54,6 +54,7 @@ async function chatNodeToggleHandler(event){
   var messages = await getChatMessages(chatId);
   
   if (!messages.length){
+    contents.setAttribute('data-status', 'ready');
     return;
   }
   
@@ -74,6 +75,7 @@ async function chatNodeToggleHandler(event){
   else {
     summary = await summarizeChat(messages);
     if (summary === undefined){
+      contents.setAttribute('data-status', 'ready');
       return;
     }
     var fullSummary = [];

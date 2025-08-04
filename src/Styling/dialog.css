@@ -1,3 +1,12 @@
+dialog[aria-busy=true] > div > header > h1::before {
+  animation-name: spinnging_refresh;
+  animation-duration: 5s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  display: inline-block;
+
+}
+
 dialog {
   resize: both;
   /* scrolling should be taken care of inside the dialog - not by the dialog itself. */
@@ -156,7 +165,4 @@ dialog:has( > *:is( div, form ) > header > form > input[name=windowstate][type=r
   position: absolute;
   left: 0px !important;
   top:0px !important;
-}
-
-dialog[popover]{
 }

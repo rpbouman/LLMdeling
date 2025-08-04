@@ -58,6 +58,7 @@
     <link rel="stylesheet" type="text/css" href="Animations/banter.css"/>
     <link rel="stylesheet" type="text/css" href="Animations/waiting-for-response.css"/>
     <link rel="stylesheet" type="text/css" href="Animations/blinking-pencil.css"/>
+    <link rel="stylesheet" type="text/css" href="Animations/spinners.css"/>
     <link rel="stylesheet" type="text/css" href="Main/main.css"/>
     <link rel="stylesheet" type="text/css" href="Main/toolbar.css"/>
     <link rel="stylesheet" type="text/css" href="DragableDialogs/DragableDialogs.css"/>
@@ -538,6 +539,7 @@
                     type="hidden" 
                     name="sourceLanguage"
                     id="sourceLanguage"
+                    required
                   />
                 </li>
                 <li role="menuitem">
@@ -545,6 +547,7 @@
                   <select 
                     id="targetLanguage-picker" 
                     name="targetLanguage-picker"
+                    required
                   >
                   </select>
                 </li>
@@ -575,6 +578,8 @@
             <textarea 
               id="sourceLanguage-text"
               name="sourceLanguage-text"
+              spellcheck="true"
+              required
               autofocus
             ></textarea>
           </form>

@@ -68,6 +68,9 @@ function getTranslationDialog(){
 
 async function handleTranslateClicked(event){
   var target = event.target;
+  var translationDialog = getAncestorWithTagName(target, 'DIALOG');
+  translationDialog.setAttribute('aria-busy', true);
+  
   var form = target.form;
   var formElements = form.elements;
   
@@ -87,8 +90,9 @@ async function handleTranslateClicked(event){
     sourceLanguage: sourceLanguage,
     targetLanguage: targetLanguage
   });
-  var ui = getTranslationDialog().querySelector('div.response');
-  handleResponseStream(translatedTextStream, ui);
+  var ui = translationDialog.querySelector('div.response');
+  await handleResponseStream(translatedTextStream, ui);
+  translationDialog.removeAttribute('aria-busy');
 }
 
 async function handleResponseStream(reponseStream, ui){
@@ -135,8 +139,10 @@ async function handleResponseStream(reponseStream, ui){
 // examples of changes that would require calling this:
 // - if the value of language picker changes from a chosen language to 'auto'
 // - if the value of the language picker is auto and the sourceText changes
-function triggerSourceLanguageDetection(){
-  var form = getTranslationDialog().querySelector('form[name=translateDialogSettingForm]');
+function triggerSourceLanguageDetection(forElement){
+  var translationDialog = getAncestorWithTagName(forElement, 'DIALOG');
+  
+  var form = forElement.form;
   var formElements = form.elements;
   
   var sourceLanguagePicker = formElements['sourceLanguage-picker'];
@@ -163,53 +169,24 @@ function triggerSourceLanguageDetection(){
 }
 
 function sourceTextChangedHandler(event){
-  var sourceTextElement = event.target;
-  var form = sourceTextElement.form;
-  var formElements = form.elements;
-  
+  var target = event.target;
   //since the text changed we might need to auto-detect again
-  triggerSourceLanguageDetection();
+  triggerSourceLanguageDetection( target );
 }
 
 function updateTargetLanguagePicker(){
 }
 
 async function sourceLanguagePickerChangedHandler(event){
-  triggerSourceLanguageDetection();
-  
   var target = event.target;
+  triggerSourceLanguageDetection( target );
+
   var form = target.form;
   var formElements = form.elements;
   
   var sourceLanguage = target.value;
   if (sourceLanguage === 'auto'){
     sourceLanguage = formElements['sourceLanguage'].value;
-  }
-  
-  var targetLanguagePicker = formElements['targetLanguage-picker'];
-  var promises = [];
-  var options = targetLanguagePicker.options;
-  for (var i = 0; i < options.length; i++){
-    var option = options.item(i);
-    var promise = getTranslatorInfo({
-      sourceLanguage: sourceLanguage,
-      targetLanguage: option.value
-    });
-    promises.push(promise);
-  }
-  
-  var results = await Promise.all(promises);
-  for (var i = 0; i < results.length; i++){
-    var option = options.item(i);
-    var translatorInfo = results[i];
-    switch(translatorInfo.availability){
-      case 'unavailable':
-      case 'no such API':
-       option.disabled = true;
-        break;
-      default:
-        option.disabled = false;
-    }
   }
 }
 
@@ -220,6 +197,8 @@ async function sourceLanguageChangedHandler(event){
   var form = sourceLanguageElement.form;
   var formElements = form.elements;
   var sourceLanguagePicker = formElements['sourceLanguage-picker'];
+  
+  var sourceLanguageText = formElements['sourceLanguage-text'];
   
   if (sourceLanguage === 'auto') {
     try {
@@ -234,23 +213,71 @@ async function sourceLanguageChangedHandler(event){
       sourceLanguageElement.value = sourceLanguage;
       dispatchChangeEvent(sourceLanguageElement);
     }
+    
+    sourceLanguageText.removeAttribute('lang');
+    sourceLanguageText.removeAttribute('spellcheck');
   }
-  else
-  if (sourceLanguagePicker.value === 'auto') {
-    var detectedLanguageLabel;
-    var options = sourceLanguagePicker.options;
-    var selectedOption;
+  else {    
+    // update the label of the sourceLanguage picker to reflect the detected language
+    if (sourceLanguagePicker.value === 'auto') {
+      var detectedLanguageLabel;
+      var options = sourceLanguagePicker.options;
+      var selectedOption;
+      for (var i = 0; i < options.length; i++){
+        var option = options.item(i);
+        if (option.value !== sourceLanguage) {
+          continue;
+        }
+        detectedLanguageLabel = option.label + ' (detected)';
+        break;
+      }
+      selectedOption = options[sourceLanguagePicker.selectedIndex];
+      selectedOption.label = detectedLanguageLabel;
+    }
+
+    // update the target languge picker to only show items 
+    // for wich a translator exists for the chosen source language.
+    var targetLanguagePicker = formElements['targetLanguage-picker'];
+    var selectedOptionIndex = targetLanguagePicker.selectedIndex;
+    
+    var promises = [];
+    var options = targetLanguagePicker.options;
+    var selectedOption = options.item(selectedOptionIndex);
     for (var i = 0; i < options.length; i++){
       var option = options.item(i);
-      if (option.value !== sourceLanguage) {
-        continue;
-      }
-      detectedLanguageLabel = option.label + ' (detected)';
-      break;
+      var promise = getTranslatorInfo({
+        sourceLanguage: sourceLanguage,
+        targetLanguage: option.value
+      });
+      promises.push(promise);
     }
-    selectedOption = options[sourceLanguagePicker.selectedIndex];
-    selectedOption.label = detectedLanguageLabel;
+    
+    var results = await Promise.all(promises);
+    for (var i = 0; i < results.length; i++){
+      var option = options.item(i);
+      var translatorInfo = results[i];
+      switch(translatorInfo.availability){
+        case 'unavailable':
+        case 'no such API':
+          option.disabled = true;
+          if (option === selectedOption){
+            targetLanguagePicker.value = '';
+            dispatchChangeEvent(targetLanguagePicker);
+          }
+          break;
+        default:
+          option.disabled = false;
+      }
+    }
+
+    // update the lang attribute of the sourceText
+    sourceLanguageText.removeAttribute('spellcheck');
+    sourceLanguageText.setAttribute('lang', sourceLanguage);
+    setTimeout(function(){
+      sourceLanguageText.setAttribute('spellcheck', true);
+    }, 100);
   }
+  
 }
 
 function liveTranslationChangedHandler(event){

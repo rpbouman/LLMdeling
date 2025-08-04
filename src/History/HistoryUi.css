@@ -41,7 +41,10 @@ nav#sidebar {
             margin-bottom: 4px;
             
             > li[role=menuitem] {
-              > button[type=button] {
+
+              > button[type=button][name=restore]::before {
+                /* messages */
+                content: '\eb6c';
               }
             }
           }
@@ -51,7 +54,6 @@ nav#sidebar {
             margin-left: 1em;
             font-size: smaller;
             font-family: var( --content-text-font-family );
-            color: 
           }
           
           > div::before {
