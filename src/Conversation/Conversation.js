@@ -81,13 +81,13 @@ async function createChat(options){
   conversation.innerHTML = '';
   
   if (options.conversation !== undefined) {
-    var initialPrompts = modelOptions.initialPrompts;
+    var promptsToAppend = [];
     for (var i = 0; i < options.conversation.length; i++){
       var message = options.conversation[i];
       newChat[historyDatabaseMessageSequenceNumber] = message[historyDatabaseMessageSequenceNumber];
       var text = message.text;
       var type = message.type;
-      var initialPrompt = {content: text};
+      var promptToAppend = {content: text};
       var role;
       var ui;
       switch (type){ 
@@ -111,13 +111,19 @@ async function createChat(options){
         setMessageUiLanguage(ui, message.detectedLanguage);
       }
       ui.scrollIntoView(false);
-      initialPrompt.role = role;
-      initialPrompts.push(initialPrompt);
+      promptToAppend.role = role;
+      promptsToAppend.push(promptToAppend);
     }
   }
-
+  updateStatus('creating-model');
   var model = await LanguageModel.create(modelOptions);
+  if (promptsToAppend && promptsToAppend.length){
+    updateStatus('appending-model-context');
+    var appendResult = await model.append(promptsToAppend);
+    updateStatus('model-context-appended');
+  }
   newChat.model = model;
+  updateStatus('ready');
   return newChat;
 }
 

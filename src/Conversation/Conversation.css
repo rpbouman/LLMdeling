@@ -39,7 +39,7 @@ section.conversation {
     border-bottom-right-radius: 0em;
 
     > header::before {
-      content: attr( data-ts-sent-string );
+      content: attr( data-ts-sent-string ) '. Measured input usage: ' attr( data-measured-input-usage );
       left: 1em;
             
     }
@@ -70,7 +70,12 @@ section.conversation {
     scroll-margin-bottom: 2em;
 
     > header::before {
-      content: attr( data-ts-received-string );
+      content: attr( data-ts-received-string ) '.' ;
+      left: 1em;
+    }
+
+    > header[data-model-input-usage]::before {
+      content: attr( data-ts-received-string ) '. Input usage: ' attr( data-model-input-usage ) ;
       left: 1em;
     }
     

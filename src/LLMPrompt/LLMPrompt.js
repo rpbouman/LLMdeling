@@ -29,7 +29,7 @@ async function mesaureInputUsage(model, input) {
   catch(e){
     measuredInputUsage = e.message;
   }
-  return measuredInputUsage
+  return measuredInputUsage;
 }
 
 async function sendPrompt(){
@@ -45,7 +45,9 @@ async function sendPrompt(){
     requestOptions: requestOptions
   };
   if (!currentChat) {
+    updateStatus('creating-new-chat-session');
     currentChat = await newChat();
+    updateStatus('new-chat-session-created');
   }
   message[historyDatabaseMessageSequenceNumber] = ++currentChat[historyDatabaseMessageSequenceNumber];
   var model = currentChat.model;
