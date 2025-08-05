@@ -5,7 +5,6 @@ var translators = {
 
 async function getTranslatorInfo(translatorOptions, downloadProgessListener){
   var translatorKey = getTranslatorKey(translatorOptions);
-  var translator = translators[translatorKey];
   var translatorInfo = {
     options: translatorOptions,
     translatorKey: translatorKey,
@@ -13,6 +12,7 @@ async function getTranslatorInfo(translatorOptions, downloadProgessListener){
     availability: undefined
   };
   
+  var translator = translators[translatorKey];
   if (translator){
     translatorInfo.translator = translator;
     translatorInfo.availability = 'available';
@@ -65,11 +65,11 @@ async function translate(text, options, downloadProgessListener){
   }
   
   var translatorInfo = await getTranslatorInfo(translatorOptions, downloadProgessListener);
-  var translator;
-  if (!translatorInfo.translator){
+  var translator = translatorInfo.translator;
+  if (!translator){
     var availability = translatorInfo.availability;
     if (availability === 'no such API') {
-      throw new Error(`This browser does not support the Summarizer global.`);
+      throw new Error(`This browser does not support the Translator global. Try to enable chrome://flags/# and retry.`);
     }
 
     if (availability === 'unavailable') {
@@ -83,7 +83,7 @@ async function translate(text, options, downloadProgessListener){
     }
 
     translator = await Translator.create(translatorOptions);
-    translators[translatorInfo.translatorKey] = translator;
+    translatorInfo.translator = translators[translatorInfo.translatorKey] = translator;
   }
   
   var translation = translator.translateStreaming(text);

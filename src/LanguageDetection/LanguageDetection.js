@@ -1,17 +1,30 @@
+//see: chrome://flags/#language-detection-api
+//https://developer.chrome.com/docs/ai/language-detection
+
 var languageDetector;
 
-async function getLanguageDetector(downloadProgessListener){
-  if (typeof languageDetector !== 'undefined'){
-    return languageDetector;
-  }
+async function getLanguageDetectorInfo(downloadProgessListener){
+  var languageDetectorInfo = {
+    languageDetector: languageDetector,
+    availability: undefined
+  };
   
+  if (languageDetector){
+    languageDetectorInfo.availability = 'available';
+    return languageDetectorInfo;
+  }
+
   if (typeof LanguageDetector === 'undefined') {
-    throw new Error(`The LanguageDetector global is not supported by this browser.`);
+    languageDetectorInfo.availability = 'no such API';
+    return languageDetectorInfo;
   }
-  
+
   var availability = await LanguageDetector.availability();
-  if (availability === 'unavailable') {
-    throw new Error(`The LanguageDetector API is not available.`);
+  languageDetectorInfo.availability = availability;
+  switch (availability) {
+    case 'unavailable':
+    case 'downloading':
+      return languageDetectorInfo;    
   }
   
   var languageDetectorOptions;
@@ -25,7 +38,20 @@ async function getLanguageDetector(downloadProgessListener){
       m.addEventListener('downloadprogress', downloadProgessListener);
     };
   }
-  languageDetector = await LanguageDetector.create(languageDetectorOptions);
+  try {
+    languageDetector = await LanguageDetector.create(languageDetectorOptions);
+  }
+  catch(e){
+    console.error(e);
+    return languageDetector;
+  }
+  languageDetectorInfo.languageDetector = languageDetector;
+  
+  return languageDetectorInfo;
+}
+
+async function getLanguageDetector(downloadProgessListener){
+  var languageDetectorInfo = await getLanguageDetectorInfo(downloadProgessListener);
   await languageDetector.ready;  
   return languageDetector;
 }

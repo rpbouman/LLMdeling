@@ -17,12 +17,14 @@ async function summarize(text, options, downloadProgessListener){
   var summarizer = summarizers[summarizerKey];
   if (!summarizer){
     if (typeof Summarizer === 'undefined') {
-      throw new Error(`This browser does not support the Summarizer global.`);
+      var msg = `This browser does not support the Summarizer global. Try to enable chrome://flags/#:~:text=Summarization%20API%20for%20Gemini%20Nano and retry.`;
+      throw new Error(msg);
     }
 
     var availability = await Summarizer.availability();
     if (availability === 'unavailable') {
-      throw new Error(`The Summarizer API is not available.`);
+      var msg = `The Summarizer API is not available.`;
+      throw new Error(msg);
     }
 
     if (typeof downloadProgessListener === 'function'){

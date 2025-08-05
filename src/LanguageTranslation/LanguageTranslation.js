@@ -159,13 +159,12 @@ function triggerSourceLanguageDetection(forElement){
   var sourceLanguageElement = formElements['sourceLanguage'];
   
   // if the picked value and the current one are the same we need not update 
-  if (sourceLanguageElement.value === sourceLanguage) {
-    return;
+  if (sourceLanguageElement.value !== sourceLanguage || sourceLanguage === 'auto') {
+    // update the hidden sourceLanguage
+    sourceLanguageElement.value = sourceLanguage;
+    dispatchChangeEvent(sourceLanguageElement);
   }
   
-  // update the hidden sourceLanguage
-  sourceLanguageElement.value = sourceLanguage;
-  dispatchChangeEvent(sourceLanguageElement);
 }
 
 function sourceTextChangedHandler(event){
@@ -202,7 +201,7 @@ async function sourceLanguageChangedHandler(event){
   
   if (sourceLanguage === 'auto') {
     try {
-      var sourceText = formElements['sourceLanguage-text'].value;
+      var sourceText = sourceLanguageText.value;
       var detectedLanguage = await detectLanguage(sourceText);
       sourceLanguage = detectedLanguage.detectedLanguage;
     }
@@ -333,6 +332,14 @@ async function initTranslationDialog(){
     label: '(none)', 
     group: 'Auto-detected'
   }];
+  
+  var languageDetectorInfo;
+  languageDetectorInfo = await getLanguageDetectorInfo();
+
+  if (typeof languageDetectorInfo.languageDetector === 'undefined'){
+    fromLanguages[0].disabled = true;
+    console.warn('Language detection is unavailable. Check the chrome flag chrome://flags/#language-detection-api');
+  }
   var toLanguages = [];
   
   Object.keys(languages)
@@ -366,7 +373,10 @@ async function initTranslationDialog(){
   });
   
   byId('sourceLanguage-text').addEventListener('change', sourceTextChangedHandler, true);
-  byId('sourceLanguage-picker').addEventListener('change', sourceLanguagePickerChangedHandler, true);
+  
+  var sourceLanguagePicker = byId('sourceLanguage-picker');
+  sourceLanguagePicker.addEventListener('change', sourceLanguagePickerChangedHandler, true);
+  
   byId('sourceLanguage').addEventListener('change', sourceLanguageChangedHandler, true);
   byId('liveTranslation').addEventListener('change', liveTranslationChangedHandler, true);
   byId('targetLanguage-picker').addEventListener('change', targetLanguageChangedHandler, true);
@@ -374,6 +384,12 @@ async function initTranslationDialog(){
   byId('translate').addEventListener('click', handleTranslateClicked, true);
 
   getTranslationDialog().querySelector(stateElementSelector).addEventListener('change', translationDialogStateChanged, true);
+  
+  var sourceLanguagePickerValue = typeof languageDetectorInfo.languageDetector === 'undefined' ? defaultLanguage : 'auto';
+  if (sourceLanguagePickerValue !== sourceLanguagePicker.value){
+     sourceLanguagePicker.value = sourceLanguagePickerValue;
+    dispatchChangeEvent(sourceLanguagePicker);
+  }
 }
 
 // the translartor has an issue with linebreaks - they get removed.

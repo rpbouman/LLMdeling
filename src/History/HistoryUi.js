@@ -42,6 +42,10 @@ function updateChatStatistics(contents, messages){
 }
 
 async function chatNodeToggleHandler(event){
+  if (event.newState === 'closed') {
+    return;
+  }
+  
   var chatNode = event.target;
   var contents = chatNode.querySelector('div');
   if (contents.childNodes.length) {
@@ -62,24 +66,30 @@ async function chatNodeToggleHandler(event){
   var first = messages[0];
   var last = messages[messages.length - 1];
   
+  var currentSummary = undefined;
   var storedSummary = first.summary;
+  // check if we have a stored summary
   if (storedSummary) {
-    if (storedSummary[historyDatabaseMessageStoreTimestamp] < last[historyDatabaseMessageStoreTimestamp]){
-      storedSummary = undefined;
+    // we have! Now check if it's up to date
+    // (the chat may have been extended after the last time the summary was generated)
+    if (storedSummary[historyDatabaseMessageStoreTimestamp] >= last[historyDatabaseMessageStoreTimestamp]){
+      // invalidate the current summary
+      currentSummary = storedSummary;
     }
   }
   
-  if (storedSummary){
-    contents.appendChild(document.createTextNode(storedSummary.text));
+  if (currentSummary){
+    contents.appendChild(document.createTextNode(currentSummary.text));
   }
   else {
-    summary = await summarizeChat(messages);
-    if (summary === undefined){
+    currentSummary = await summarizeChat(messages);
+    if (currentSummary === undefined){
       contents.setAttribute('data-status', 'ready');
       return;
     }
+    
     var fullSummary = [];
-    for await (var chunk of summary) {
+    for await (var chunk of currentSummary) {
       fullSummary.push(chunk);
       contents.appendChild(document.createTextNode(chunk));
       contents.scrollIntoView(false);
@@ -87,6 +97,7 @@ async function chatNodeToggleHandler(event){
     fullSummary = fullSummary.join('');
     updateSummary(chatId, fullSummary);
   }
+
   
   contents.setAttribute('data-status', 'ready');
 }

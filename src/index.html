@@ -37,15 +37,16 @@
     </script>
     <link rel="stylesheet" href="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/styles/default.min.css"/>
 
-    <link rel="stylesheet" type="text/css" href="Styling/variables.css"/>
-    <link rel="stylesheet" type="text/css" href="Styling/generic.css"/>
-    <link rel="stylesheet" type="text/css" href="Styling/dialog.css"/>
-    <link rel="stylesheet" type="text/css" href="Styling/menu.css"/>
-    <link rel="stylesheet" type="text/css" href="Styling/button.css"/>
-    <link rel="stylesheet" type="text/css" href="Styling/button-actions.css"/>
-    <link rel="stylesheet" type="text/css" href="Styling/textarea.css"/>
-    <link rel="stylesheet" type="text/css" href="Styling/details.css"/>
-    <link rel="stylesheet" type="text/css" href="Styling/select.css"/>
+    <link rel="stylesheet" type="text/css" href="lookandfeel/variables.css"/>
+    <link rel="stylesheet" type="text/css" href="lookandfeel/generic.css"/>
+    <link rel="stylesheet" type="text/css" href="lookandfeel/dialog/dialog.css"/>
+    <link rel="stylesheet" type="text/css" href="lookandfeel/dialog/DragableDialogs.css"/>
+    <link rel="stylesheet" type="text/css" href="lookandfeel/menu/menu.css"/>
+    <link rel="stylesheet" type="text/css" href="lookandfeel/button/button.css"/>
+    <link rel="stylesheet" type="text/css" href="lookandfeel/button/button-actions.css"/>
+    <link rel="stylesheet" type="text/css" href="lookandfeel/textarea/textarea.css"/>
+    <link rel="stylesheet" type="text/css" href="lookandfeel/details/details.css"/>
+    <link rel="stylesheet" type="text/css" href="lookandfeel/select/select.css"/>
     
     <link rel="stylesheet" type="text/css" href="Tabs/tabs.css"/>
     <link rel="stylesheet" type="text/css" href="History/HistoryUi.css"/>
@@ -61,7 +62,6 @@
     <link rel="stylesheet" type="text/css" href="Animations/spinners.css"/>
     <link rel="stylesheet" type="text/css" href="Main/main.css"/>
     <link rel="stylesheet" type="text/css" href="Main/toolbar.css"/>
-    <link rel="stylesheet" type="text/css" href="DragableDialogs/DragableDialogs.css"/>
         
     <template id="chatHistoryNode">
       <details>
@@ -454,7 +454,6 @@
               popovertargetaction="hide"
               tabindex="0"
               title="Close" 
-              onclick="closeModal(this)"
             >Ok</button>
           </form>
         </footer>
@@ -578,6 +577,7 @@
             <textarea 
               id="sourceLanguage-text"
               name="sourceLanguage-text"
+              placeholder="Type the text to translate"
               spellcheck="true"
               required
               autofocus
@@ -639,7 +639,11 @@
     <script src="Dom/dom.js"></script>
     <script src="Clipboard/clipboard.js"></script>
     <script src="Downloader/Downloader.js"></script>
-    <script src="DragableDialogs/DragableDialogs.js"></script>
+
+    <script src="lookandfeel/dialog/dialog.js"></script>
+    <script src="lookandfeel/dialog/DragableDialogs.js"></script>
+    <script src="lookandfeel/select/select.js"></script>
+
     <script src="Tabs/tabs.js"></script>
     <script src="FormState/FormState.js"></script>
 

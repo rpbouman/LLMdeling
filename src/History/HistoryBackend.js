@@ -88,22 +88,25 @@ function serializeChatMessages(messages){
 }
 
 async function summarizeChat(messages){
-  if (typeof Summarizer === 'undefined') {
-    return undefined;
+  try {
+    var fullText = serializeChatMessages(messages);
+    var summaryLength = getSummaryLength(messages);
+
+    var options = {
+      sharedContext: 'This is a conversation between a user and a chatbot. User prompts are preceded by **request:**-line. Bot replies are preceded by **response:**-line.',
+      type: 'tldr',
+      format: 'plain-text',
+      length: summaryLength,
+      context: `Summarize the conversation so it can be understood at a glance. Aim to extract the essence of the response(s) that satisfy the user's request(s). Don't dwell on the development of the dialog.`
+    };
+
+    var summary = await summarize(fullText, options);
   }
-
-  var fullText = serializeChatMessages(messages);
-  var summaryLength = getSummaryLength(messages);
-
-  var options = {
-    sharedContext: 'This is a conversation between a user and a chatbot. User prompts are preceded by **request:**-line. Bot replies are preceded by **response:**-line.',
-    type: 'tldr',
-    format: 'plain-text',
-    length: summaryLength,
-    context: `Summarize the conversation so it can be understood at a glance. Aim to extract the essence of the response(s) that satisfy the user's request(s). Don't dwell on the development of the dialog.`
-  };
-
-  var summary = await summarize(fullText, options);
+  catch(e) {
+    console.warn(e);
+  }
+  finally {
+  }
   return summary;
 }
 

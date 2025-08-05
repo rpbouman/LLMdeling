@@ -6,7 +6,12 @@ function updateStatus(status){
 
 function initUi(){
   initLLMPrompts();
-  initTranslationDialog();
+  getTranslationDialog()
+  .addEventListener('toggle', async function(event){
+    await initTranslationDialog();
+  }, {
+    once: true
+  });
   byId('new-chat').addEventListener('click', newChat);
 }
 
@@ -14,7 +19,7 @@ function getInfoDialog(){
   return byId('info-dialog');
 }
 
-function showInfoDialog(options){
+async function showInfoDialog(options){
   var infoDialog = getInfoDialog();
   var status = options.status || 'info';
   if (options.status){
@@ -22,7 +27,7 @@ function showInfoDialog(options){
   }
 
   var heading = infoDialog.querySelector('div > header > h1');  
-  var icon = options.icon || 'eac5';
+  var icon = options.icon || String.fromCharCode(parseInt('eac5', 16));
   heading.setAttribute('data-icon', icon);
   
   var title = options.title || 'Info';
@@ -30,8 +35,9 @@ function showInfoDialog(options){
   
   var details = options.details || '';
   infoDialog.querySelector('div > section').innerHTML = details;
-  
-  infoDialog.showModal();
+
+  return showDialogWithHandler(infoDialog, options.buttonHandler, true);
+
 }
 
 function closeModal(btn){
