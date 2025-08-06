@@ -6,6 +6,11 @@ html, body {
 
 * {
   scrollbar-color: var( --medium-background-color );
+  color: var( --foreground-color );
+}
+
+*::placeholder {
+  color: var( --placeholder-color );
 }
 
 *[aria-busy=true] {

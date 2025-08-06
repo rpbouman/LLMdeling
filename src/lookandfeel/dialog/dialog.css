@@ -13,6 +13,7 @@ dialog {
   overflow: hidden; 
   padding: 0px;
   border-width: 1px;
+  border-color: var( --dark-border-color );
   box-shadow: 10px 10px 10px var( --dark-background-color );
   font-family: var( --ui-text-font-family );
   font-size: var( --ui-text-font-size );
@@ -40,6 +41,7 @@ dialog {
       flex-direction: row;
       border-bottom-style: solid;
       border-bottom-width: 1px;
+      border-bottom-color: var( --dark-border-color );
       
       /* Dialog title */
       > h1 {
@@ -149,6 +151,7 @@ dialog {
       
       border-top-style: solid;
       border-top-width: 1px;
+      border-top-color: var( --dark-border-color );      
       
       > form[role=toolbar] {
         margin: auto;

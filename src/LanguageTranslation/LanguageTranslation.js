@@ -151,7 +151,7 @@ function triggerSourceLanguageDetection(forElement){
   if (sourceLanguage === 'auto'){
     // picking the 'auto' option will initiate language detection
     // so whatever is the current value of the detected language reflected in the label should be reset
-    var selectedOption = sourceLanguagePicker.options[sourceLanguagePicker.selectedIndex];
+    var selectedOption = getSelectedOption(sourceLanguagePicker);
     selectedOption.label = '(none)';
   }
 
@@ -333,8 +333,7 @@ async function initTranslationDialog(){
     group: 'Auto-detected'
   }];
   
-  var languageDetectorInfo;
-  languageDetectorInfo = await getLanguageDetectorInfo();
+  var languageDetectorInfo = await getLanguageDetectorInfo();
 
   if (typeof languageDetectorInfo.languageDetector === 'undefined'){
     fromLanguages[0].disabled = true;

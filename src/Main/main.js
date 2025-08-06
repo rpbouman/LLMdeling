@@ -4,7 +4,13 @@ function updateStatus(status){
   console.log(`status: ${status}`);
 }
 
+function initApiStatus(){
+  var languageDetectorInfo;
+  languageDetectorInfo = await getLanguageDetectorInfo();
+}
+
 function initUi(){
+  initApiStatus();
   initLLMPrompts();
   getTranslationDialog()
   .addEventListener('toggle', async function(event){

@@ -47,13 +47,14 @@ dialog#translation-dialog {
       > *:is(div, form):first-child {
         resize: vertical;
         overflow: hidden;
-        padding-bottom: .2em;
+        padding-bottom: 0px;
         height: 220px;
       }
       
       > *:is(div, form):last-child {
         border-top-style:solid;
         border-top-width:1px;
+        border-top-color: var( --dark-border-color ); 
         flex: 1;
         overflow: hidden;
       }
