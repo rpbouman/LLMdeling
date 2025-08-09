@@ -67,24 +67,38 @@ function getTranslationDialog(){
 }
 
 async function handleTranslateClicked(event){
-  var target = event.target;
-  var translationDialog = getAncestorWithTagName(target, 'DIALOG');
-  translationDialog.setAttribute('aria-busy', true);
+  doTranslate();
+}
+
+async function doTranslate(){
+  var translationDialog = getTranslationDialog();
+  var currentState = getFormStateInfo(translationDialog).currentState;
   
-  var form = target.form;
-  var formElements = form.elements;
+  var sourceLanguage = currentState['sourceLanguage'];
+  if (sourceLanguage === '' || sourceLanguage === 'auto'){
+    return;
+  }
+ 
+  var targetLanguage = currentState['targetLanguage-picker'];
+  if (targetLanguage === ''){
+    return;
+  }
   
-  var untranslatedText = formElements['input'].value;
+  var sourceText = currentState['input'];
+  if (!sourceText.trim().length) {
+    return;
+  }
+  
+  setBusy(translationDialog);
+  var untranslatedText = sourceText;
   console.log(`\nTranslating text:\n`);
   console.log(untranslatedText);
+  var tokens = parseMarkdown(untranslatedText);
   var untranslatedPreProcessedText = preProcessTranslatorInputText(untranslatedText);
   console.log('\nPreprocessed\n');
   console.log(untranslatedPreProcessedText);
   //var untranslatedPreProcessedText = untranslatedText;
-  
-  var sourceLanguage = formElements['sourceLanguage'].value;
-  var targetLanguage = formElements['targetLanguage-picker'].value;
-  
+    
   var translatedTextStream = await translate(
     untranslatedPreProcessedText, {
     sourceLanguage: sourceLanguage,
@@ -92,7 +106,7 @@ async function handleTranslateClicked(event){
   });
   var ui = translationDialog.querySelector('div.response');
   await handleResponseStream(translatedTextStream, ui);
-  translationDialog.removeAttribute('aria-busy');
+  setBusy(translationDialog, false);
 }
 
 async function handleResponseStream(reponseStream, ui){
@@ -180,60 +194,24 @@ async function sourceLanguagePickerChangedHandler(event){
   triggerSourceLanguageDetection( target );
 }
 
-async function sourceLanguageChangedHandler(event){
-  var sourceLanguageElement = event.target;
-  var sourceLanguage = sourceLanguageElement.value;
-
+async function updateTargetLanguagePicker(sourceLanguageElement){
   var form = sourceLanguageElement.form;
   var formElements = form.elements;
-  var sourceLanguagePicker = formElements['sourceLanguage-picker'];
   
-  var sourceLanguageText = formElements['input'];
+  var targetLanguagePicker = formElements['targetLanguage-picker'];
+  var options = targetLanguagePicker.options;
   
-  if (sourceLanguage === 'auto') {
-    try {
-      var sourceText = sourceLanguageText.value;
-      if (sourceText.trim().length){
-        var detectedLanguage = await detectLanguage(sourceText);
-        sourceLanguage = detectedLanguage.detectedLanguage;
-      }
+  var sourceLanguage = sourceLanguageElement.value;
+  if (sourceLanguage === 'auto' || sourceLanguage === ''){
+    for (var i = 0; i < options.length; i++){
+      var option = options.item(i);
+      option.disabled = true;
     }
-    catch(e){
-    }
-
-    if (sourceLanguage !== 'auto'){
-      sourceLanguageElement.setAttribute('value', sourceLanguage);
-      dispatchChangeEvent(sourceLanguageElement);
-    }
-    
-    sourceLanguageText.removeAttribute('lang');
-    sourceLanguageText.removeAttribute('spellcheck');
   }
-  else {    
-    // update the label of the sourceLanguage picker to reflect the detected language
-    if (sourceLanguagePicker.value === 'auto') {
-      var detectedLanguageLabel;
-      var options = sourceLanguagePicker.options;
-      var selectedOption;
-      for (var i = 0; i < options.length; i++){
-        var option = options.item(i);
-        if (option.value !== sourceLanguage) {
-          continue;
-        }
-        detectedLanguageLabel = option.label + ' (detected)';
-        break;
-      }
-      selectedOption = options[sourceLanguagePicker.selectedIndex];
-      selectedOption.label = detectedLanguageLabel;
-    }
-
-    // update the target languge picker to only show items 
-    // for wich a translator exists for the chosen source language.
-    var targetLanguagePicker = formElements['targetLanguage-picker'];
+  else {
     var selectedOptionIndex = targetLanguagePicker.selectedIndex;
     
     var promises = [];
-    var options = targetLanguagePicker.options;
     var selectedOption = options.item(selectedOptionIndex);
     for (var i = 0; i < options.length; i++){
       var option = options.item(i);
@@ -260,6 +238,57 @@ async function sourceLanguageChangedHandler(event){
         default:
           option.disabled = false;
       }
+    }    
+  }
+}
+
+async function sourceLanguageChangedHandler(event){
+  var sourceLanguageElement = event.target;
+  var sourceLanguage = sourceLanguageElement.value;
+
+  var form = sourceLanguageElement.form;
+  var formElements = form.elements;
+  var sourceLanguagePicker = formElements['sourceLanguage-picker'];
+  
+  var sourceLanguageText = formElements['input'];
+  
+  if (sourceLanguage === 'auto') {
+    try {
+      var sourceText = sourceLanguageText.value;
+      if (sourceText.trim().length){
+        var detectedLanguage = await detectLanguage(sourceText);
+        sourceLanguage = detectedLanguage.detectedLanguage;
+      }
+    }
+    catch(e){
+    }
+
+    if (sourceLanguage === 'auto'){
+    }
+    else {
+      sourceLanguageElement.setAttribute('value', sourceLanguage);
+      dispatchChangeEvent(sourceLanguageElement);
+    }
+    
+    sourceLanguageText.removeAttribute('lang');
+    sourceLanguageText.removeAttribute('spellcheck');
+  }
+  else {    
+    // update the label of the sourceLanguage picker to reflect the detected language
+    if (sourceLanguagePicker.value === 'auto') {
+      var detectedLanguageLabel;
+      var options = sourceLanguagePicker.options;
+      var selectedOption;
+      for (var i = 0; i < options.length; i++){
+        var option = options.item(i);
+        if (option.value !== sourceLanguage) {
+          continue;
+        }
+        detectedLanguageLabel = option.label + ' (detected)';
+        break;
+      }
+      selectedOption = options[sourceLanguagePicker.selectedIndex];
+      selectedOption.label = detectedLanguageLabel;
     }
 
     // update the lang attribute of the sourceText
@@ -269,7 +298,7 @@ async function sourceLanguageChangedHandler(event){
       sourceLanguageText.setAttribute('spellcheck', true);
     }, 100);
   }
-  
+  updateTargetLanguagePicker(sourceLanguageElement);
 }
 
 async function translationDialogStateChanged(event){
@@ -282,6 +311,12 @@ async function translationDialogStateChanged(event){
   var currentState = detail.currentState;
   var stateChange = detail.stateChange;
  
+  // check if we should start translating
+  var autoTranslate = currentState['autoTranslate'];
+  if (autoTranslate === false){
+    return;
+  }
+  doTranslate();  
 }
 
 async function initTranslationDialog(){
@@ -335,8 +370,10 @@ async function initTranslationDialog(){
       toLanguageOption.selected = true;
     }
     toLanguageOption.group = typeof preferredLanguages[languageCode] === 'undefined' ? 'Other' : 'Preferred';
+    toLanguageOption.disabled = true;
     toLanguages.push(toLanguageOption);
   });
+  toLanguages.value = '';
   
   var translationDialog = getTranslationDialog();
   var translationDialogStateElement = translationDialog.querySelector(stateElementSelector);
@@ -380,13 +417,13 @@ function preProcessTranslatorInputText(text){
     var breakTag;
     switch (match){
       case '\r\n':
-        breakTag = '<x:crlf/>';
+        breakTag = '&#13;&#10;';
         break;
       case '\r':
-        breakTag = '<x:cr/>';
+        breakTag = '&#13;';
         break;
       case '\n':
-        breakTag = '<x:lf/>';
+        breakTag = '&#10;';
         break;
     }
     return breakTag;
@@ -395,17 +432,17 @@ function preProcessTranslatorInputText(text){
 }
 
 function postProcessTranslatorOutputText(text) {
-  var postProcessedText = text.replace(/<x:crlf\/>|<x:cr\/>|<x:lf\/>/g, function(match){
+  var postProcessedText = text.replace(/&#13;&#10;|&#13;|&#10;/g, function(match){
     var lineBreak;
     match = match.trim();
     switch (match){
-      case '<x:crlf/>':
+      case '&#13;&#10;':
         lineBreak = '\r\n';
         break;
-      case '<x:cr/>':
+      case '&#13;':
         lineBreak = '\r';
         break;
-      case '<x:lf/>':
+      case '&#10;':
         lineBreak = '\n';
         break;
     }

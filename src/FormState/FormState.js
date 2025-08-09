@@ -55,6 +55,9 @@ function getFormStateInfo(form){
         }
         currentValue = JSON.stringify(currentValue);
         break;
+      case 'checkbox':
+        currentValue = element.checked ? true : false;
+        break;
       default:
         currentValue = element.value;
     }

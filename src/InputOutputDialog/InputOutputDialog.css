@@ -63,3 +63,24 @@ dialog.input-output-dialog {
   
 }
 
+dialog.input-output-dialog[aria-busy=true] {
+
+  > div,
+  > form {
+
+    > section {
+      > *:is(div, form) {
+        > header {
+          > menu[role=toolbar] {
+            pointer-events: none;
+            opacity: .5
+          }
+        }
+        
+        textarea[name=input] {
+          color: var( --placeholder-color );
+        }
+      }
+    }
+  }
+}

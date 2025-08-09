@@ -281,3 +281,16 @@ function escapeHtmlText(text){
   });
 }
 
+function setBusy(elementOrSelector, state){
+  var element = el(elementOrSelector);
+  if (!element){
+    return;
+  }
+  var attributeName = 'aria-busy';
+  if (state === false){ 
+    element.removeAttribute(attributeName)
+  }
+  else {
+    element.setAttribute(attributeName, true);
+  }
+}

@@ -33,6 +33,9 @@ dialog.input-output-dialog#translation-dialog {
       
       > form[name=translateDialogSettingForm]:has(
         input[name=sourceLanguage][value='']
+      ),
+      > form[name=translateDialogSettingForm]:has(
+        textarea[name=input]:invalid
       ) {
 
         button[name=translate][type=button] {

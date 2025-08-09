@@ -3,12 +3,21 @@ async function inputOutputDialogUploadHandler(event){
   var form = target.form;
   var formElements = form.elements;
 
+  var text;
   var files = target.files;
-  if (files.length === 1 ){
-    var file = files[0];
-    var text = await file.text();
-    var textArea = form.querySelector('textarea');
-    textArea .value = text;
+  switch (files.length) {
+    case 0:
+      text = '';
+      break;
+    case 1:
+    default:
+      var file = files[0];
+      text = await file.text();      
+  }
+  
+  var textArea = form.querySelector('textarea');
+  if (textArea.value != text) {
+    textArea.value = text;
     dispatchChangeEvent(textArea);
   }
 }

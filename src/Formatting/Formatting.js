@@ -1,5 +1,6 @@
 var nonHighlightingMarked;
 var highlightingMarked;
+var parseTreeMarked;
 function md2html(text, highlighting){
   
   if (typeof highlighting === 'undefined') {
@@ -39,4 +40,26 @@ function initMarked(){
       }
     })
   );
+}
+
+var parsingMarked;
+function parseMarkdown(text){
+  var tokens = undefined;
+  if (parsingMarked === undefined) {
+    const { Marked } = globalThis.marked;
+    var parser = new Marked();
+    var walkTokens = function(token){
+      if (tokens === undefined) {
+        tokens = [];
+      }
+      tokens.push(token);
+    }
+    parser.use({ walkTokens });
+    parsingMarked = parser;
+  }
+  var output = parsingMarked.parse(text);
+  return {
+    output: output,
+    tokens: [].concat(tokens)
+  };
 }
