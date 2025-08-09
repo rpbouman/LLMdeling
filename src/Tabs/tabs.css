@@ -1,8 +1,8 @@
-*:has( > form[role=tablist] ){
+*:has( *:is( form, div)[role=tablist] ){
   position: relative;
 }
 
-form[role=tablist] {
+*:is( div, form ) [role=tablist] {
   display: flex;
   flex-direction: row;
   padding-top: .5em;
@@ -44,7 +44,7 @@ form[role=tablist] {
       font-weight: bold;
     }
 
-    > div[role=tabpanel] {
+    > *[role=tabpanel] {
       position: absolute;
       left: 0px;
       right: 0px;
@@ -56,11 +56,11 @@ form[role=tablist] {
       display: none;
     }
 
-    > label[role=tab] + input[type=radio][name=tabs]:not( :checked ) + div[role=tabpanel] {
+    > label[role=tab] + input[type=radio][name=tabs]:not( :checked ) + *[role=tabpanel] {
       display: none;
     }
 
-    > label[role=tab] + input[type=radio][name=tabs]:checked + div[role=tabpanel] {
+    > label[role=tab] + input[type=radio][name=tabs]:checked + *[role=tabpanel] {
       height: calc( 100% - 3em );
       overflow: auto;
     }

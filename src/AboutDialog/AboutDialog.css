@@ -1,0 +1,30 @@
+dialog#about-dialog {
+  height: 240px;
+  width: 320px;
+  top: calc( 50vh - 120px);
+  left: calc( 50vw - 160px);
+
+  > div,
+  > form {
+
+    > header {
+      > h1::before {
+        content: var( --icon-info-square-rounded );
+      }
+    }
+    
+    > section {
+      padding: 0em 1em 0em 1em;
+      
+      h2 {
+        margin-top: .2em
+      }
+      
+      ul {
+        margin-block-start: 0px;
+        margin-block-end: 0px;
+      }
+    }
+  }
+  
+}

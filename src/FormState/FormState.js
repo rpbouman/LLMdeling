@@ -78,10 +78,19 @@ function getFormStateInfo(form){
 
 // this will find all forms that have a hidden input called state, and set up event handlers to manage state.
 function initFormState(){
-  
+    
+  var stateManagedForms = document.querySelectorAll(`form:has( ${stateElementSelector} )`);
+  for (var i = 0; i < stateManagedForms.length; i++){  
+    var stateManagedForm = stateManagedForms.item(i);
+    initFormStateHandlers(stateManagedForm);
+  }
+}
+
+function initFormStateHandlers(stateManagedForm){
   var handler =  function(e){
     var target = e.target;
     var form = target.form;
+    stateElement = form[stateElementName];
     var formStateInfo = getFormStateInfo(form);
     
     if (Object.keys(formStateInfo.stateChange).length) {
@@ -91,22 +100,17 @@ function initFormState(){
     stateElement.value = JSON.stringify(formStateInfo.currentState);
   };
   
-  var stateManagedForms = document.querySelectorAll(`form:has( ${stateElementSelector} )`);
-  for (var i = 0; i < stateManagedForms.length; i++){
-    
-    var stateManagedForm = stateManagedForms.item(i);
-    var formElements = stateManagedForm.elements;
-    var stateElement = stateManagedForm[stateElementName];
-    
-    for (var element of formElements){
-      if (element === stateElement) {
-        continue;
-      }
-      // register a change handler for the bubbling phase, i.e. AFTER 
-      element.addEventListener('change', handler, {
-        capture: false
-      });
+  var formElements = stateManagedForm.elements;
+  var stateElement = formElements[stateElementName];
+  
+  for (var element of formElements){
+    if (element === stateElement) {
+      continue;
     }
+    // register a change handler for the bubbling phase, i.e. AFTER 
+    element.addEventListener('change', handler, {
+      capture: false
+    });
   }
 }
 

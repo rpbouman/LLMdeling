@@ -6,18 +6,89 @@ main#app {
 
       > li[role=menuitem] {
 
-        > button#new-chat {
-          
-        }
-
-        > button#new-chat::before {
-          /* IconMessagePlus */
-          content: '\ec9a';
-        }
       }
     }
   }  
 }
 
+main#app[data-built-in-ai-languagemodel=false] {
 
+  > header {
+    
+    > menu[role=toolbar] {
 
+      > li[role=menuitem] {
+        
+        button[value=new-chat] {
+          pointer-events: none;
+          color: var( --placeholder-color );
+        }
+        
+      }
+
+      > li[role=menuitem] {
+        
+        button[value=new-prompt] {
+          pointer-events: none;
+          color: var( --placeholder-color );
+        }
+        
+      }
+    }
+  }  
+}
+
+main#app[data-built-in-ai-translator=false] {
+
+  > header {
+    
+    > menu[role=toolbar] {
+
+      > li[role=menuitem] {
+        
+        button[popovertarget=translation-dialog] {
+          pointer-events: none;
+          color: var( --placeholder-color );
+        }
+        
+      }
+
+    }
+  }  
+}
+
+main#app[data-built-in-ai-summarizer=false] {
+
+  > header {
+    
+    > menu[role=toolbar] {
+
+      > li[role=menuitem] {
+        
+        button[popovertarget=summarizer-dialog] {
+          pointer-events: none;
+          color: var( --placeholder-color );
+        }
+        
+      }
+    }
+  }  
+}
+
+main#app[data-built-in-ai-proofreader=false] {
+
+  > header {
+    
+    > menu[role=toolbar] {
+
+      > li[role=menuitem] {
+        
+        button[popovertarget=proofreader-dialog] {
+          pointer-events: none;
+          color: var( --placeholder-color );
+        }
+        
+      }
+    }
+  }  
+}

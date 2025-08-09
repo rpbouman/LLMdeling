@@ -22,6 +22,7 @@ label:has( > input[type=file] ) {
   cursor: pointer;
   padding-inline-start: 4px;
   padding-inline-end: 4px;
+  padding-block: 2px;
 
   background-color: buttonface;
   color: buttontext;
@@ -38,7 +39,3 @@ label:has( > input[type=file] ) {
   
 }
 
-label:has( > input[type=file] )::before{
-  /* upload */
-  content: '\eb47';
-}

@@ -4,13 +4,25 @@ function updateStatus(status){
   console.log(`status: ${status}`);
 }
 
-function initApiStatus(){
-  var languageDetectorInfo;
-  languageDetectorInfo = await getLanguageDetectorInfo();
+async function initApiStatus(){
+  var main = document.querySelector('main');
+  var apiGlobals = [
+    'LanguageModel',
+    'LanguageDetector',
+    'ProofReader',
+    'Rewriter',
+    'Summarizer',
+    'Translator',
+    'Writer'
+  ];
+  var scope = self;
+  apiGlobals.forEach(function(name){
+    var exists = typeof self[name] !== 'undefined';
+    main.setAttribute('data-built-in-ai-' + name, exists)
+  });
 }
 
 function initUi(){
-  initApiStatus();
   initLLMPrompts();
   getTranslationDialog()
   .addEventListener('toggle', async function(event){
@@ -65,13 +77,10 @@ function chromeFlags(){
 }
 
 async function init(){
+  initApiStatus();
   initFormState();
   initDragableDialogs();
   initMarked();
-  var available = await checkModelAvailability();
-  if (!available) {
-    return;
-  }  
   initUi();
   initHistoryBackend(function(info){
     switch (info.status){
@@ -84,5 +93,3 @@ async function init(){
     updateStatus('ready');
   });
 }
-
-init();

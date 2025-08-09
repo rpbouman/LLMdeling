@@ -1,6 +1,6 @@
 dialog[aria-busy=true] > div > header > h1::before {
   animation-name: spinnging_refresh;
-  animation-duration: 5s;
+  animation-duration: 2s;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
   display: inline-block;
@@ -50,12 +50,15 @@ dialog {
         flex-grow: 1;
       }
       
-      > h1[data-icon]::before {
-        content: attr( data-icon );
+      > h1::before {
         font-family: var( --icon-font-family );
         font-size: var( --icon-small );
         font-weight: normal;
         margin-right: 2px;
+      }
+      
+      > h1[data-icon]:not( [data-icon=''] )::before {
+        content: attr( data-icon );
       }
                   
       /* Dialog window menu */
@@ -168,4 +171,10 @@ dialog:has( > *:is( div, form ) > header > form > input[name=windowstate][type=r
   position: absolute;
   left: 0px !important;
   top:0px !important;
+}
+
+dialog:has( *:focus ) {
+}
+
+dialog:not( *:focus ) {
 }

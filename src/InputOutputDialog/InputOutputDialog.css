@@ -1,0 +1,83 @@
+dialog.input-output-dialog {
+
+  > div,
+  > form {
+
+    > section {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+
+      > *:is(div, form) {
+        
+        display: flex;
+        flex-direction: column;
+        
+        > header {
+          border-bottom-style: solid;
+          border-bottom-width: 1px;
+          border-bottom-color: var( --dark-border-color ); 
+          flex-shrink: 0;
+
+        }
+        
+        > textarea {
+          flex: 1;
+          margin-top: 2px;
+          resize: none; 
+        }        
+      }
+
+      /* The top pane of the translation dialog can be resized  */
+      > *:is(div, form):first-child {
+        resize: vertical;
+        overflow: hidden;
+        padding-bottom: 0px;
+        height: 220px;
+      }
+      
+      > *:is(div, form):last-child {
+        border-top-style:solid;
+        border-top-width:1px;
+        border-top-color: var( --dark-border-color ); 
+        flex: 1;
+        overflow: hidden;
+      }
+      
+      > div.response {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        overflow: hidden;
+        
+        > section,
+        > pre {
+          flex: 1;
+          overflow: scroll;  
+        }
+        
+      }
+    }
+
+  }
+  
+}
+
+dialog.input-output-dialog#proofreader-dialog {
+  height: 480px;
+  width: 640px;
+  top: calc( 50vh - 240px);
+  left: calc( 50vw - 320px);
+
+  > div,
+  > form {
+
+    > header {
+      > h1::before {
+        content: var( --icon-message-questionmark );
+      }
+    }
+    
+  }
+  
+}

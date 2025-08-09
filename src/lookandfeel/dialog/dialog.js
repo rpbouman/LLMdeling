@@ -26,3 +26,4 @@ async function showDialogWithHandler(dialogSelector, handler, modal, scope){
     dialog[`show${modal ? 'Modal' : ''}`]();
   });
 }
+

@@ -1,0 +1,96 @@
+:root {
+
+  --icon-check: '\ea5e';
+  
+  --icon-send: '\eb1e';
+
+  --icon-cancel: '\ff11';
+
+  --icon-copy: '\ea7a';
+
+  --icon-upload: '\eb47';
+
+  --icon-download: '\ea96';
+
+  --icon-restore: '\fafd';
+
+  --icon-trash: '\eb41';
+
+  --icon-list-details: '\ef40';
+
+  --icon-language: '\ebbe';
+
+  --icon-confetti: '\ee46';
+
+  --icon-printer: '\eb0e';
+
+  --icon-device-floppy: '\eb62';
+
+  --icon-message-report: '\ec9b';
+  
+  --icon-info-square-rounded: '\f635';
+
+  --icon-info-square-rounded: '\f635';
+
+  --icon-message-plus: '\ec9a';
+  
+  --icon-message-question: '\f98b';
+  
+  --icon-plus: '\eb0b';
+  
+  --icon-messages: '\eb6c';
+  
+  --icon-refresh: '\eb13';
+  
+  --icon-line-dotted: '\eea8';
+  
+  --icon-pencil: '\eb04';
+
+  --icon-mood-empty: '\eeb5'; 
+
+  --icon-mood-surprised: '\ec04'; 
+
+  --icon-mood-happy: '\eaf4'; 
+
+  --icon-mood-smile-beam: '\f2e7'; 
+  
+  --icon-mood-sing: '\f2c7';
+  
+  --icon-mood-look-right: '\f2c6';
+  
+  --icon-mood-look-left: '\f2c5';
+  
+  --icon-mood-tongue: '\eb95'; 
+  
+  --icon-mood-look-down: '\fd37'; 
+  
+  --icon-mood-look-up: '\fd38';
+
+  --icon-mood-confuzed: '\eaf3';
+
+  --icon-mood-sad: '\eaf6';
+  
+  --icon-mood-sad-2: '\f2e2';
+  
+  --icon-mood-sad-squint: '\f2e4';
+
+  --icon-mood-sad-squint: '\f2e4';
+  
+  --icon-mood-cry: '\ecbb';
+  
+  --icon-mood-sad-dizzy: '\f2e3';
+  
+  --icon-typography: '\ebc5';
+  
+  --icon-markdown: '\ec41';
+
+  --icon-html: '\f7b1';
+
+  --icon-arrow-badge-right: '\f60d';
+
+  --icon-arrow-badge-down: '\f60b';
+
+  --icon-square-rounded-plus: '\f63f';
+
+  --icon-square-rounded-minus: '\f63e';
+}

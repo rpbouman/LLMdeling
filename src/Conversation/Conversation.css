@@ -55,8 +55,7 @@ section.conversation {
     
   
   > .request::after {
-    /* mood-look-left */
-    content: '\f2c5';
+    content: var( --icon-mood-look-left );
     float: right;
     top: -.7em;
     right: -1.2em;
@@ -87,8 +86,7 @@ section.conversation {
   }
   
   > .response::after {
-    /* mood-look-right */
-    content: '\f2c6';
+    content: var( --icon-mood-look-right );
     float: left;
     bottom: 0.7em;
     left: -1.2em;

@@ -38,7 +38,9 @@
     <link rel="stylesheet" href="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/styles/default.min.css"/>
 
     <link rel="stylesheet" type="text/css" href="lookandfeel/variables.css"/>
+    <link rel="stylesheet" type="text/css" href="lookandfeel/icons.css"/>
     <link rel="stylesheet" type="text/css" href="lookandfeel/generic.css"/>
+
     <link rel="stylesheet" type="text/css" href="lookandfeel/dialog/dialog.css"/>
     <link rel="stylesheet" type="text/css" href="lookandfeel/dialog/DragableDialogs.css"/>
     <link rel="stylesheet" type="text/css" href="lookandfeel/menu/menu.css"/>
@@ -49,12 +51,15 @@
     <link rel="stylesheet" type="text/css" href="lookandfeel/select/select.css"/>
     
     <link rel="stylesheet" type="text/css" href="Tabs/tabs.css"/>
+    <link rel="stylesheet" type="text/css" href="Formatting/formats.css"/>
     <link rel="stylesheet" type="text/css" href="History/HistoryUi.css"/>
     <link rel="stylesheet" type="text/css" href="LLMPrompt/LLMPrompt.css"/>
     <link rel="stylesheet" type="text/css" href="LLMPrompt/PromptLibrary.css"/>
+    <link rel="stylesheet" type="text/css" href="InputOutputDialog/InputOutputDialog.css"/>
     <link rel="stylesheet" type="text/css" href="Conversation/Conversation.css"/>
     <link rel="stylesheet" type="text/css" href="LanguageTranslation/LanguageTranslationDialog.css"/>
-    <link rel="stylesheet" type="text/css" href="Formatting/formats.css"/>
+    <link rel="stylesheet" type="text/css" href="Summarizer/SummarizationDialog.css"/>
+    <link rel="stylesheet" type="text/css" href="AboutDialog/AboutDialog.css"/>
     
     <link rel="stylesheet" type="text/css" href="Animations/banter.css"/>
     <link rel="stylesheet" type="text/css" href="Animations/waiting-for-response.css"/>
@@ -219,6 +224,8 @@
                 name="summarize"
                 value="summarizeResponse"
                 title="Summarize this response..."
+                popovertarget="summarization-dialog"
+                popovertargetaction="show"                
               />
             </li>
             <li role="menuitem">
@@ -260,19 +267,61 @@
         <menu role="toolbar">
           <li role="menuitem">
             <button 
+              title="Start a new chat"
               type="button"
               id="new-chat"
               name="new"
               value="new-chat"
             >New Chat</button>
+          </li>
+          <li role="menuitem">
             <button 
+              title="Create a new prompt"
               type="button"
-              id="translate-tool"
+              id="new-prompt"
+              name="new"
+              value="new-prompt"
+            >New Prompt</button>
+          </li>
+          <li role="menuitem">
+            <button 
+              title="Translate a text"
+              type="button"
               name="translate"
               value="translate-tool"
               popovertarget="translation-dialog"
-              popovertargetaction="toggle"
+              popovertargetaction="show"
             >Translate</button>
+          </li>
+          <li role="menuitem">
+            <button 
+              title="Summarize a text"
+              type="button"
+              name="summarize"
+              value="summarization-tool"
+              popovertarget="summarization-dialog"
+              popovertargetaction="show"
+            >Summarize</button>
+          </li>
+          <li role="menuitem">
+            <button 
+              title="Proofread a text"
+              type="button"
+              name="proofread"
+              value="proofreader-tool"
+              popovertarget="proofreader-dialog"
+              popovertargetaction="show"
+            >Proofread</button>
+          </li>
+          <li role="menuitem">
+            <button 
+              title="About this app"
+              type="button"
+              name="about"
+              value="about"
+              popovertarget="about-dialog"
+              popovertargetaction="show"
+            >About</button>
           </li>
         </menu>
       </header>
@@ -287,9 +336,7 @@
           <div>
             <label role="tab" for="promptLibrary">Prompts</label>
             <input id="promptLibrary" type="radio" name="tabs"/>
-            <div role="tabpanel">
-              This is the content for tab2
-            </div>
+            <div role="tabpanel"></div>
           </div>
         </form>
       </nav>
@@ -308,8 +355,8 @@
         id="generic-prompt"
         aria-labelledby="generic-prompt-title"
         draggable="true" 
-        popover
-        open
+        popover="manual"
+        closedby="closerequest"
       >
         <div>
           <header>
@@ -397,6 +444,7 @@
 
     <dialog 
       id="info-dialog"
+      closedby="closerequest"
       style="
         height: 200px;
         width: 300px;
@@ -405,7 +453,6 @@
       "
       aria-labelledby="info-dialog-title"
       draggable="true" 
-      popover
     >
       <div>
         <header>
@@ -461,17 +508,16 @@
     </dialog>
     
     <dialog 
-      id="translation-dialog"
+      id="translation-dialog"      
+      class="input-output-dialog"
       aria-labelledby="translation-dialog-title"
       draggable="true" 
-      popover
+      popover="manual"
+      closedby="closerequest"      
     >
       <div>
         <header>
-          <h1 
-            id="translation-dialog-title" 
-            data-icon="&#60350;"
-          >Translate...</h1>
+          <h1 id="translation-dialog-title">Translate</h1>
           <form role="toolbar">
             <input 
               name="windowstate" 
@@ -494,10 +540,9 @@
             />
             <button 
               type="button"
+              title="Close" 
               popovertarget="translation-dialog"
               popovertargetaction="hide"
-              title="Close" 
-              onclick="closeModal(this)"
             />
           </form>
         </header>
@@ -538,6 +583,7 @@
                     type="hidden" 
                     name="sourceLanguage"
                     id="sourceLanguage"
+                    value=""
                     required
                   />
                 </li>
@@ -552,14 +598,13 @@
                 </li>
                 <li role="menuitem">
                   <label 
-                    for="liveTranslation"
+                    for="autoTranslate"
                     title="Check to automatically update the translation."
                   >Auto-translate</label>
                   <input 
-                    id="liveTranslation" 
-                    name="autodetect"
+                    id="autoTranslate"
+                    name="autoTranslate"
                     type="checkbox" 
-                    checked="true"
                     title="Check to automatically update the translation."
                   />
                 </li>
@@ -575,8 +620,7 @@
               </menu>
             </header>
             <textarea 
-              id="sourceLanguage-text"
-              name="sourceLanguage-text"
+              name="input"
               placeholder="Type the text to translate"
               spellcheck="true"
               required
@@ -614,7 +658,7 @@
             <section></section>
             <pre><code class="hljs language-markdown"></code></pre>
             <pre><code class="hljs language-html"></code></pre>
-            <input type="hidden" id="targetLanguage-text" name="targetLanguage-text"/>
+            <input type="hidden" name="output"/>
           </div>
         </section>
         <footer>
@@ -624,6 +668,397 @@
               type="button"
               tabindex="0"
               title="Close" 
+              popovertarget="translation-dialog"
+              popovertargetaction="hide"\              
+            >Ok</button>
+          </form>
+        </footer>
+      </div>
+    </dialog>
+
+    <dialog 
+      id="summarization-dialog"
+      class="input-output-dialog"      
+      aria-labelledby="summarization-dialog-title"
+      draggable="true" 
+      popover="manual"
+      closedby="closerequest"            
+    >
+      <div>
+        <header>
+          <h1 
+            id="summarization-dialog-title" 
+          >Summarize</h1>
+          <form role="toolbar">
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="minimize" 
+              title="Minimize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="maximize" 
+              title="Maximize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="restore"  
+              title="Restore" 
+              checked="true"
+            />
+            <button 
+              type="button"
+              popovertarget="summarization-dialog"
+              popovertargetaction="hide"
+              title="Close" 
+            />
+          </form>
+        </header>
+        <section>
+          <form name="summarizationDialogSettingForm">
+            <input 
+              type="hidden" 
+              name="state"
+            />
+            <header>
+              <menu role="toolbar">
+                <li role="menuitem">
+                  <label 
+                    title="Upload a text to summarize..."
+                    for="uploadLongText"
+                  >
+                    <input
+                      id="uploadLongText"
+                      name="uploadLongText"
+                      type="file"
+                      multiple="false"
+                      accept=".csv,.html,.md,text/*,.txt,.xml"
+                    />
+                  </label>
+                </li>
+                <li role="menuitem">
+                  <label 
+                    for="summaryType-picker"
+                    title="The type of the summarization, with the allowed values key-points (default), tldr, teaser, and headline"
+                  >Type</label>
+                  <select 
+                    id="summaryType-picker" 
+                    name="summaryType-picker"
+                    title="The type of the summarization, with the allowed values key-points (default), tldr, teaser, and headline"
+                    required
+                  >
+                    <option value="tldr" label="TL;DR" title="Summary should be short and to the point, providing a quick overview of the input, suitable for a busy reader."/>
+                    <option value="teaser" label="Teaser"	" title="Summary should focus on the most interesting or intriguing parts of the input, designed to draw the reader in to read more."/>
+                    <option value="key-points" label="Key Points" title="Summary should extract the most important points from the input, presented as a bulleted list."/>
+                    <option value="headline" label="headline" title="Summary should effectively contain the main point of the input in a single sentence, in the format of an article headline."/>
+                  </select>                  
+                </li>
+                <li role="menuitem">
+                  <label for="summaryLength-picker">Summary Length</label>
+                  <select 
+                    id="summaryLength-picker" 
+                    name="summaryLength-picker"
+                    title="The length of the summarization, with the allowed values short, medium (default), and long. The meanings of these lengths vary depending on the type requested."
+                    required
+                  >
+                    <option value="short" label="Short"/>
+                    <option value="medium" label="Medium"/>
+                    <option value="long" label="Long"/>
+                  </select>                  
+                </li>
+                <li role="menuitem">
+                  <label 
+                    for="liveSummary"
+                    title="Check to automatically summarize."
+                  >Auto-sunnarize</label>
+                  <input 
+                    id="liveSummary" 
+                    name="autosummarize"
+                    type="checkbox" 
+                    checked="true"
+                    title="Check to automatically summarize."
+                  />
+                </li>
+                <li role="menuitem">
+                  <button
+                    id="summarize"
+                    name="summarize"
+                    type="button"
+                    value="summarize"
+                    title="Click to summarize."
+                  />
+                </li>
+              </menu>
+            </header>
+            <div role="tablist">
+              <div>
+                <label role="tab" for="input">Input</label>
+                <input id="input" type="radio" name="tabs" checked="true" value="input"/>
+                <textarea 
+                  role="tabpanel"
+                  name="input"
+                  placeholder="Type the text to summarize"
+                  spellcheck="true"
+                  required
+                  autofocus
+                ></textarea>
+              </div>
+              <div>
+                <label role="tab" for="context">Context</label>
+                <input id="context" type="radio" name="tabs" value="context"/>
+                <textarea 
+                  role="tabpanel"
+                  name="context"
+                  placeholder="Type a text to provide context about your desired summary"
+                  spellcheck="true"
+                  required
+                  autofocus
+                ></textarea>
+              </div>
+            </div>            
+          </form>
+          <div class="response">
+            <header>
+              <menu role="toolbar">
+                <li role="menuitem">
+                  <button 
+                    type="button" 
+                    name="download"
+                    value="downloadOutput"
+                    title="Download the summary..."
+                  />
+                </li>
+                <li role="menuitem">
+                  <button 
+                    type="button" 
+                    name="copy"
+                    value="copyOutput"
+                    title="Copy this summary to the clipboard..."
+                  />
+                </li>
+                <li role="menuitem">
+                  <form role="menubar">
+                    <input role="menuitem" type="radio" name="format" value="formatted" checked title="View formatted"/>
+                    <input role="menuitem" type="radio" name="format" value="markdown" title="View Markdown code"/>
+                    <input role="menuitem" type="radio" name="format" value="html" title="View HTML code"/>
+                  </form>
+                </li>              
+              </menu>
+            </header>
+            <section></section>
+            <pre><code class="hljs language-markdown"></code></pre>
+            <pre><code class="hljs language-html"></code></pre>
+            <input type="hidden" id="summarizedText-text" name="summarizedText-text"/>
+          </div>
+        </section>
+        <footer>
+          <form role="toolbar">
+            <button
+              name="confirm"
+              type="button"
+              tabindex="0"
+              title="Close" 
+              popovertarget="summarization-dialog"
+              popovertargetaction="hide"
+            >Ok</button>
+          </form>
+        </footer>
+      </div>
+    </dialog>
+
+    <dialog 
+      id="proofreader-dialog"
+      class="input-output-dialog"      
+      aria-labelledby="proofreader-dialog-title"
+      draggable="true" 
+      popover="manual"
+      closedby="closerequest"            
+    >
+      <div>
+        <header>
+          <h1 
+            id="proofreader-dialog-title" 
+          >Proofreading</h1>
+          <form role="toolbar">
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="minimize" 
+              title="Minimize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="maximize" 
+              title="Maximize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="restore"  
+              title="Restore" 
+              checked="true"
+            />
+            <button 
+              type="button"
+              popovertarget="proofreader-dialog"
+              popovertargetaction="hide"
+              title="Close" 
+            />
+          </form>
+        </header>
+        <section>
+          <form name="proofreadingDialogSettingForm">
+            <input 
+              type="hidden" 
+              name="state"
+            />
+            <header>
+              <menu role="toolbar">
+                <li role="menuitem">
+                  <label 
+                    title="Upload a text to proofread..."
+                    for="uploadLongText"
+                  >
+                    <input
+                      id="uploadLongText"
+                      name="uploadLongText"
+                      type="file"
+                      multiple="false"
+                      accept=".csv,.html,.md,text/*,.txt,.xml"
+                    />
+                  </label>
+                </li>            
+                <li role="menuitem">
+                  <button
+                    id="summarize"
+                    name="summarize"
+                    type="button"
+                    value="summarize"
+                    title="Click to summarize."
+                  />
+                </li>
+              </menu>
+            </header>
+            <textarea 
+              id="draft-text"
+              name="draft-text"
+              placeholder="Type the text to proofread"
+              spellcheck="true"
+              required
+              autofocus
+            ></textarea>
+          </form>
+          <div class="response">
+            <header>
+              <menu role="toolbar">
+                <li role="menuitem">
+                  <button 
+                    type="button" 
+                    name="download"
+                    value="downloadOutput"
+                    title="Download the summary..."
+                  />
+                </li>
+                <li role="menuitem">
+                  <button 
+                    type="button" 
+                    name="copy"
+                    value="copyOutput"
+                    title="Copy this summary to the clipboard..."
+                  />
+                </li>
+                <li role="menuitem">
+                  <form role="menubar">
+                    <input role="menuitem" type="radio" name="format" value="formatted" checked title="View formatted"/>
+                    <input role="menuitem" type="radio" name="format" value="markdown" title="View Markdown code"/>
+                    <input role="menuitem" type="radio" name="format" value="html" title="View HTML code"/>
+                  </form>
+                </li>              
+              </menu>
+            </header>
+            <section></section>
+            <pre><code class="hljs language-markdown"></code></pre>
+            <pre><code class="hljs language-html"></code></pre>
+            <input type="hidden" id="proofread-text" name="proofread-text"/>
+          </div>
+        </section>
+        <footer>
+          <form role="toolbar">
+            <button
+              name="confirm"
+              type="button"
+              tabindex="0"
+              title="Close" 
+              popovertarget="proofreader-dialog"
+              popovertargetaction="hide"
+            >Ok</button>
+          </form>
+        </footer>
+      </div>
+    </dialog>
+    
+    <dialog id="about-dialog"
+      aria-labelledby="about-dialog-title"
+      draggable="true" 
+      popover
+      closedby="closerequest"            
+    >
+      <div>
+        <header>
+          <h1 
+            id="about-dialog-title" 
+          >About LLMDeling</h1>
+          <form role="toolbar">
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="minimize" 
+              title="Minimize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="maximize" 
+              title="Maximize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="restore"  
+              title="Restore" 
+              checked="true"
+            />
+            <button 
+              type="button"
+              popovertarget="about-dialog"
+              popovertargetaction="hide"
+              title="Close" 
+            />
+          </form>
+        </header>
+        <section>
+          <h2>Explore built-in AI</h2>
+          <ul>
+            <li><a href="https://github.com/rpbouman/LLMdeling" target="_blank">Github Project page...</a></li>
+            <li><a href="https://github.com/rpbouman/LLMdeling/blob/dev/LICENSE" target="_blank">License (MIT)...</a></li>
+            <li><a href="https://github.com/rpbouman/LLMdeling/issues" target="_blank">Request a feature or Report an issue...</a></li>
+            <li><a href="https://github.com/sponsors/rpbouman?o=nsm&sc=t" target="_blank">Become a sponsor...</a></li>
+          </ul>
+          <p><a href="https://www.paypal.com/donate/?hosted_button_id=776A6UNZ35M84" target="_blank">Donations help to keep this app in good shape!</a></p>
+        </section>
+        <footer>
+          <form role="toolbar">
+            <button
+              name="confirm"
+              type="button"
+              tabindex="0"
+              title="Close" 
+              popovertarget="about-dialog"
+              popovertargetaction="hide"
             >Ok</button>
           </form>
         </footer>
@@ -646,6 +1081,7 @@
 
     <script src="Tabs/tabs.js"></script>
     <script src="FormState/FormState.js"></script>
+    <script src="InputOutputDialog/inputOutputDialog.js"></script>
 
     <script src="LanguageDetection/LanguageDetection.js"></script>
     <script src="LanguageTranslation/LanguageTranslation.js"></script>
@@ -658,5 +1094,8 @@
     <script src="Formatting/Formatting.js"></script>
     <script src="Main/main.js"></script>
     
+    <script>
+      init();
+    </script>
   </body>
 </html>

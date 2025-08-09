@@ -13,13 +13,11 @@
 
 @keyframes spinnging_refresh {
   0% {
-    /* refresh */
-    content: '\eb13';
+    content: var( --icon-refresh );
     transform: rotate(0deg);
   }
   100% {
-    /* refresh */
-    content: '\eb13';
+    content: var( --icon-refresh );
     transform: rotate(360deg);
   }
 }

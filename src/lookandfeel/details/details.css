@@ -19,30 +19,30 @@ details {
 
 details:not( [open] ) {
   > summary::marker{
-    /* arrow-badge-right */
-    content: '\f60d';
+    
+    content: var( --arrow-badge-right );
   }
 }
 
 details[open] {
   > summary::marker{
-    /* arrow-badge-down */
-    content: '\f60b';
+
+    content: var( --icon-arrow-badge-down );
   }
 }
 
 
 details[role=treeitem]:not( [open] ) {
   > summary::marker{
-    /* square-rounded-plus */
-    content: '\f63f';
+    
+    content: var( --icon-square-rounded-plus );
   }
 }
 
 details[role=treeitem][open] {
   > summary::marker{
-    /* square-rounded-minus */
-    content: '\f63e';
+    
+    content: var( --icon-square-rounded-minus );
   }
 }
 

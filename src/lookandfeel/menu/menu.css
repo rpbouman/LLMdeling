@@ -11,7 +11,7 @@ menu[role=toolbar] {
     > label[for]:has( +*:is( input, button, textarea, select ) )::after {
       content: ':'
     }
-    
+        
     > button:empty {
       appearance: none;
       border-style: none;
@@ -28,6 +28,12 @@ menu[role=toolbar] {
       padding: .2em;
       background-color: var( --medium-background-color );
     }
+
+    > label:has( + select ) 
+      white-space: nowrap;
+      display: inline-block;
+    }
+    
 
     /* This is a set of togglebuttons of sorts */
     form[role=menubar]:has( input[role=menuitem][type=radio] ) {
@@ -64,5 +70,5 @@ menu[role=toolbar] {
 
     }
     
-  }
+  }  
 }

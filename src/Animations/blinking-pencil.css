@@ -15,15 +15,12 @@
 
 @keyframes blinking-pencil {
   0% { 
-    /* line-dotted and pencil */
-    content: '\eea8\eb04';
+    content: var( --icon-line-dotted ) var( --icon-pencil );
   }
   50% { 
-    /* line-dotted */
-    content: '\eea8';
+    content: var( --icon-line-dotted );
   }
   100% { 
-    /* line-dotted and pencil */
-    content: '\eea8\eb04';
+    content: var( --icon-line-dotted ) var( --icon-pencil );
   }
 }

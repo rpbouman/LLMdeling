@@ -4,8 +4,7 @@ nav#sidebar {
     > div:has( label[role=tab][for=chatHistory] + input#chatHistory[type=radio] + div[role=tabpanel]) {
       
       > label[role=tab][for=chatHistory]::before {
-        /* messages */
-        content: '\eb6c';
+        content: var( --icon-messages );
       } 
 
       > div[role=tabpanel] {
@@ -43,8 +42,7 @@ nav#sidebar {
             > li[role=menuitem] {
 
               > button[type=button][name=restore]::before {
-                /* messages */
-                content: '\eb6c';
+                content: var( --icon-messages );
               }
             }
           }
@@ -82,7 +80,12 @@ nav#sidebar {
         }
       }
     }
+
+    > div:has( label[role=tab][for=chatHistory] + input#chatHistory[type=radio] + div[role=tabpanel]:empty) {
+      display: none;
+    }
   }
 
+  
 }
 

@@ -17,3 +17,6 @@ html, body {
   cursor: wait;
 }
 
+a[href] {
+  color: var( --link-color );
+}

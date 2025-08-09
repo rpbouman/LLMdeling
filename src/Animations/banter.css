@@ -13,300 +13,300 @@
 
 @keyframes bantering_emoji {
   0% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   3% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   
   /*************** Ok, */
   4% { 
-    /* mood-surprised */
-    content: '\ec04'; 
+
+    content: var --icon-mood-surprised ; 
   }
   6% { 
-    /* mood-happy */
-    content: '\eaf4'; 
+
+    content: var --icon-mood-happy ; 
   }      
   7% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }
   
   11% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   /*************** Lets go! */
   12% { 
-    /* mood-happy */
-    content: '\eaf4'; 
+
+    content: var --icon-mood-happy ; 
   }
   13% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   14% { 
-    /* mood-surprised */
-    content: '\ec04'; 
+
+    content: var --icon-mood-surprised ; 
   }
   15% { 
-    /* mood-surprised */
-    content: '\ec04'; 
+
+    content: var --icon-mood-surprised ; 
   }
   16% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   
   /************* BLINK */
   17% { 
-    /* mood-smile-beam */
-    content: '\f2e7'; 
+
+    content: var --icon-mood-smile-beam ; 
   }
   19% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   24% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }
   
   /************* */
   25% { 
-    /* mood-surprised */
-    content: '\ec04'; 
+
+    content: var --icon-mood-surprised ; 
   }
   26% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   27% { 
-    /* mood-surprised */
-    content: '\ec04'; 
+
+    content: var --icon-mood-surprised ; 
   }
   28% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   29% { 
-    /* mood-happy */
-    content: '\eaf4'; 
+
+    content: var --icon-mood-happy ; 
   }
   30% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   } 
   32% { 
-    /* mood-surprised */
-    content: '\ec04'; 
+
+    content: var --icon-mood-surprised ; 
   }
   33% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   36% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }
   37% { 
-    /* mood-surprised */
-    content: '\ec04'; 
+
+    content: var --icon-mood-surprised ; 
   }
   38% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   39% { 
-    /* mood-sing */
-    content: '\f2c7'; 
+
+    content: var --icon-mood-sing ; 
   }
   40% { 
-    /* mood-look-right */
-    content: '\f2c6'; 
+
+    content: var --icon-mood-look-right ; 
   }      
   41% { 
-    /* mood-look-right */
-    content: '\f2c6'; 
+
+    content: var --icon-mood-look-right ; 
   }      
   42% { 
-    /* mood-sing */
-    content: '\f2c7'; 
+
+    content: var --icon-mood-sing ; 
   }
   43% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   44% { 
-    /* mood-happy */
-    content: '\eaf4'; 
+
+    content: var --icon-mood-happy ; 
   }
   45% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   46% { 
-    /* mood-tongue */
-    content: '\eb95'; 
+
+    content: var --icon-mood-tongue ; 
   }
   47% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   49% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
 
   /************* BLINK */
   50% { 
-    /* mood-smile-beam */
-    content: '\f2e7'; 
+
+    content: var --icon-mood-smile-beam ; 
   }
   51% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   54% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   55% { 
-    /* mood-surprised */
-    content: '\ec04'; 
+
+    content: var --icon-mood-surprised ; 
   }
   56% { 
-    /* mood-tongue */
-    content: '\eb95'; 
+
+    content: var --icon-mood-tongue ; 
   }
   57% { 
-    /* mood-surprised */
-    content: '\ec04'; 
+
+    content: var --icon-mood-surprised ; 
   }
   58% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   59% { 
-    /* mood-happy */
-    content: '\eaf4'; 
+
+    content: var --icon-mood-happy ; 
   }
   60% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   61% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   /************* BLINK */
   62% { 
-    /* mood-smile-beam */
-    content: '\f2e7'; 
+
+    content: var --icon-mood-smile-beam ; 
   }
   63% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   70% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   } 
   /************* BLINK */
   71% { 
-    /* mood-smile-beam */
-    content: '\f2e7'; 
+
+    content: var --icon-mood-smile-beam ; 
   }
   72% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   74% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }
   75% { 
-    /* mood-surprised */
-    content: '\ec04'; 
+
+    content: var --icon-mood-surprised ; 
   }
   76% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }
   77% { 
-    /* mood-surprised */
-    content: '\ec04'; 
+
+    content: var --icon-mood-surprised ; 
   }
   78% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }
   79% { 
-    /* mood-sing */
-    content: '\f2c7'; 
+
+    content: var --icon-mood-sing ; 
   }
   80% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }
   81% { 
-    /* mood-happy */
-    content: '\eaf4'; 
+
+    content: var --icon-mood-happy ; 
   }
   82% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }
   85% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }
   /************* BLINK */
   86% { 
-    /* mood-smile-beam */
-    content: '\f2e7'; 
+
+    content: var --icon-mood-smile-beam ; 
   }
   87% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }
   
 
   94% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   /************* BLINK */
   95% { 
-    /* mood-smile-beam */
-    content: '\f2e7'; 
+
+    content: var --icon-mood-smile-beam ; 
   }
   95.5% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   97% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }      
   /************* BLINK */
   97.5% { 
-    /* mood-smile-beam */
-    content: '\f2e7'; 
+
+    content: var --icon-mood-smile-beam ; 
   }
   98% { 
-    /* mood-look-down */
-    content: '\fd37'; 
+
+    content: var --icon-mood-look-down ; 
   }      
   99% { 
-    /* mood-look-down */
-    content: '\fd37'; 
+
+    content: var --icon-mood-look-down ; 
   }      
   100% { 
-    /* mood-empty */
-    content: '\eeb5'; 
+
+    content: var --icon-mood-empty ; 
   }
 }

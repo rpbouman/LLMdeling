@@ -7,18 +7,15 @@ menu[role=toolbar], menu[role=menubar] {
       top: 1px;
 
       > input[role=menuitem][type=radio][name=format][value=formatted]::before {
-        /* typography */
-        content: '\ebc5';
+        content: var( --icon-typography );
       }
 
       > input[role=menuitem][type=radio][name=format][value=markdown]::before {
-        /* markdown */
-        content: '\ec41';
+        content: var( --icon-markdown );
       }
       
       > input[role=menuitem][type=radio][name=format][value=html]::before {
-        /* html */
-        content: '\f7b1';
+        content: var( --icon-html );
       }
     }
   }
@@ -36,7 +33,9 @@ menu[role=toolbar], menu[role=menubar] {
   
   /* these are the "top-level" code views for markdown and html */
   > pre:has( > code ) {
-    margin: 1em;
+    > code {
+      margin: 0em 0em 0em 1em;
+    }
   }
   
   > section {
@@ -69,7 +68,7 @@ menu[role=toolbar], menu[role=menubar] {
     display: none;
     
     > code {
-      width: calc( 100% - 2em );
+      width: calc( 100% - 4em );
       border-style: solid;
       border-width: 1px;
       border-color: var( --dark-border-color );

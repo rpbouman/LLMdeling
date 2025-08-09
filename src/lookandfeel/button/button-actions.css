@@ -5,67 +5,86 @@ button[type=button] {
   
 }
 
+/**
+* Generic actions
+*/
+
 button[name="confirm"]::before {
-  /* check */
-  content: '\ea5e';
+  content: var( --icon-check );
 }
 
 button[name="send"]::before {
-  /* send */
-  content: '\eb1e';
+  content: var( --icon-send );
 }
 
 button[name="abort"]::before {
-  /* cancel */
-  content: '\ff11';
+  content: var( --icon-cancel );
 }
 
 button[type=button][name=copy]::before {
-  /* copy */
-  content: '\ea7a';
+  content: var( --icon-copy );
 }
 
 button[type=button][name=upload]::before {
-  /* upload */
-  content: '\eb47';
+  content: var( --icon-upload );
 }
 
 button[type=button][name=download]::before {
-  /* download */
-  content: '\ea96';
+  content: var( --icon-download );
 }
 
 button[type=button][name=restore]::before {
-  /* restore */
-  content: '\fafd';
+  content: var( --icon-restore );
 }
 
 button[type=button][name=delete]::before {
-  /* trash */
-  content: '\eb41';
+  content: var( --icon-trash );
 }
 
 button[type=button][name=summarize]::before {
-  /* list-details */
-  content: '\ef40';
+  content: var( --icon-list-details );
 }
 
 button[type=button][name=translate]::before {
-  /* language  */
-  content: '\ebbe';
+  content: var( --icon-language );
 }
 
 button[type=button][name=wizard]::before {
-  /* confetti */
-  content: '\ee46';
+  content: var( --icon-confetti );
 }
 
 button[type=button][name=print]::before {
-  /* printer */
-  content: '\eb0e';
+  content: var( --icon-printer );
 }
 
 button[type=button][name=save]::before {
-  /* device-floppy */
-  content: '\eb62';
+  content: var( --icon-device-floppy );
+}
+
+button[type=button][name=proofread]::before {
+  content: var( --icon-message-report );
+}
+
+button[type=button][name=about]::before {
+  content: var( --icon-info-square-rounded );
+}
+
+button[type=button][name="new"]::before {
+  content: var( --icon-plus );
+}
+
+label:has( > input[type=file] )::before{
+  content: var( --icon-upload );
+}
+
+/**
+* Specific actions
+*/
+
+button[type=button][name="new"][value=new-chat]::before {
+  content: var( --icon-messages );
+}
+
+button[type=button][name="new"][value=new-prompt]::before {
+  content: var( --icon-message-plus );
 }

@@ -14,171 +14,171 @@
 @keyframes waiting_for_response_emoji {
   0% { 
     /* mood-empty */
-    content: '\eeb5'; 
+    content: var( --icon-mood-empty ); 
   }      
   3% { 
     /* mood-empty */
-    content: '\eeb5'; 
+    content: var( --icon-mood-empty ); 
   }      
   
   /*************** Ok, */
   4% { 
     /* mood-look-up */
-    content: '\fd38'; 
+    content: var( --icon-mood-look-up ); 
   }
   6% { 
     /* mood-empty */
-    content: '\eeb5'; 
+    content: var( --icon-mood-empty ); 
   }      
   7% { 
     /* mood-empty */
-    content: '\eeb5'; 
+    content: var( --icon-mood-empty ); 
   }
   /************* BLINK */
   8% { 
     /* mood-smile-beam */
-    content: '\f2e7'; 
+    content: var( --icon-mood-smile-beam ); 
   }  
   9% { 
     /* mood-empty */
-    content: '\eeb5'; 
+    content: var( --icon-mood-empty ); 
   }      
   12% { 
     /* mood-empty */
-    content: '\eeb5'; 
+    content: var( --icon-mood-empty ); 
   }
   13% { 
     /* mood-look-down */
-    content: '\fd38'; 
+    content: var( --icon-mood-look-up ); 
   }
   14% { 
     /* mood-look-down */
-    content: '\fd38'; 
+    content: var( --icon-mood-look-up ); 
   }      
   15% { 
     /* mood-empty */
-    content: '\eeb5'; 
+    content: var( --icon-mood-empty ); 
   }      
   16% { 
     /* mood-empty */
-    content: '\eeb5'; 
+    content: var( --icon-mood-empty ); 
   }        
   /************* BLINK */
   17% { 
     /* mood-smile-beam */
-    content: '\f2e7'; 
+    content: var( --icon-mood-smile-beam ); 
   }
   19% { 
     /* mood-empty */
-    content: '\eeb5'; 
+    content: var( --icon-mood-empty ); 
   }      
   24% { 
     /* mood-empty */
-    content: '\eeb5'; 
+    content: var( --icon-mood-empty );
   }  
   /************* BLINK */
   35% { 
     /* mood-smile-beam */
-    content: '\f2e7'; 
+    content: var( --icon-mood-smile-beam );
   }
   36% { 
     /* mood-empty */
-    content: '\eeb5'; 
+    content: var( --icon-mood-empty );
   }      
   40% { 
     /* mood-empty */
-    content: '\eeb5'; 
+    content: var( --icon-mood-empty );
   }  
   41% { 
     /* mood-confuzed */
-    content: '\eaf3'; 
+    content: var( --icon-mood-confuzed );  
   } 
   48% { 
     /* mood-confuzed */
-    content: '\eaf3'; 
+    content: var( --icon-mood-confuzed );
   } 
   /************* BLINK */
   49% { 
     /* mood-sad-2 */
-    content: '\f2e2'; 
+    content: var( --icon-mood-sad-2 );
   }
   50% { 
     /* mood-sad-2 */
-    content: '\f2e2'; 
+    content: var( --icon-mood-sad-2 );
   }
   51% { 
     /* mood-confuzed */
-    content: '\eaf3'; 
+    content: var( --icon-mood-confuzed ); 
   } 
   59% { 
     /* mood-confuzed */
-    content: '\eaf3'; 
+    content: var( --icon-mood-confuzed );
   } 
   /************* BLINK */
   60% { 
     /* mood-sad-2 */
-    content: '\f2e2'; 
+    content: var( --icon-mood-sad-2 );
   }
   61% { 
     /* mood-sad */
-    content: '\eaf6'; 
+    content: var( --icon-mood-sad ); 
   }
   68% { 
     /* mood-sad */
-    content: '\eaf6'; 
+    content: var( --icon-mood-sad ); 
   }
   /************* BLINK */
   69% { 
     /* mood-sad-squint */
-    content: '\f2e4'; 
+    content: var( --icon-mood-sad-squint ); 
   }
   70% { 
     /* mood-sad-squint */
-    content: '\f2e4'; 
+    content: var( --icon-mood-sad-squint ); 
   }
   71% { 
     /* mood-sad */
-    content: '\eaf6'; 
+    content: var( --icon-mood-sad ); 
   }
   74% { 
     /* mood-sad */
-    content: '\eaf6'; 
+    content: var( --icon-mood-sad ); 
   }
   /************* BLINK */
   75% { 
     /* mood-sad-squint */
-    content: '\f2e4'; 
+    content: var( --icon-mood-sad-squint ); 
   }
   76% { 
     /* mood-sad */
-    content: '\eaf6'; 
+    content: var( --icon-mood-sad ); 
   }
   85% { 
     /* mood-sad */
-    content: '\eaf6'; 
+    content: var( --icon-mood-sad ); 
   }
   86% { 
     /* mood-cry */
-    content: '\ecbb'; 
+    content: var( --icon-mood-cry ); 
   }
   88% { 
     /* mood-cry */
-    content: '\ecbb'; 
+    content: var( --icon-mood-cry ); 
   }
   89% { 
     /* mood-sad */
-    content: '\eaf6'; 
+    content: var( --icon-mood-sad ); 
   }
   89% { 
     /* mood-sad-dizzy */
-    content: '\f2e3'; 
+    content: var( --icon-mood-sad-dizzy ); 
   }
   90% { 
     /* mood-sad */
-    content: '\eaf6'; 
+    content: var( --icon-mood-sad ); 
   }
   100% { 
     /* mood-empty */
-    content: '\eeb5'; 
+    content: var( --icon-mood-empty ; 
   }
 }

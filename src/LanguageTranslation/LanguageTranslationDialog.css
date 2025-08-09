@@ -1,4 +1,4 @@
-dialog#translation-dialog {
+dialog.input-output-dialog#translation-dialog {
   height: 480px;
   width: 640px;
   top: calc( 50vh - 240px);
@@ -7,73 +7,41 @@ dialog#translation-dialog {
   > div,
   > form {
 
+    > header {
+      > h1::before {
+        content: var( --icon-language );
+      }
+    }
+    
     > section {
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-
-      > *:is(div, form) {
-        
-        display: flex;
-        flex-direction: column;
+            
+      > form[name=translateDialogSettingForm] {
         
         > header {
-          border-bottom-style: solid;
-          border-bottom-width: 1px;
-          border-bottom-color: var( --dark-border-color ); 
-          flex-shrink: 0;
-
-          > menu[role=toolbar] {
-
+          
+          > menu[role=toolbar]:has(
+            input[name=autoTranslate][type=checkbox]:checked 
+          ) {
             
-            > li {
-
-              > label:has( + select ) {
-                white-space: nowrap;
-                display: inline-block;
-              }
+            button[name=translate][type=button] {
+              display: none;
             }
-          }
+          
+          }                    
         }
-        
-        > textarea {
-          flex: 1;
-          margin-top: 2px;
-          resize: none; 
-        }        
       }
+      
+      > form[name=translateDialogSettingForm]:has(
+        input[name=sourceLanguage][value='']
+      ) {
 
-      /* The top pane of the translation dialog can be resized  */
-      > *:is(div, form):first-child {
-        resize: vertical;
-        overflow: hidden;
-        padding-bottom: 0px;
-        height: 220px;
-      }
-      
-      > *:is(div, form):last-child {
-        border-top-style:solid;
-        border-top-width:1px;
-        border-top-color: var( --dark-border-color ); 
-        flex: 1;
-        overflow: hidden;
-      }
-      
-      > div.response {
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        overflow: hidden;
-        
-        > section,
-        > pre {
-          flex: 1;
-          overflow: scroll;  
+        button[name=translate][type=button] {
+          pointer-events: none;
         }
         
       }
     }
 
   }
-  
 }
+            
