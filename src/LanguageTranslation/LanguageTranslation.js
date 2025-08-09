@@ -93,7 +93,6 @@ async function doTranslate(){
   var untranslatedText = sourceText;
   console.log(`\nTranslating text:\n`);
   console.log(untranslatedText);
-  var tokens = parseMarkdown(untranslatedText);
   var untranslatedPreProcessedText = preProcessTranslatorInputText(untranslatedText);
   console.log('\nPreprocessed\n');
   console.log(untranslatedPreProcessedText);
@@ -410,10 +409,16 @@ async function initTranslationDialog(){
 }
 
 // the translartor has an issue with linebreaks - they get removed.
+// see: https://issues.chromium.org/issues/436065980
+// 
 // this is a real pita when the input text is markdown
 // but, we noticed that HTML remains unscathed. 
+// with some further experimentation we found that 
+// substituting CR, LF, tab and space with HTML character entities,
+// will return the character entities in the translation, so this can be used to reconstruct the formatting.
+//
 function preProcessTranslatorInputText(text){
-  var preProcessedText = text.replace(/\r\n|\r|\n/g, function(match){
+  var preProcessedText = text.replace(/\r\n|\r|\n| [ \t]+ /g, function(match){
     var breakTag;
     switch (match){
       case '\r\n':
@@ -425,6 +430,16 @@ function preProcessTranslatorInputText(text){
       case '\n':
         breakTag = '&#10;';
         break;
+      default:
+        var substitution = match.slice(1, -1).split('').map(function(ch){
+          switch (ch) {
+            case ' ':
+              return '&#32;';
+            case '\t':
+              return '&#09;';
+          }
+        }).join('');
+        breakTag = ` ${substitution} `
     }
     return breakTag;
   });
@@ -432,21 +447,13 @@ function preProcessTranslatorInputText(text){
 }
 
 function postProcessTranslatorOutputText(text) {
-  var postProcessedText = text.replace(/&#13;&#10;|&#13;|&#10;/g, function(match){
-    var lineBreak;
-    match = match.trim();
+  var postProcessedText = text.replace(/&#09;|&#10;|&#13;|&#32;/g, function(match){
     switch (match){
-      case '&#13;&#10;':
-        lineBreak = '\r\n';
-        break;
-      case '&#13;':
-        lineBreak = '\r';
-        break;
-      case '&#10;':
-        lineBreak = '\n';
-        break;
+      case '&#09;': return '\t';
+      case '&#10;': return '\n';
+      case '&#13;': return '\r';
+      case '&#32;': return ' ';
     }
-    return lineBreak;
   });
   return postProcessedText;
 }
