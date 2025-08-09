@@ -91,26 +91,33 @@ async function doTranslate(){
   
   setBusy(translationDialog);
   var untranslatedText = sourceText;
-  console.log(`\nTranslating text:\n`);
-  console.log(untranslatedText);
   var untranslatedPreProcessedText = preProcessTranslatorInputText(untranslatedText);
-  console.log('\nPreprocessed\n');
-  console.log(untranslatedPreProcessedText);
-  //var untranslatedPreProcessedText = untranslatedText;
     
   var translatedTextStream = await translate(
     untranslatedPreProcessedText, {
     sourceLanguage: sourceLanguage,
     targetLanguage: targetLanguage
   });
-  var ui = translationDialog.querySelector('div.response');
-  await handleResponseStream(translatedTextStream, ui);
+  
+  var transformer = {
+    transform: function(chunk, controller){
+      var postProcessedChunk = postProcessTranslatorOutputText(chunk);
+      controller.enqueue(postProcessedChunk);
+    }
+  };
+  var translatedAndPostProcessedTextStream = translatedTextStream.pipeThrough(
+    new TransformStream(
+      transformer
+    )
+  ); 
+
+  var ui = translationDialog.querySelector('div.response');  
+  await handleResponseStream(translatedAndPostProcessedTextStream, ui);
   setBusy(translationDialog, false);
 }
 
 async function handleResponseStream(reponseStream, ui){
   var responseText = '';
-  var postProcessedText;
   
   var rawOutputUi = ui.querySelector('input[type=hidden]');
   var formattedOutputUi = ui.querySelector(':scope > section');
@@ -119,19 +126,15 @@ async function handleResponseStream(reponseStream, ui){
   
   for await (const chunk of reponseStream){
     responseText += chunk;
-    
-    // this reverses the input pre processing.
-    postProcessedText = postProcessTranslatorOutputText(responseText);
-    //var postProcessedText = responseText;
-    
-    var html = md2html(postProcessedText)
+        
+    var html = md2html(responseText)
     if (formattedOutputUi) {
       formattedOutputUi.innerHTML = html;
       formattedOutputUi.scrollIntoView(false);
     }
 
     if (markdownOutputUi){
-      var markdownHighlightedHtml = hljs.highlight(postProcessedText, {language: 'markdown'}).value;
+      var markdownHighlightedHtml = hljs.highlight(responseText, {language: 'markdown'}).value;
       markdownOutputUi.innerHTML = markdownHighlightedHtml;
       markdownOutputUi.scrollIntoView(false);
     }
@@ -146,10 +149,6 @@ async function handleResponseStream(reponseStream, ui){
       rawOutputUi.value = responseText;
     }
   }
-  console.log('\nReceived translation:\n');
-  console.log(responseText);
-  console.log('\nPostprocessed translation:\n');
-  console.log(postProcessedText);
 }
 
 // this can be called when a change in the dialog could potentially require language detection.
@@ -418,28 +417,27 @@ async function initTranslationDialog(){
 // will return the character entities in the translation, so this can be used to reconstruct the formatting.
 //
 function preProcessTranslatorInputText(text){
-  var preProcessedText = text.replace(/\r\n|\r|\n| [ \t]+ /g, function(match){
+  var preProcessedText = text.replace(/\r\n|\r|\n|\*|_| [ \t]+ |^#+\s+/g, function(match){
     var breakTag;
     switch (match){
       case '\r\n':
         breakTag = '&#13;&#10;';
         break;
       case '\r':
-        breakTag = '&#13;';
-        break;
       case '\n':
-        breakTag = '&#10;';
+      case '*':
+      case '_':
+        breakTag = `&#${match.charCodeAt(0)};`;
         break;
       default:
         var substitution = match.slice(1, -1).split('').map(function(ch){
-          switch (ch) {
-            case ' ':
-              return '&#32;';
-            case '\t':
-              return '&#09;';
+          var charCode = String(ch.charCodeAt(0));
+          if (charCode.length === 1) {
+            charCode = '0' + charCode;
           }
+          return `&#${charCode};`;
         }).join('');
-        breakTag = ` ${substitution} `
+        breakTag = match.charAt(0) + substitution + match.charAt(match.length - 1);
     }
     return breakTag;
   });
@@ -447,13 +445,10 @@ function preProcessTranslatorInputText(text){
 }
 
 function postProcessTranslatorOutputText(text) {
-  var postProcessedText = text.replace(/&#09;|&#10;|&#13;|&#32;/g, function(match){
-    switch (match){
-      case '&#09;': return '\t';
-      case '&#10;': return '\n';
-      case '&#13;': return '\r';
-      case '&#32;': return ' ';
-    }
+  var postProcessedText = text.replace(/&#(\d+);/g, function(match, charCodeAsString){
+    var charCode = parseInt(charCodeAsString, 10);
+    var ch = String.fromCharCode(charCode);
+    return ch;
   });
   return postProcessedText;
 }
