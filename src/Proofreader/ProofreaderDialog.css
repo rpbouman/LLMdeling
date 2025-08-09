@@ -1,0 +1,18 @@
+dialog.input-output-dialog#proofreader-dialog {
+  height: 480px;
+  width: 640px;
+  top: calc( 50vh - 240px);
+  left: calc( 50vw - 320px);
+
+  > div,
+  > form {
+
+    > header {
+      > h1::before {
+        content: var( --icon-message-questionmark );
+      }
+    }
+    
+  }
+  
+}
