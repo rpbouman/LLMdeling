@@ -14,7 +14,7 @@ dialog.input-output-dialog {
         }
         
         > div[role=tablist] {
-          margin-top: -3px;
+          margin-top: 0px;
         }
       }
       

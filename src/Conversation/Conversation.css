@@ -112,7 +112,8 @@ section.conversation {
   /* when receiving a response, actions that require a complete response (translate, summary) are not available adn not visible */
   > .response[data-status="in progress"] {
 
-    > section {
+    > section,
+    > pre > code {
 
       > *:last-child:not( :has(*) )::after {
         display: inline-block;

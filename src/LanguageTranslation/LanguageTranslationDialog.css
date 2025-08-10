@@ -53,6 +53,9 @@ dialog[popover].input-output-dialog#translation-dialog:popover-open {
   min-width: 556px;
 }
 
+/**
+* On close, animate to the position of the translate button on the toolbar
+*/
 dialog[popover].input-output-dialog#translation-dialog:not( :popover-open ) {
   height: 26px;
   width: 80px;

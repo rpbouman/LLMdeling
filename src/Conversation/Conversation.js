@@ -184,6 +184,7 @@ function extractMessage(messageUi, actionCategory){
       }
       break;
     default:
+      // normally, we just want to extract markdown
   }
   return {
     content: messageText,
@@ -230,13 +231,14 @@ function messageActionHandler(event){
         detectedLanguage = 'auto';
       }
       setTranslationDialogState({
-        // we found that the translator cannot handle markdown. 
-        // (It will translate the text but strip the newlines, obliterating the markup.
-        // the workaround is to format as html, and translate that: html markup is preserved
-        // (Of course, if you need the translation in markdown, you will have to then convert html back to markdown
         'text': content,
         'sourceLanguage': detectedLanguage
-      })
+      });
+      break;
+    case 'summarize':
+      setSummarizationDialogState({
+        text: content
+      });
       break;
   }
 }
@@ -305,9 +307,7 @@ async function newChat(){
 }
 
 async function handleResponse(response){
-  responseBuffer = '';
   var message = {
-    text: responseBuffer,
     type: 'response',
   };
   message[historyDatabaseMessageStoreTimestampReceived] = Date.now();
@@ -315,14 +315,8 @@ async function handleResponse(response){
   try {
     updateStatus('receiving');
     responseUi = createResponseUi(message[historyDatabaseMessageStoreTimestampReceived]);
-    responseUi.setAttribute('data-status', 'waiting for response');
-    for await (const chunk of response){
-      if (responseUi.getAttribute('data-status') === 'waiting for response') {
-        responseUi.setAttribute('data-status', 'in progress');
-      }
-      handleResponseChunk(chunk);
-      message.text = responseBuffer;
-    }
+    message.text = await handleResponseStream(response, responseUi);
+    
     message[historyDatabaseMessageModelInputUsage] = currentChat.model.inputUsage;
     var detectedLanguage = await detectLanguage(message.text);
     if (detectedLanguage) {

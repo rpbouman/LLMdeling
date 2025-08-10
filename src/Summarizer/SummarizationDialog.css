@@ -1,10 +1,4 @@
 dialog.input-output-dialog#summarization-dialog {
-  height: 480px;
-  width: 640px;
-  min-width: 578px;
-  top: calc( 50vh - 240px);
-  left: calc( 50vw - 320px);
-
   > div,
   > form {
 
@@ -44,4 +38,23 @@ dialog.input-output-dialog#summarization-dialog {
     
   }
   
+}
+
+dialog[popover].input-output-dialog#summarization-dialog:popover-open {
+  height: 480px;
+  width: 640px;
+  top: calc( 50vh - 240px);
+  left: calc( 50vw - 320px);
+
+  min-width: 578px;
+}
+
+/**
+* On close, animate to the position of the summarize button on the toolbar
+*/
+dialog[popover].input-output-dialog#summarization-dialog:not( :popover-open ) {
+  height: 26px;
+  width: 80px;
+  top: 0px;
+  left: 320px;
 }

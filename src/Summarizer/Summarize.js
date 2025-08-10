@@ -56,20 +56,21 @@ async function initSummarizationDialog(){
   var summarizationDialogStateElement = summarizationDialog.querySelector(stateElementSelector);
   summarizationDialogStateElement.addEventListener('change', summarizationDialogStateChanged, true);
   
-  initInputOutputDialogExportHandlers(summarizationDialog);
+  initInputOutputDialogHandlers(summarizationDialog);
 }
 
 function setSummarizationDialogState(state){
   var summarizationDialog = getSummarizationDialog();
   var dialogState = getFormStateInfo(summarizationDialog).currentState;
-  delete dialogState['uploadLongText'];
+  delete dialogState['uploadLongText'];  
 
   var text = state.text;
-  
   if (text){
     dialogState['input'] = text;
   }
-  delete state.formatting;
-    
+  var context = state.context;
+  if (context){
+    dialogState['context'] = context;
+  }
   setFormState(summarizationDialog, dialogState);
 }

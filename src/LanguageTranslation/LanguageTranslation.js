@@ -351,7 +351,6 @@ async function initTranslationDialog(){
     'Other': '2'
   });
   
-  translationDialogStateFormElements['uploadSourceText'].addEventListener('change', inputOutputDialogUploadHandler, true);
   translationDialogStateFormElements['input'].addEventListener('change', sourceTextChangedHandler, true);
   
   var sourceLanguagePicker = translationDialogStateFormElements['sourceLanguage-picker'];
@@ -368,7 +367,16 @@ async function initTranslationDialog(){
     dispatchChangeEvent(sourceLanguagePicker);
   }
     
-  initInputOutputDialogExportHandlers(translationDialog);
+  initInputOutputDialogHandlers(translationDialog);
+}
+
+function encodeMarkdownMetacharsForTranslate(string){
+  var chars = string.split('').map(function(ch){
+    return ch.charCodeAt(0);
+  });
+  var delimiterStart = '&#';
+  var delimiterEnd = ';';
+  return delimiterStart + chars.join(delimiterEnd + delimiterStart) + delimiterEnd; 
 }
 
 // the translartor has an issue with linebreaks - they get removed.
@@ -380,27 +388,24 @@ async function initTranslationDialog(){
 // substituting CR, LF, tab and space with HTML character entities,
 // will return the character entities in the translation, so this can be used to reconstruct the formatting.
 //
+// UPDATE: it turns out character entities are not safe; when translating to Arabic, 
+// the semi-colon can get returned as the arabic semi colon: '؛'
+//
 function preProcessTranslatorInputText(text){
   var preProcessedText = text.replace(/\r\n|\r|\n|\*|_| [ \t]+ |^#+\s+/g, function(match){
     var breakTag;
     switch (match){
       case '\r\n':
-        breakTag = '&#13;&#10;';
+        breakTag = encodeMarkdownMetacharsForTranslate(match);
         break;
       case '\r':
       case '\n':
       case '*':
       case '_':
-        breakTag = `&#${match.charCodeAt(0)};`;
+        breakTag = encodeMarkdownMetacharsForTranslate(match);
         break;
       default:
-        var substitution = match.slice(1, -1).split('').map(function(ch){
-          var charCode = String(ch.charCodeAt(0));
-          if (charCode.length === 1) {
-            charCode = '0' + charCode;
-          }
-          return `&#${charCode};`;
-        }).join('');
+        var substitution = encodeMarkdownMetacharsForTranslate(match.slice(1, -1));
         breakTag = match.charAt(0) + substitution + match.charAt(match.length - 1);
     }
     return breakTag;

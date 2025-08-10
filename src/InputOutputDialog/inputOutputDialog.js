@@ -14,8 +14,8 @@ async function inputOutputDialogUploadHandler(event){
       var file = files[0];
       text = await file.text();      
   }
-  
-  var textArea = form.querySelector('textarea');
+
+  var textArea = form.querySelector(':scope > textarea, :scope > *[role=tablist] > *:has( > input[type=radio][name=tabs]:checked ) > textarea[role=tabpanel] ');
   if (textArea.value != text) {
     textArea.value = text;
     dispatchChangeEvent(textArea);
@@ -47,6 +47,7 @@ async function inputOutputDialogCopyHandler(event){
 }
 
 async function handleResponseStream(reponseStream, ui){
+  ui.setAttribute('data-status', 'waiting for response');
   var responseText = '';
   
   var rawOutputUi = ui.querySelector('input[type=hidden]');
@@ -54,31 +55,42 @@ async function handleResponseStream(reponseStream, ui){
   var markdownOutputUi = ui.querySelector(':scope > pre > code.language-markdown');
   var htmlCodeOutputUi = ui.querySelector(':scope > pre > code.language-html');
   
-  for await (const chunk of reponseStream){
-    responseText += chunk;
-        
-    var html = md2html(responseText)
-    if (formattedOutputUi) {
-      formattedOutputUi.innerHTML = html;
-      formattedOutputUi.scrollIntoView(false);
-    }
+  try{
+    for await (const chunk of reponseStream){
+      if (ui.getAttribute('data-status') === 'waiting for response') {
+        ui.setAttribute('data-status', 'in progress');
+      }
+      responseText += chunk;
+          
+      var html = md2html(responseText)
+      if (formattedOutputUi) {
+        formattedOutputUi.innerHTML = html;
+        formattedOutputUi.scrollIntoView(false);
+      }
 
-    if (markdownOutputUi){
-      var markdownHighlightedHtml = hljs.highlight(responseText, {language: 'markdown'}).value;
-      markdownOutputUi.innerHTML = markdownHighlightedHtml;
-      markdownOutputUi.scrollIntoView(false);
-    }
+      if (markdownOutputUi){
+        var markdownHighlightedHtml = hljs.highlight(responseText, {language: 'markdown'}).value;
+        markdownOutputUi.innerHTML = markdownHighlightedHtml;
+        markdownOutputUi.scrollIntoView(false);
+      }
 
-    if (htmlCodeOutputUi){
-      var htmlHighlightedHtml = hljs.highlight(html, {language: 'html'}).value;
-      htmlCodeOutputUi.innerHTML = htmlHighlightedHtml;
-      htmlCodeOutputUi.scrollIntoView(false);
-    }
-    
-    if (rawOutputUi) {
-      rawOutputUi.value = responseText;
+      if (htmlCodeOutputUi){
+        var htmlHighlightedHtml = hljs.highlight(html, {language: 'html'}).value;
+        htmlCodeOutputUi.innerHTML = htmlHighlightedHtml;
+        htmlCodeOutputUi.scrollIntoView(false);
+      }
+      
+      if (rawOutputUi) {
+        rawOutputUi.value = responseText;
+      }
     }
   }
+  catch(error){
+    debugger;
+  }
+  finally {
+  }
+  return responseText;
 }
 
 function initInputOutputDialogExportHandlers(inputOutputDialog){
@@ -97,4 +109,22 @@ function initInputOutputDialogExportHandlers(inputOutputDialog){
     'click', 
     inputOutputDialogCopyHandler
   );
+}
+
+function initInputOutputDialogImportHandlers(inputOutputDialog){
+  inputOutputDialog = el(inputOutputDialog);
+  
+  inputOutputDialog
+  .querySelector('label[for] > input[type=file]')
+  .addEventListener(
+    'change', 
+    inputOutputDialogUploadHandler,
+    true
+  );
+  
+}
+
+function initInputOutputDialogHandlers(inputOutputDialog){
+  initInputOutputDialogImportHandlers(inputOutputDialog);
+  initInputOutputDialogExportHandlers(inputOutputDialog);
 }
