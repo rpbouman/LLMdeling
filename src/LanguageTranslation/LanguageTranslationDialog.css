@@ -1,6 +1,7 @@
 dialog.input-output-dialog#translation-dialog {
   height: 480px;
   width: 640px;
+  min-width: 556px;
   top: calc( 50vh - 240px);
   left: calc( 50vw - 320px);
 

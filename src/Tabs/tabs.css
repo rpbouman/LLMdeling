@@ -2,7 +2,7 @@
   position: relative;
 }
 
-*:is( div, form ) [role=tablist] {
+*:is( div, form )[role=tablist] {
   display: flex;
   flex-direction: row;
   padding-top: .5em;

@@ -1,6 +1,7 @@
 nav#sidebar {
 
   > form[role=tablist] {
+    
     > div:has( label[role=tab][for=chatHistory] + input#chatHistory[type=radio] + div[role=tabpanel]) {
       
       > label[role=tab][for=chatHistory]::before {

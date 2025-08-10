@@ -6,12 +6,17 @@ var summarizers = {
 async function summarize(text, options, downloadProgessListener){
   var props = {
     sharedContext: undefined,
-    type: 'tldr',           //tldr, teaser, key-points, headline
-    format: 'plain-text',   //markdown, plain-text
-    length: 'medium'        //short, medium, long
+    type: 'key-points',                 //tldr, teaser, key-points, headline
+    format: 'markdown',                 //markdown, plain-text
+    length: 'medium',                   //short, medium, long
+    expectedInputLanguages: ['en'],
+    expectedOutputLanguages: ['en'],
+    outputLanguage: 'en'  //short, medium, long
   };
   var summarizerOptions = Object.assign(props, options);
   delete summarizerOptions.context;
+  delete summarizerOptions.includeInputUsage;
+  delete summarizerOptions.includeOutput;
   
   var summarizerKey = JSON.stringify(summarizerOptions);
   var summarizer = summarizers[summarizerKey];

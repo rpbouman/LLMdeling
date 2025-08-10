@@ -20,7 +20,7 @@ details {
 details:not( [open] ) {
   > summary::marker{
     
-    content: var( --arrow-badge-right );
+    content: var( --icon-arrow-badge-right );
   }
 }
 

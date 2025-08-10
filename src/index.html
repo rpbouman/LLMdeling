@@ -273,6 +273,8 @@
               id="new-chat"
               name="new"
               value="new-chat"
+              popovertarget="generic-prompt"
+              popovertargetaction="show"
             >New Chat</button>
           </li>
           <li role="menuitem">
@@ -753,12 +755,12 @@
                   >
                     <option value="tldr" label="TL;DR" title="Summary should be short and to the point, providing a quick overview of the input, suitable for a busy reader."/>
                     <option value="teaser" label="Teaser"	" title="Summary should focus on the most interesting or intriguing parts of the input, designed to draw the reader in to read more."/>
-                    <option value="key-points" label="Key Points" title="Summary should extract the most important points from the input, presented as a bulleted list."/>
-                    <option value="headline" label="headline" title="Summary should effectively contain the main point of the input in a single sentence, in the format of an article headline."/>
+                    <option value="key-points" label="Key Points" selected title="Summary should extract the most important points from the input, presented as a bulleted list."/>
+                    <option value="headline" label="Headline" title="Summary should effectively contain the main point of the input in a single sentence, in the format of an article headline."/>
                   </select>                  
                 </li>
                 <li role="menuitem">
-                  <label for="summaryLength-picker">Summary Length</label>
+                  <label for="summaryLength-picker">Length</label>
                   <select 
                     id="summaryLength-picker" 
                     name="summaryLength-picker"
@@ -766,18 +768,30 @@
                     required
                   >
                     <option value="short" label="Short"/>
-                    <option value="medium" label="Medium"/>
+                    <option value="medium" label="Medium" selected/>
                     <option value="long" label="Long"/>
                   </select>                  
                 </li>
                 <li role="menuitem">
+                  <label for="summaryOutputFormat-picker">Format</label>
+                  <select
+                    id="summaryOutputFormat-picker"
+                    name="summaryOutputFormat-picker"
+                    title="The desired output format for the summary"
+                    required
+                  >
+                    <option value="markdown" label="Markdown" selected title="Create a markdown formatted summary"/>
+                    <option value="plain-text" label="Plaintext" title="Create a plaintext formatted summary"/>
+                  </select>
+                </li>
+                <li role="menuitem">
                   <label 
-                    for="liveSummary"
+                    for="autoSummarize"
                     title="Check to automatically summarize."
-                  >Auto-sunnarize</label>
+                  >Auto-summarize</label>
                   <input 
-                    id="liveSummary" 
-                    name="autosummarize"
+                    id="autoSummarize" 
+                    name="autoSummarize"
                     type="checkbox" 
                     checked="true"
                     title="Check to automatically summarize."
@@ -1088,6 +1102,7 @@
     <script src="LanguageTranslation/LanguageTranslation.js"></script>
     <script src="LanguageTranslation/Translator.js"></script>
     <script src="Summarizer/Summarizer.js"></script>
+    <script src="Summarizer/Summarize.js"></script>
     <script src="History/HistoryBackend.js"></script>
     <script src="History/HistoryUi.js"></script>
     <script src="Conversation/Conversation.js"></script>

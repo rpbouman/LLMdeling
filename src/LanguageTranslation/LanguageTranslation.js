@@ -116,41 +116,6 @@ async function doTranslate(){
   setBusy(translationDialog, false);
 }
 
-async function handleResponseStream(reponseStream, ui){
-  var responseText = '';
-  
-  var rawOutputUi = ui.querySelector('input[type=hidden]');
-  var formattedOutputUi = ui.querySelector(':scope > section');
-  var markdownOutputUi = ui.querySelector(':scope > pre > code.language-markdown');
-  var htmlCodeOutputUi = ui.querySelector(':scope > pre > code.language-html');
-  
-  for await (const chunk of reponseStream){
-    responseText += chunk;
-        
-    var html = md2html(responseText)
-    if (formattedOutputUi) {
-      formattedOutputUi.innerHTML = html;
-      formattedOutputUi.scrollIntoView(false);
-    }
-
-    if (markdownOutputUi){
-      var markdownHighlightedHtml = hljs.highlight(responseText, {language: 'markdown'}).value;
-      markdownOutputUi.innerHTML = markdownHighlightedHtml;
-      markdownOutputUi.scrollIntoView(false);
-    }
-
-    if (htmlCodeOutputUi){
-      var htmlHighlightedHtml = hljs.highlight(html, {language: 'html'}).value;
-      htmlCodeOutputUi.innerHTML = htmlHighlightedHtml;
-      htmlCodeOutputUi.scrollIntoView(false);
-    }
-    
-    if (rawOutputUi) {
-      rawOutputUi.value = responseText;
-    }
-  }
-}
-
 // this can be called when a change in the dialog could potentially require language detection.
 // examples of changes that would require calling this:
 // - if the value of language picker changes from a chosen language to 'auto'
@@ -402,9 +367,8 @@ async function initTranslationDialog(){
      sourceLanguagePicker.value = sourceLanguagePickerValue;
     dispatchChangeEvent(sourceLanguagePicker);
   }
-  
-  translationDialog.querySelector('button[type=button][name=download]').addEventListener('click', inputOutputDialogDownloadHandler);
-  translationDialog.querySelector('button[type=button][name=copy]').addEventListener('click', inputOutputDialogCopyHandler);
+    
+  initInputOutputDialogExportHandlers(translationDialog);
 }
 
 // the translartor has an issue with linebreaks - they get removed.

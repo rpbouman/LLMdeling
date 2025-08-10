@@ -1,6 +1,7 @@
 dialog.input-output-dialog#summarization-dialog {
   height: 480px;
   width: 640px;
+  min-width: 578px;
   top: calc( 50vh - 240px);
   left: calc( 50vw - 320px);
 
@@ -14,12 +15,41 @@ dialog.input-output-dialog#summarization-dialog {
     }
     
     > section {
-      > form {
+      > form[name=summarizationDialogSettingForm] {
         > header {
+          > menu[role=toolbar]:has(
+            input[name=autoSummarize][type=checkbox]:checked 
+          ) {
+            
+            button[name=summarize][type=button] {
+              display: none;
+            }
           
-          
+          }                    
+        }
+        
+        > div[role=tablist] {
+          > div {
+            > textarea[role=tabpanel] {
+              top: 56px;
+              resize: none;
+              outline-style:none;
+              height: calc( 100% - 60px );
+            }
+          }
         }
       }
+
+      > form[name=summarizationDialogSettingForm]:has(
+        textarea[name=input]:invalid
+      ) {
+
+        button[name=summarize][type=button] {
+          pointer-events: none;
+        }
+        
+      }
+
     }
     
   }

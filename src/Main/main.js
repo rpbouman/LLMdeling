@@ -30,6 +30,7 @@ function initUi(){
   }, {
     once: true
   });
+  initSummarizationDialog();
   byId('new-chat').addEventListener('click', newChat);
 }
 
