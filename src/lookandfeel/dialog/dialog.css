@@ -178,3 +178,33 @@ dialog:has( *:focus ) {
 
 dialog:not( *:focus ) {
 }
+
+
+dialog[popover] {
+  transition: opacity 0.5s,
+    transform 0.5s,
+    scale 0.5s,
+    overlay 0.5s allow-discrete,
+    display 0.5s allow-discrete;
+}
+
+dialog[popover]:popover-open {
+  /* Final state of the show animation */
+  opacity: 1;
+  transform: translateX(0) scale(1);
+}
+
+dialog[popover]:not( :popover-open ) {
+  /* Final state of the show animation */
+  opacity: 0;
+  transform: translateX(-100%) scale(0);
+}
+
+@starting-style {
+  dialog[popover]:popover-open {      
+    opacity: 1;
+    transform: translateX(-100%) scale(0);
+  }
+  
+  
+}

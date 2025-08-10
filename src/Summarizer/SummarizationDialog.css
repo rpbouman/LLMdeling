@@ -28,16 +28,6 @@ dialog.input-output-dialog#summarization-dialog {
           }                    
         }
         
-        > div[role=tablist] {
-          > div {
-            > textarea[role=tabpanel] {
-              top: 56px;
-              resize: none;
-              outline-style:none;
-              height: calc( 100% - 60px );
-            }
-          }
-        }
       }
 
       > form[name=summarizationDialogSettingForm]:has(

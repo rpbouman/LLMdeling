@@ -1,94 +1,118 @@
-main#app {
-
-  > header {
-    
-    > menu[role=toolbar] {
-
-      > li[role=menuitem] {
-
-      }
-    }
-  }  
-}
-
+/**
+* if the language model API is not avaialable, 
+* then the buttons to start a new chat or create a new prompt aren't active
+*/
 main#app[data-built-in-ai-languagemodel=false] {
 
-  > header {
+  menu[role=toolbar] {
     
-    > menu[role=toolbar] {
-
-      > li[role=menuitem] {
-        
-        button[value=new-chat] {
-          pointer-events: none;
-          color: var( --placeholder-color );
-        }
-        
+    li[role=menuitem] {
+      
+      button[type=button][value=new-chat] {
+        pointer-events: none;
+        color: var( --placeholder-color );
       }
-
-      > li[role=menuitem] {
         
-        button[value=new-prompt] {
-          pointer-events: none;
-          color: var( --placeholder-color );
-        }
-        
+      button[type=button][value=new-prompt] {
+        pointer-events: none;
+        color: var( --placeholder-color );
       }
     }
   }  
 }
 
+/**
+* if the translator API is not avaialable, 
+* then the button to open the translation dialog is not active
+*/
 main#app[data-built-in-ai-translator=false] {
 
-  > header {
-    
-    > menu[role=toolbar] {
+  menu[role=toolbar] {
 
-      > li[role=menuitem] {
-        
-        button[popovertarget=translation-dialog] {
-          pointer-events: none;
-          color: var( --placeholder-color );
-        }
-        
+    li[role=menuitem] {
+      
+      button[type=button][popovertarget=translation-dialog][popovertargetaction=show] {
+        pointer-events: none;
+        color: var( --placeholder-color );
       }
-
+      
     }
-  }  
+
+  }
 }
 
+/**
+* if the summarizer API is not avaialable, 
+* then the button to open the summarizer dialog is not active
+*/
 main#app[data-built-in-ai-summarizer=false] {
 
-  > header {
-    
-    > menu[role=toolbar] {
+  menu[role=toolbar] {
 
-      > li[role=menuitem] {
-        
-        button[popovertarget=summarizer-dialog] {
-          pointer-events: none;
-          color: var( --placeholder-color );
-        }
-        
+    li[role=menuitem] {
+      
+      button[type=button][popovertarget=summarization-dialog][popovertargetaction=show] {
+        pointer-events: none;
+        color: var( --placeholder-color );
       }
+      
     }
   }  
 }
 
+/**
+* if the proofreader API is not avaialable, 
+* then the button to open the proofreader dialog is not active
+*/
 main#app[data-built-in-ai-proofreader=false] {
 
-  > header {
-    
-    > menu[role=toolbar] {
+  menu[role=toolbar] {
 
-      > li[role=menuitem] {
-        
-        button[popovertarget=proofreader-dialog] {
-          pointer-events: none;
-          color: var( --placeholder-color );
-        }
-        
+    li[role=menuitem] {
+      
+      button[type=button][popovertarget=proofreader-dialog][popovertargetaction=show] {
+        pointer-events: none;
+        color: var( --placeholder-color );
       }
+      
     }
-  }  
+  }
+}
+
+/**
+* if the writer API is not avaialable, 
+* then the button to open the writer dialog is not active
+*/
+main#app[data-built-in-ai-writer=false] {
+
+  menu[role=toolbar] {
+
+    li[role=menuitem] {
+      
+      button[type=button][popovertarget=writer-dialog][popovertargetaction=show] {
+        pointer-events: none;
+        color: var( --placeholder-color );
+      }
+      
+    }
+  }
+}
+
+/**
+* if the rewriter API is not avaialable, 
+* then the button to open the rewriter dialog is not active
+*/
+main#app[data-built-in-ai-rewriter=false] {
+
+  menu[role=toolbar] {
+
+    li[role=menuitem] {
+      
+      button[type=button][popovertarget=rewriter-dialog][popovertargetaction=show] {
+        pointer-events: none;
+        color: var( --placeholder-color );
+      }
+      
+    }
+  }
 }

@@ -8,6 +8,16 @@ dialog.input-output-dialog {
       flex-direction: column;
       overflow: hidden;
 
+      > *:is(div, form):has( > div[role=tablist] ) {
+        > header {
+          margin-top: 3px;
+        }
+        
+        > div[role=tablist] {
+          margin-top: -3px;
+        }
+      }
+      
       > *:is(div, form) {
         
         display: flex;
@@ -25,15 +35,36 @@ dialog.input-output-dialog {
           flex: 1;
           margin-top: 2px;
           resize: none; 
-        }        
-      }
+        }
+        
+        > div[role=tablist] {
+          > div {
+            
+            > label[role=tab][for=input]::before {
+              content: var( --icon-pencil );
+            }
 
+            > label[role=tab][for=context]::before {
+              content: var( --icon-file-pencil );
+            }
+            
+            > label[role=tab] + input[type=radio][name=tabs]:checked + textarea[role=tabpanel] {
+              top: 60px;
+              resize: none;
+              outline-style:none;
+              height: calc( 100% - 60px );
+            }
+          }
+        }
+        
+      }
+      
       /* The top pane of the translation dialog can be resized  */
       > *:is(div, form):first-child {
         resize: vertical;
         overflow: hidden;
         padding-bottom: 0px;
-        height: 220px;
+        height: calc( 40% );
       }
       
       > *:is(div, form):last-child {

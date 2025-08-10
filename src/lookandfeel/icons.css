@@ -46,6 +46,22 @@
   
   --icon-pencil: '\eb04';
 
+  --icon-pencil: '\eb04';
+
+  --icon-pencil-cog: '\fc01';
+
+  --icon-pencil-code: '\fc00';
+  
+  --icon-pencil-question: '\fc09';
+  
+  --icon-pencil-exclamation: '\fc05';
+
+  --icon-pencil-bolt: '\fbfd';
+
+  --icon-pencil-search: '\fc0a';
+
+  --icon-file-pencil: '\f039';
+  
   --icon-mood-empty: '\eeb5'; 
 
   --icon-mood-surprised: '\ec04'; 
@@ -93,4 +109,6 @@
   --icon-square-rounded-plus: '\f63f';
 
   --icon-square-rounded-minus: '\f63e';
+
+
 }

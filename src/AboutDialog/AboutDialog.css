@@ -1,8 +1,4 @@
 dialog#about-dialog {
-  height: 240px;
-  width: 320px;
-  top: calc( 50vh - 120px);
-  left: calc( 50vw - 160px);
 
   > div,
   > form {
@@ -27,4 +23,21 @@ dialog#about-dialog {
     }
   }
   
+}
+
+dialog[popover]#about-dialog:popover-open {
+  height: 288px;
+  width: 420px;
+  top: calc( 50vh - 144px);
+  left: calc( 50vw - 210px);
+
+  min-height: 288px;
+  min-width: 420px;
+}
+
+dialog[popover]#about-dialog:not( :popover-open ) {
+  height: 26px;
+  width: 65px;
+  top: 0px;
+  left: 500px;
 }

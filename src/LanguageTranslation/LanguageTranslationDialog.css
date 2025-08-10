@@ -1,9 +1,4 @@
 dialog.input-output-dialog#translation-dialog {
-  height: 480px;
-  width: 640px;
-  min-width: 556px;
-  top: calc( 50vh - 240px);
-  left: calc( 50vw - 320px);
 
   > div,
   > form {
@@ -48,4 +43,20 @@ dialog.input-output-dialog#translation-dialog {
 
   }
 }
-            
+
+dialog[popover].input-output-dialog#translation-dialog:popover-open {
+  height: 480px;
+  width: 640px;
+  top: calc( 50vh - 240px);
+  left: calc( 50vw - 320px);
+
+  min-width: 556px;
+}
+
+dialog[popover].input-output-dialog#translation-dialog:not( :popover-open ) {
+  height: 26px;
+  width: 80px;
+  top: 0px;
+  left: 220px;
+}
+

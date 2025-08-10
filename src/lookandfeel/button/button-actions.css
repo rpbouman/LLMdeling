@@ -88,3 +88,11 @@ button[type=button][name="new"][value=new-chat]::before {
 button[type=button][name="new"][value=new-prompt]::before {
   content: var( --icon-message-plus );
 }
+
+button[type=button][name=write][value=writer-tool]::before {
+  content: var( --icon-pencil-question );
+}
+
+button[type=button][name=rewrite][value=rewriter-tool]::before {
+  content: var( --icon-pencil-exclamation );
+}
