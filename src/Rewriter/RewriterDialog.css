@@ -1,0 +1,32 @@
+dialog.input-output-dialog#rewriter-dialog {
+  > div,
+  > form {
+
+    > header {
+      > h1::before {
+        content: var( --icon-pencil-exclamation );
+      }
+    }
+    
+  }
+  
+}
+
+dialog[popover].input-output-dialog#rewriter-dialog:popover-open {
+  height: 480px;
+  width: 640px;
+  top: calc( 50vh - 240px);
+  left: calc( 50vw - 320px);
+
+  min-width: 578px;
+}
+
+/**
+* On close, animate to the position of the writer button on the toolbar
+*/
+dialog[popover].input-output-dialog#rewriter-dialog:not( :popover-open ) {
+  height: 26px;
+  width: 80px;
+  top: 0px;
+  left: 500px;
+}
