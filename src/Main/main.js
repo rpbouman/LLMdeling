@@ -9,7 +9,7 @@ async function initApiStatus(){
   var apiGlobals = [
     'LanguageModel',
     'LanguageDetector',
-    'ProofReader',
+    'Proofreader',
     'Rewriter',
     'Summarizer',
     'Translator',
