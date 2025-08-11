@@ -78,6 +78,7 @@ menu[role=toolbar], menu[role=menubar] {
 }
 
 /* if the formatted option is checked, then the section is displayed, but the code blocks are not */
+.response.welcome,
 .response:has(
   > header 
     > menu[role=toolbar]

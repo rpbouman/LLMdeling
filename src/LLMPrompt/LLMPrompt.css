@@ -74,10 +74,56 @@ dialog.llm-prompt#generic-prompt {
   top: calc(100% - 250px);
   left: calc(50% - 200px);
   
-  textarea[name="input-prompt"] {
+  > div {
+    > header {
+    }
+    
+    > form {
+
+      flex: 1;
+
+      display: flex;
+      flex-direction: column;
+      
+      > menu[role=toolbar] {
+        flex-shrink: 0;
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+        border-bottom-color: var( --dark-border-color ); 
+        padding: 0px 1px 1px; 1px;
+        
+        
+      }
+      
+      > div[role=tablist] {
+                
+        > div {
+          
+          > label:has( + input[type=radio][value=input] )::before {
+            content: var( --icon-pencil);
+          }
+
+
+          > label:has( + input[type=radio][value=list]  )::before {
+            content: var( --icon-list-numbers);
+          }
+          
+          > textarea[role=tabpanel] {
+            outline: none; 
+          }
+        }
+      }
+    }
+    
+    > footer {
+    }
+  }
+
+  textarea[name="input"] {
     resize: none;
+    top: 62px;
     width: calc(100% - 4px);
-    height: calc(100% - 28px);
+    height: calc(100% - 66px);
   }
   
 }

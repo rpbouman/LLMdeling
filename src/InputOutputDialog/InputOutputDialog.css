@@ -40,19 +40,19 @@ dialog.input-output-dialog {
         > div[role=tablist] {
           > div {
             
-            > label[role=tab][for=input]::before {
+            > label[role=tab]:has( + input[type=radio] + textarea[name=input] )::before {
               content: var( --icon-pencil );
             }
 
-            > label[role=tab][for=context]::before {
+            > label[role=tab]:has( + input[type=radio] + textarea[name=context] )::before {
               content: var( --icon-file-pencil );
             }
             
             > label[role=tab] + input[type=radio][name=tabs]:checked + textarea[role=tabpanel] {
-              top: 60px;
+              top: 62px;
               resize: none;
               outline-style:none;
-              height: calc( 100% - 60px );
+              height: calc( 100% - 62px );
             }
           }
         }

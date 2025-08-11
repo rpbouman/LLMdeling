@@ -96,6 +96,17 @@ function getPromptTextArea(){
   return textArea;
 }
 
+function getElementPromptDialog(element){
+  var dialog = element;
+  while (dialog && dialog.tagName !== 'DIALOG') {
+    dialog = dialog.parentNode;
+  }
+  if (!dialog){
+    throw new Error(`Prompt dialog not found!`);
+  }
+  return dialog;
+}
+
 async function uploadPrompt(event){
   var target = event.target;
   var files = target.files;
@@ -103,17 +114,41 @@ async function uploadPrompt(event){
     return;
   }
   
-  var dialog = target;
-  while (dialog && dialog.tagName !== 'DIALOG') {
-    dialog = dialog.parentNode;
+  var dialog = getElementPromptDialog(target);
+  
+  var file = files.item(0);
+  var inputElement = getPromptDialogInputElement(dialog);
+  inputElement.value = await file.text();
+}
+
+function getPromptDialogElement(promptDialog, elementSelector){
+  var promptDialog = el(promptDialog);
+  var element = promptDialog.querySelector(elementSelector);
+  if (!element){
+    throw new Error(`Prompt element ${elementSelector} not found!`);
   }
-  if (!dialog){
+  return input;
+}
+
+function getPromptDialogInputElement(promptDialog){
+  return getPromptDialogElement(promptDialog, '*:is( textarea, input)[name=input-prompt]')
+}
+
+function addItemToPromptList(event){
+  var target = event.target;
+  var dialog = getElementPromptDialog(target);
+  
+  var inputElement = getPromptDialogInputElement(promptDialog);
+  var value = inputElement.value;
+  value = value.trim();
+  if (!value.length) {
     return;
   }
   
-  var file = files.item(0);
-  var input = dialog.querySelector('*:is( textarea, input)[name=input-prompt]');
-  input.value = await file.text();
+}
+
+function getPromptDialogItemList(promptDialog){
+  
 }
 
 function initLLMPrompts(){
@@ -135,4 +170,9 @@ function initLLMPrompts(){
     uploadPromptFileInput.addEventListener('change', uploadPrompt);
   }
   
+  var addToListButtons = document.querySelectorAll('dialog.llm-prompt button[value=add-content-item]');
+  for (var i = 0; i < addToListButtons.length; i++){
+    var addToListButton = addToListButtons.item(i);
+    addToListButton.addEventListener('click', addItemToPromptList);
+  }
 }

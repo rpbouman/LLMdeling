@@ -1,3 +1,16 @@
+menu {
+
+  > li[role=menuitem] {
+    list-style: none;
+  }  
+}
+
+menu[popover] {
+  border-style: outset;
+  border-color: buttonborder;
+  background-color: ButtonFace;
+}
+
 menu[role=menubar],
 menu[role=toolbar] {
   margin-block-start: 2px;

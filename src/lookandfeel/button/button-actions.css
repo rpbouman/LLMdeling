@@ -89,10 +89,18 @@ button[type=button][name="new"][value=new-prompt]::before {
   content: var( --icon-message-plus );
 }
 
-button[type=button][name=write][value=writer-tool]::before {
+button[type=button][name=write]::before {
   content: var( --icon-pencil-question );
 }
 
-button[type=button][name=rewrite][value=rewriter-tool]::before {
+button[type=button][name=rewrite]::before {
   content: var( --icon-pencil-exclamation );
+}
+
+button[type=button][name=add][value=add-content-item]::before {
+  content: var( --icon-playlist-add );
+}
+
+button[type=button][name=remove][value=remove-content-item]::before {
+  content: var( --icon-playlist-x );
 }

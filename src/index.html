@@ -59,6 +59,8 @@
     <link rel="stylesheet" type="text/css" href="Conversation/Conversation.css"/>
     <link rel="stylesheet" type="text/css" href="LanguageTranslation/LanguageTranslationDialog.css"/>
     <link rel="stylesheet" type="text/css" href="Summarizer/SummarizationDialog.css"/>
+    <link rel="stylesheet" type="text/css" href="Writer/WriterDialog.css"/>
+    <link rel="stylesheet" type="text/css" href="ReWriter/ReWriterDialog.css"/>
     <link rel="stylesheet" type="text/css" href="Proofreader/ProofreaderDialog.css"/>
     <link rel="stylesheet" type="text/css" href="AboutDialog/AboutDialog.css"/>
     
@@ -367,7 +369,28 @@
       <section 
         id="conversation" 
         class="conversation"
-      ></section>
+      >
+        <div class="response welcome">
+          <header>
+          </header>
+          <section>
+            <p>
+              This is <a href="https://github.com/rpbouman/LLMdeling" target="llmdeling_github">LLMDeling</a> 
+              - an app to explore the capabilities of your web browser's 
+              <a href="https://developer.chrome.com/docs/ai/built-in" target="chrome">built-in AI</a> API's.
+              Currently, <a href="https://developer.chrome.com/docs/ai/built-in-apis" target="chrome">these API's</a> are supported 
+              only in <a href="https://www.google.com/intl/nl/chrome/" target="chrome">Google Chrome</a>.
+            </p>
+            <p>
+              The following list shows the availability of these API's on your current browser:
+            </p>
+            <dl id="apis-list">
+            </dl>
+          </section>
+          <footer>
+          </footer>
+        </div>
+      </section>
       
       <footer id="statusbar">
         footer
@@ -407,17 +430,15 @@
                 title="Restore" 
                 checked="true"
               />
-              <!--
               <button 
                 type="button"
                 popovertarget="generic-prompt"
                 popovertargetaction="hide"
                 title="Close" 
               />
-              -->
             </form>
           </header>
-          <section>
+          <form>
             <menu role="toolbar">
               <li role="menuitem">
                 <label 
@@ -426,23 +447,69 @@
                 >
                   <input
                     id="uploadPrompt"
-                    name="uploadPromptText"
+                    name="upload"
                     type="file"
                     multiple="false"
                     accept=".csv,.html,.md,text/*,.txt,.xml"
                   />
                 </label>
               </li>            
+              <li role="menuitem">
+                <label 
+                  for="contentRole"
+                  title="The role to use when loading this prompt as an item in the list."
+                >Role</label>
+                <select 
+                  id="contentRole"
+                  name="contentRole"
+                  title="The role to use when loading this prompt as an item in the list."
+                >
+                  <option value="user">User</option>
+                  <option value="assistant">Assistant</option>
+                </select>
+              </li>
+              <li role="menuitem">
+                <button
+                  title="Click to add this as an item to the list."
+                  type="button"
+                  name="add"
+                  value="add-content-item"
+                />
+              </li>
             </menu>
-            <textarea
-              id="prompt-text"
-              name="input-prompt"
-              required
-              placeholder="Type your prompt here..."
-              autofocus="true"
-              tabindex="0"
-            ></textarea>
-          </section>
+            <div role="tablist">
+              <div>
+                <label role="tab" for="genericPromptInput">Input</label>
+                <input id="genericPromptInput" type="radio" name="tabs" value="input" checked/>
+                <textarea
+                  role="tabpanel"
+                  id="prompt-text"
+                  name="input"
+                  required
+                  placeholder="Type your prompt here..."
+                  autofocus="true"
+                  tabindex="0"
+                ></textarea>
+              </div>
+              <div>
+                <label role="tab" for="genericPromptInputList">List</label>
+                <input id="genericPromptInputList" type="radio" name="tabs" value="list" />
+                <div
+                  role="tabpanel"
+                  id="prompt-list"
+                >
+                  <table>
+                    <thead>
+                      <td>Role</td>
+                      <td>Content</td>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </form>
           <footer>
             <form role="toolbar">
               <button
@@ -584,7 +651,7 @@
                   >
                     <input
                       id="uploadSourceText"
-                      name="uploadSourceText"
+                      name="upload"
                       type="file"
                       multiple="false"
                       accept=".csv,.html,.md,text/*,.txt,.xml"
@@ -755,7 +822,7 @@
                   >
                     <input
                       id="uploadLongText"
-                      name="uploadLongText"
+                      name="upload"
                       type="file"
                       multiple="false"
                       accept=".csv,.html,.md,text/*,.txt,.xml"
@@ -905,6 +972,419 @@
     </dialog>
 
     <dialog 
+      id="writer-dialog"
+      class="input-output-dialog"      
+      aria-labelledby="writer-dialog-title"
+      draggable="true" 
+      popover="manual"
+      closedby="closerequest"            
+    >
+      <div>
+        <header>
+          <h1 
+            id="writer-dialog-title" 
+          >Write</h1>
+          <form role="toolbar">
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="minimize" 
+              title="Minimize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="maximize" 
+              title="Maximize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="restore"  
+              title="Restore" 
+              checked="true"
+            />
+            <button 
+              type="button"
+              popovertarget="writer-dialog"
+              popovertargetaction="hide"
+              title="Close" 
+            />
+          </form>
+        </header>
+        <section>
+          <form name="writerDialogSettingForm">
+            <input 
+              type="hidden" 
+              name="state"
+            />
+            <header>
+              <menu role="toolbar">
+                <li role="menuitem">
+                  <label 
+                    title="Upload writing instructions..."
+                    for="uploadWritingInstructions"
+                  >
+                    <input
+                      id="uploadWritingInstructions"
+                      name="upload"
+                      type="file"
+                      multiple="false"
+                      accept=".csv,.html,.md,text/*,.txt,.xml"
+                    />
+                  </label>
+                </li>
+                <li role="menuitem">
+                  <label 
+                    for="writingTone-picker"
+                    title="Writing tone can refer to the style, character, or attitude of the content"
+                  >Tone</label>
+                  <select 
+                    id="writingTone-picker" 
+                    name="writingTone-picker"
+                    title="Writing tone can refer to the style, character, or attitude of the content"
+                    required
+                  >
+                    <option value="casual" label="Casual" />
+                    <option value="formal" label="Formal" />
+                    <option value="neutral" label="Neutral" selected/>
+                  </select>                  
+                </li>
+                <li role="menuitem">
+                  <label for="summaryLength-picker">Length</label>
+                  <select 
+                    id="writingLength-picker" 
+                    name="writingLength-picker"
+                    title="The length of the writing output."
+                    required
+                  >
+                    <option value="short" label="Short"/>
+                    <option value="medium" label="Medium" selected/>
+                    <option value="long" label="Long"/>
+                  </select>                  
+                </li>
+                <li role="menuitem">
+                  <label for="writingOutputFormat-picker">Format</label>
+                  <select
+                    id="writingOutputFormat-picker"
+                    name="writingOutputFormat-picker"
+                    title="The desired output format for the writing output"
+                    required
+                  >
+                    <option value="markdown" label="Markdown" selected />
+                    <option value="plain-text" label="Plaintext" />
+                  </select>
+                </li>
+                <li role="menuitem">
+                  <label 
+                    for="autoWrite"
+                    title="Check to automatically write."
+                  >Auto-write</label>
+                  <input 
+                    id="autoWrite" 
+                    name="autoWrite"
+                    type="checkbox" 
+                    checked="true"
+                    title="Check to automatically write."
+                  />
+                </li>
+                <li role="menuitem">
+                  <button
+                    id="write"
+                    name="write"
+                    type="button"
+                    value="write"
+                    title="Click to write."
+                  />
+                </li>
+              </menu>
+            </header>
+            <div role="tablist">
+              <div>
+                <label role="tab" for="writingInstructions">Input</label>
+                <input id="writingInstructions" type="radio" name="tabs" checked="true" value="input"/>
+                <textarea 
+                  id="writingInstructionsInput"
+                  role="tabpanel"
+                  name="input"
+                  placeholder="Type the writing instructions"
+                  spellcheck="true"
+                  required
+                  autofocus
+                ></textarea>
+              </div>
+              <div>
+                <label role="tab" for="writingContext">Context</label>
+                <input id="writingContext" type="radio" name="tabs" value="context"/>
+                <textarea 
+                  id="writingContextInput"
+                  role="tabpanel"
+                  name="context"
+                  placeholder="Type the context for your writing task"
+                  spellcheck="true"
+                  required
+                  autofocus
+                ></textarea>
+              </div>
+            </div>            
+          </form>
+          <div class="response">
+            <header>
+              <menu role="toolbar">
+                <li role="menuitem">
+                  <button 
+                    type="button" 
+                    name="download"
+                    value="downloadOutput"
+                    title="Download the writing output..."
+                  />
+                </li>
+                <li role="menuitem">
+                  <button 
+                    type="button" 
+                    name="copy"
+                    value="copyOutput"
+                    title="Copy this writing output to the clipboard..."
+                  />
+                </li>
+                <li role="menuitem">
+                  <form role="menubar">
+                    <input role="menuitem" type="radio" name="format" value="formatted" checked title="View formatted"/>
+                    <input role="menuitem" type="radio" name="format" value="markdown" title="View Markdown code"/>
+                    <input role="menuitem" type="radio" name="format" value="html" title="View HTML code"/>
+                  </form>
+                </li>              
+              </menu>
+            </header>
+            <section></section>
+            <pre><code class="hljs language-markdown"></code></pre>
+            <pre><code class="hljs language-html"></code></pre>
+            <input type="hidden" id="writtenText-text" name="writtenText-text"/>
+          </div>
+        </section>
+        <footer>
+          <form role="toolbar">
+            <button
+              name="confirm"
+              type="button"
+              tabindex="0"
+              title="Close" 
+              popovertarget="writer-dialog"
+              popovertargetaction="hide"
+            >Ok</button>
+          </form>
+        </footer>
+      </div>
+    </dialog>
+    
+    <dialog 
+      id="rewriter-dialog"
+      class="input-output-dialog"      
+      aria-labelledby="rewriter-dialog-title"
+      draggable="true" 
+      popover="manual"
+      closedby="closerequest"            
+    >
+      <div>
+        <header>
+          <h1 
+            id="rewriter-dialog-title" 
+          >Rewrite</h1>
+          <form role="toolbar">
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="minimize" 
+              title="Minimize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="maximize" 
+              title="Maximize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="restore"  
+              title="Restore" 
+              checked="true"
+            />
+            <button 
+              type="button"
+              popovertarget="rewriter-dialog"
+              popovertargetaction="hide"
+              title="Close" 
+            />
+          </form>
+        </header>
+        <section>
+          <form name="rewriterDialogSettingForm">
+            <input 
+              type="hidden" 
+              name="state"
+            />
+            <header>
+              <menu role="toolbar">
+                <li role="menuitem">
+                  <label 
+                    title="Upload text to rewrite..."
+                    for="uploadTextToRewrite"
+                  >
+                    <input
+                      id="uploadTextToRewrite"
+                      name="upload"
+                      type="file"
+                      multiple="false"
+                      accept=".csv,.html,.md,text/*,.txt,.xml"
+                    />
+                  </label>
+                </li>
+                <li role="menuitem">
+                  <label 
+                    for="rewritingTone-picker"
+                    title="Pick the tone for the rewrite"
+                  >Tone</label>
+                  <select 
+                    id="rewritingTone-picker" 
+                    name="rewritingTone-picker"
+                    title="Pick the tone for the rewrite"
+                    required
+                  >
+                    <option value="as-is" label="As-is" selected/>
+                    <option value="more-casual" label="More Casual" />
+                    <option value="more-formal" label="More Formal" />
+                  </select>                  
+                </li>
+                <li role="menuitem">
+                  <label for="rewritingLength-picker">Length</label>
+                  <select 
+                    id="rewritingLength-picker" 
+                    name="rewritingLength-picker"
+                    title="The length of the rewrite."
+                    required
+                  >
+                    <option value="as-is" label="As-is" selected/>
+                    <option value="longer" label="Longer"/>
+                    <option value="shorter" label="Shorter"/>
+                  </select>                  
+                </li>
+                <li role="menuitem">
+                  <label for="rewritingOutputFormat-picker">Format</label>
+                  <select
+                    id="rewritingOutputFormat-picker"
+                    name="rewritingOutputFormat-picker"
+                    title="The desired output format for the rewrite"
+                    required
+                  >
+                    <option value="as-is" label="As-is" selected />
+                    <option value="markdown" label="Markdown" />
+                    <option value="plain-text" label="Plaintext" />
+                  </select>
+                </li>
+                <li role="menuitem">
+                  <label 
+                    for="autoRewrite"
+                    title="Check to automatically rewrite."
+                  >Auto-rewrite</label>
+                  <input 
+                    id="autoRewrite" 
+                    name="autoRewrite"
+                    type="checkbox" 
+                    checked="true"
+                    title="Check to automatically rewrite."
+                  />
+                </li>
+                <li role="menuitem">
+                  <button
+                    id="re`write"
+                    name="rewrite"
+                    type="button"
+                    value="rerewrite"
+                    title="Click to rewrite."
+                  />
+                </li>
+              </menu>
+            </header>
+            <div role="tablist">
+              <div>
+                <label role="tab" for="rewriteInput">Input</label>
+                <input id="rewriteInput" type="radio" name="tabs" checked="true" value="input"/>
+                <textarea 
+                  id="rewritInputText"
+                  role="tabpanel"
+                  name="input"
+                  placeholder="Type the text to rewrite"
+                  spellcheck="true"
+                  required
+                  autofocus
+                ></textarea>
+              </div>
+              <div>
+                <label role="tab" for="rewritingContext">Context</label>
+                <input id="rewritingContext" type="radio" name="tabs" value="context"/>
+                <textarea 
+                  id="rewritingContextInput"
+                  role="tabpanel"
+                  name="context"
+                  placeholder="Type the context for your rewriting task"
+                  spellcheck="true"
+                  required
+                  autofocus
+                ></textarea>
+              </div>
+            </div>            
+          </form>
+          <div class="response">
+            <header>
+              <menu role="toolbar">
+                <li role="menuitem">
+                  <button 
+                    type="button" 
+                    name="download"
+                    value="downloadOutput"
+                    title="Download the rewrite..."
+                  />
+                </li>
+                <li role="menuitem">
+                  <button 
+                    type="button" 
+                    name="copy"
+                    value="copyOutput"
+                    title="Copy this rewrite to the clipboard..."
+                  />
+                </li>
+                <li role="menuitem">
+                  <form role="menubar">
+                    <input role="menuitem" type="radio" name="format" value="formatted" checked title="View formatted"/>
+                    <input role="menuitem" type="radio" name="format" value="markdown" title="View Markdown code"/>
+                    <input role="menuitem" type="radio" name="format" value="html" title="View HTML code"/>
+                  </form>
+                </li>              
+              </menu>
+            </header>
+            <section></section>
+            <pre><code class="hljs language-markdown"></code></pre>
+            <pre><code class="hljs language-html"></code></pre>
+            <input type="hidden" id="writtenText-text" name="writtenText-text"/>
+          </div>
+        </section>
+        <footer>
+          <form role="toolbar">
+            <button
+              name="confirm"
+              type="button"
+              tabindex="0"
+              title="Close" 
+              popovertarget="rewriter-dialog"
+              popovertargetaction="hide"
+            >Ok</button>
+          </form>
+        </footer>
+      </div>
+    </dialog>
+    
+    <dialog 
       id="proofreader-dialog"
       class="input-output-dialog"      
       aria-labelledby="proofreader-dialog-title"
@@ -956,10 +1436,10 @@
                 <li role="menuitem">
                   <label 
                     title="Upload a text to proofread..."
-                    for="uploadLongText"
+                    for="uploadDraftText"
                   >
                     <input
-                      id="uploadLongText"
+                      id="uploadDraftText"
                       name="uploadLongText"
                       type="file"
                       multiple="false"
@@ -968,19 +1448,136 @@
                   </label>
                 </li>            
                 <li role="menuitem">
-                  <button
-                    id="summarize"
-                    name="summarize"
-                    type="button"
-                    value="summarize"
-                    title="Click to summarize."
+                  <label 
+                    for="expectedInputLanguage-picker"
+                    title="Select the expected input language(s)."
+                  >Input Languages</label>
+                  <select 
+                    id="expectedInputLanguage-picker" 
+                    name="expectedInputLanguage-picker"
+                    title="Select the expected input lagnuage(s)."
+                  >
+                  </select>
+                  <input 
+                    type="hidden" 
+                    name="detectedInputLanguage"
+                    id="detectedInputLanguage"
+                    value=""
+                    required
                   />
                 </li>
+                <li role="menuitem">
+                  <label 
+                    title="The language for suggested corrections"
+                    for="correctionExplanationLanguage-picker"
+                  >Explanation Language</label>
+                  <select 
+                    id="correctionExplanationLanguage-picker" 
+                    title="The language for suggested corrections"
+                    name="correctionExplanationLanguage-picker"
+                    required
+                  >
+                  </select>
+                </li>
+                <li role="menuitem">
+                  <button
+                    type="button"
+                    popovertarget="correctionOptions"
+                    popovertargetaction="toggle"
+                  >Correction Options</button>
+                  <menu 
+                    id="correctionOptions"
+                    popover
+                  >
+                    <li role="menuitem">
+                      <input 
+                        id="correctionOptionCapitalization"
+                        type="checkbox" 
+                        checked
+                      />
+                      <label
+                        for="correctionOptionCapitalization"
+                      >Capitalization</label>
+                    </li>
+                    <li role="menuitem">
+                      <input 
+                        id="correctionOptionGrammar"
+                        type="checkbox" 
+                        checked
+                      />
+                      <label
+                        for="correctionOptionGrammar"
+                      >Grammar</label>
+                    </li>
+                    <li role="menuitem">
+                      <input 
+                        id="correctionOptionMissingWords"
+                        type="checkbox" 
+                        checked
+                      />
+                      <label
+                        for="correctionOptionMissingWords"
+                      >Missing Words</label>
+                    </li>
+                    <li role="menuitem">
+                      <input 
+                        id="correctionOptionPreposition"
+                        type="checkbox" 
+                        checked
+                      />
+                      <label
+                        for="correctionOptionPreposition"
+                      >Preposition</label>
+                    </li>
+                    <li role="menuitem">
+                      <input 
+                        id="correctionOptionPunctuation"
+                        type="checkbox" 
+                        checked
+                      />
+                      <label
+                        for="correctionOptionPunctuation"
+                      >Punctuation</label>
+                    </li>
+                    <li role="menuitem">
+                      <input 
+                        id="correctionOptionSpelling"
+                        type="checkbox" 
+                        checked
+                      />
+                      <label
+                        for="correctionOptionSpelling"
+                      >Spelling</label>
+                    </li>
+                  </menu>
+                </li>
+                <li role="menuitem">
+                  <label 
+                    for="autoProofread"
+                    title="Check to automatically update the corrections and explanations."
+                  >Auto-proofread</label>
+                  <input 
+                    id="autoProofread"
+                    name="autoProofread"
+                    type="checkbox" 
+                    title="Check to automatically preoofread the draft."
+                  />
+                </li>
+                <li role="menuitem">
+                  <button
+                    id="proofread"
+                    name="proofread"
+                    type="button"
+                    value="proofread"
+                    title="Click to proofread."
+                  />
+                </li>
+                
               </menu>
             </header>
             <textarea 
               id="draft-text"
-              name="draft-text"
+              name="input"
               placeholder="Type the text to proofread"
               spellcheck="true"
               required

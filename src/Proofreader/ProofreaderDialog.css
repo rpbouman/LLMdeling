@@ -9,7 +9,7 @@ dialog.input-output-dialog#proofreader-dialog {
 
     > header {
       > h1::before {
-        content: var( --icon-message-questionmark );
+        content: var( --icon-message-report );
       }
     }
     

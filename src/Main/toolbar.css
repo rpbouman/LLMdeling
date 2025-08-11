@@ -116,3 +116,124 @@ main#app[data-built-in-ai-rewriter=false] {
     }
   }
 }
+
+/**
+* If the translation dialog is opened, 
+* then translation toolbar button does not respond to clicks and appears depressed  
+*/
+body:has( dialog#translation-dialog:popover-open) {
+  > main#app {
+    > header {
+      > menu[role=toolbar] {
+        > li[role=menuitem] {
+          > button[type=button][popovertarget=translation-dialog] {
+            pointer-events: none;
+            border-style: inset;
+            background-color: var( --dark-background-color );
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+* If the writer dialog is opened, 
+* then writer toolbar button does not respond to clicks and appears depressed  
+*/
+body:has( dialog#writer-dialog:popover-open) {
+  > main#app {
+    > header {
+      > menu[role=toolbar] {
+        > li[role=menuitem] {
+          > button[type=button][popovertarget=writer-dialog] {
+            pointer-events: none;
+            border-style: inset;
+            background-color: var( --dark-background-color );
+          }
+        }
+      }
+    }
+  }
+}  
+
+/**
+* If the rewriter dialog is opened, 
+* then rewriter toolbar button does not respond to clicks and appears depressed  
+*/
+body:has( dialog#rewriter-dialog:popover-open) {
+  > main#app {
+    > header {
+      > menu[role=toolbar] {
+        > li[role=menuitem] {
+          > button[type=button][popovertarget=rewriter-dialog] {
+            pointer-events: none;
+            border-style: inset;
+            background-color: var( --dark-background-color );
+          }
+        }
+      }
+    }
+  }
+}  
+
+
+/**
+* If the summarization dialog is opened, 
+* then summarization toolbar button does not respond to clicks and appears depressed  
+*/
+body:has( dialog#summarization-dialog:popover-open) {
+  > main#app {
+    > header {
+      > menu[role=toolbar] {
+        > li[role=menuitem] {
+          > button[type=button][popovertarget=summarization-dialog] {
+            pointer-events: none;
+            border-style: inset;
+            background-color: var( --dark-background-color );
+          }
+        }
+      }
+    }
+  }
+}  
+
+/**
+* If the proofreader dialog is opened, 
+* then proofreader toolbar button does not respond to clicks and appears depressed  
+*/
+body:has( dialog#proofreader-dialog:popover-open) {
+  > main#app {
+    > header {
+      > menu[role=toolbar] {
+        > li[role=menuitem] {
+          > button[type=button][popovertarget=proofreader-dialog] {
+            pointer-events: none;
+            border-style: inset;
+            background-color: var( --dark-background-color );
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+* If the about dialog is opened, 
+* then about toolbar button does not respond to clicks and appears depressed  
+*/
+body:has( dialog#about-dialog:popover-open) {
+  > main#app {
+    > header {
+      > menu[role=toolbar] {
+        > li[role=menuitem] {
+          > button[type=button][popovertarget=about-dialog] {
+            pointer-events: none;
+            border-style: inset;
+            background-color: var( --dark-background-color );
+          }
+        }
+      }
+    }
+  }
+}  
