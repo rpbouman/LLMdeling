@@ -65,6 +65,7 @@ section.conversation {
   > .response {
     margin-right: 200px;
     margin-left: 50px;
+    margin-bottom: 1em;
     border-bottom-left-radius: 0em;
     scroll-margin-bottom: 2em;
 

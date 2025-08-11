@@ -62,7 +62,7 @@ async function initSummarizationDialog(){
 function setSummarizationDialogState(state){
   var summarizationDialog = getSummarizationDialog();
   var dialogState = getFormStateInfo(summarizationDialog).currentState;
-  delete dialogState['uploadLongText'];  
+  delete dialogState['upload'];  
 
   var text = state.text;
   if (text){

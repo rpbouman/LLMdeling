@@ -425,7 +425,7 @@ function postProcessTranslatorOutputText(text) {
 function setTranslationDialogState(state){
   var translationDialog = getTranslationDialog();
   var dialogState = getFormStateInfo(translationDialog).currentState;
-  delete dialogState['uploadSourceText'];
+  delete dialogState['upload'];
 
   var text = state.text;
   

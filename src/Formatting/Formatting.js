@@ -15,6 +15,12 @@ function md2html(text, highlighting){
   return html;
 }
 
+function getCurrentFormat(ui){
+  var ui = el(ui);
+  var currentFormat = ui.querySelector('input[type=radio][name=format]:checked').value;
+  return currentFormat;
+}
+
 function initMarked(){
   /**
   * Setup for highlighting code blocks.

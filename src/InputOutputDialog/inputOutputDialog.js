@@ -57,6 +57,8 @@ async function handleResponseStream(reponseStream, ui){
   
   try{
     for await (const chunk of reponseStream){
+      var currentUiSub = undefined;
+      
       if (ui.getAttribute('data-status') === 'waiting for response') {
         ui.setAttribute('data-status', 'in progress');
       }
@@ -65,24 +67,31 @@ async function handleResponseStream(reponseStream, ui){
       var html = md2html(responseText)
       if (formattedOutputUi) {
         formattedOutputUi.innerHTML = html;
-        formattedOutputUi.scrollIntoView(false);
+        if (currentUiSub === 'formatted'){
+          currentUiSub = formattedOutputUi;
+        }
       }
 
       if (markdownOutputUi){
         var markdownHighlightedHtml = hljs.highlight(responseText, {language: 'markdown'}).value;
         markdownOutputUi.innerHTML = markdownHighlightedHtml;
-        markdownOutputUi.scrollIntoView(false);
+        if (currentUiSub === 'formatted'){
+          currentUiSub = markdownOutputUi;
+        }
       }
 
       if (htmlCodeOutputUi){
         var htmlHighlightedHtml = hljs.highlight(html, {language: 'html'}).value;
         htmlCodeOutputUi.innerHTML = htmlHighlightedHtml;
-        htmlCodeOutputUi.scrollIntoView(false);
+        if (currentUiSub === 'formatted'){
+          currentUiSub = markdownOutputUi;
+        }
       }
-      
       if (rawOutputUi) {
         rawOutputUi.value = responseText;
       }
+
+      ui.scrollIntoView(false);
     }
   }
   catch(error){
