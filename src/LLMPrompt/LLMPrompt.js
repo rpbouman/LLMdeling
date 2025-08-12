@@ -127,24 +127,51 @@ function getPromptDialogElement(promptDialog, elementSelector){
   if (!element){
     throw new Error(`Prompt element ${elementSelector} not found!`);
   }
-  return input;
+  return element;
 }
 
 function getPromptDialogInputElement(promptDialog){
-  return getPromptDialogElement(promptDialog, '*:is( textarea, input)[name=input-prompt]')
+  return getPromptDialogElement(promptDialog, '*:is( textarea, input)[name=input]');
+}
+
+function getPromptDialogRoleElement(promptDialog){
+  return getPromptDialogElement(promptDialog, 'select[name=contentRole]');
 }
 
 function addItemToPromptList(event){
   var target = event.target;
   var dialog = getElementPromptDialog(target);
   
-  var inputElement = getPromptDialogInputElement(promptDialog);
+  var inputElement = getPromptDialogInputElement(dialog);
   var value = inputElement.value;
   value = value.trim();
   if (!value.length) {
     return;
   }
   
+  var roleElement = getPromptDialogRoleElement(dialog);
+  var role = roleElement.value;
+  
+  var list = dialog.querySelector('table tbody');
+  var rows = list.rows;
+  var row = list.insertRow(list.rows.length);
+  var cell;
+  var cells = row.cells;
+  
+  cell = row.insertCell(cells.length);
+  var checkbox = createEl('input', {
+    type: 'checkbox'
+  });
+  cell.appendChild(checkbox);
+  
+  cell = row.insertCell(cells.length);
+  cell.textContent = role;
+
+  cell = row.insertCell(cells.length);
+  cell.textContent = value;
+  
+  inputElement.value = '';
+  inputElement.focus();
 }
 
 function getPromptDialogItemList(promptDialog){

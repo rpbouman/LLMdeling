@@ -96,7 +96,13 @@ dialog.llm-prompt#generic-prompt {
       }
       
       > div[role=tablist] {
-                
+        
+        > div {
+          > label[role=tab] + input[type=radio][name=tabs]:checked + *[role=tabpanel]:has( table ) {
+            height: calc( 100% - 60px );
+          }
+        }
+        
         > div {
           
           > label:has( + input[type=radio][value=input] )::before {
@@ -104,7 +110,7 @@ dialog.llm-prompt#generic-prompt {
           }
 
 
-          > label:has( + input[type=radio][value=list]  )::before {
+          > label:has( + input[type=radio][value=list] )::before {
             content: var( --icon-list-numbers);
           }
           
@@ -112,6 +118,43 @@ dialog.llm-prompt#generic-prompt {
             outline: none; 
           }
         }
+        
+        > div:has( > label[role=tab] + input[type=radio][value=list] + div[role=tabpanel] > table > tbody:not( tr )  ) {
+          > label[role=tab]::after {
+            content: ' (0)';
+          }
+        }
+
+        > div:has( > label[role=tab] + input[type=radio][value=list] + div[role=tabpanel] > table > tbody > tr  ) {
+          > label[role=tab]::after {
+            content: ' (1)';
+          }
+        }
+
+        > div:has( > label[role=tab] + input[type=radio][value=list] + div[role=tabpanel] > table > tbody > tr:nth-child(2)  ) {
+          > label[role=tab]::after {
+            content: ' (2)';
+          }
+        }
+
+        > div:has( > label[role=tab] + input[type=radio][value=list] + div[role=tabpanel] > table > tbody > tr:nth-child(3)  ) {
+          > label[role=tab]::after {
+            content: ' (3)';
+          }
+        }
+        
+        > div:has( > label[role=tab] + input[type=radio][value=list] + div[role=tabpanel] > table > tbody > tr:nth-child(4)  ) {
+          > label[role=tab]::after {
+            content: ' (4)';
+          }
+        }
+        
+        > div:has( > label[role=tab] + input[type=radio][value=list] + div[role=tabpanel] > table > tbody > tr:nth-child(5)  ) {
+          > label[role=tab]::after {
+            content: ' (5)';
+          }
+        }        
+        
       }
     }
     

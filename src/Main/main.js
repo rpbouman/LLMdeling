@@ -54,12 +54,7 @@ async function initApiStatus(){
 
 function initUi(){
   initLLMPrompts();
-  getTranslationDialog()
-  .addEventListener('toggle', async function(event){
-    await initTranslationDialog();
-  }, {
-    once: true
-  });
+  initTranslationDialog();
   initSummarizationDialog();
   byId('new-chat').addEventListener('click', newChat);
 }

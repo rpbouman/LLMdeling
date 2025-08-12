@@ -144,6 +144,7 @@ function setFormState(form, state){
       previous: previousValue,
       current: currentValue
     }
+    currentState[elementName] = currentValue;
     element.value = currentValue;
   } 
   dispatchChangeEvent(stateElement, {

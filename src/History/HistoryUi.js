@@ -143,7 +143,11 @@ async function restoreChatHandler(event){
     chat[historyDatabaseMessageSequenceNumber] = last[historyDatabaseMessageSequenceNumber];
   }
   
+  // TODO: update app state so user sees status information as creating a chat may take a while.
   currentChat = await createChat(chat);
+  
+  var promptId = messages.promptId || 'generic-prompt';
+  byId(promptId).showPopover();
 }
 
 function deleteChatHandler(event){
