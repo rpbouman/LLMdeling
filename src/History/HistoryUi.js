@@ -229,7 +229,14 @@ function createHistoryUiChatNode(chatRecord, append){
   var span = summary.querySelector('span');
   // note: do not use textContent!! If the text contains line breaks they will be rendered as <br>. 
   // by explicitly adding a text node, we avoid that.
-  span.appendChild( document.createTextNode(chatRecord.text) );
+  var label;
+  if (chatRecord.promptList && chatRecord.promptList.length) {
+    label = chatRecord.promptList[0].content;
+  }
+  else {
+    label = chatRecord.text;
+  }
+  span.appendChild( document.createTextNode(label) );
   
   var chatHistoryTabPanel = getChatHistoryTabPanel();
   

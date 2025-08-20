@@ -86,14 +86,21 @@ async function createChat(options){
       var message = options.conversation[i];
       newChat[historyDatabaseMessageSequenceNumber] = message[historyDatabaseMessageSequenceNumber];
       var text = message.text;
+      var promptList = message.promptList;
       var type = message.type;
-      var promptToAppend = {content: text};
+      var promptToAppend;
+      if (promptList) {
+        promptToAppend = promptList;
+      }
+      else {
+        promptToAppend = {content: text};
+      }
       var role;
       var ui;
       switch (type){ 
         case 'request':
           ui = createRequestUi(
-            text, 
+            promptList || text, 
             message[historyDatabaseMessageStoreTimestamp], 
             message[historyDatabaseMessageMeasuredInputUsage]
           );
@@ -111,8 +118,13 @@ async function createChat(options){
         setMessageUiLanguage(ui, message.detectedLanguage);
       }
       ui.scrollIntoView(false);
-      promptToAppend.role = role;
-      promptsToAppend.push(promptToAppend);
+      if (promptToAppend instanceof Array) {
+        promptsToAppend = promptsToAppend.concat(promptToAppend);
+      }
+      else {
+        promptToAppend.role = role;
+        promptsToAppend.push(promptToAppend);
+      }
     }
   }
   updateStatus('creating-model');
@@ -251,7 +263,7 @@ function getMessageAttributes(){
   return attributes;
 }
 
-function createRequestUi(text, timestamp, measuredInputUsage){
+function createRequestUi(promptArg, timestamp, measuredInputUsage){
   timestamp = timestamp || Date.now();
   
   var requestUi = instantiateTemplate('request-ui', getMessageAttributes());
@@ -263,6 +275,14 @@ function createRequestUi(text, timestamp, measuredInputUsage){
   });  
   bindMessageActionHandlers(header);
   
+  var text;
+  if (typeof promptArg === 'string'){
+    text = promptArg;
+  }
+  else 
+  if (promptArg instanceof Array){
+    text = serializePromptList(promptArg);
+  }
   updateTextUiElement(requestUi.querySelector('section'), text);
   
   var conversation = getConversation();

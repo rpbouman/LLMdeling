@@ -77,7 +77,14 @@ function serializeChatMessages(messages){
   var lines = [];
   messages.forEach(function(message){
     var type = message.type;
-    var text = message.text;
+    var text;
+    if (message.promptList) {
+      text = serializePromptList(message.promptList);
+    }
+    else 
+    if (message.text) {
+      text = message.text;
+    }
     lines.push(`**${type}:**`);
     lines.push('---');
     lines.push(`${text}`);
@@ -112,7 +119,13 @@ async function summarizeChat(messages){
 
 function getSummaryLength(messages){
   var length = messages.reduce(function(acc, curr){
-    acc += curr.text.split(/\n/).length;
+    var text = curr.text;
+    var promptList = curr.promptList;
+    
+    if (promptList) {
+      text = serializePromptList(promptList);
+    }
+    acc += text.split(/\n/).length;
     return acc;
   }, 0);
   if (length <= 3) {
@@ -237,6 +250,9 @@ function getChatMessages(chatId){
 }
 
 function saveMessage(message){
+  if (message.requestOptions) {
+    delete message.requestOptions.signal;
+  }
   message[historyDatabaseChatStoreId] = currentChat[historyDatabaseChatStoreId];
   message[historyDatabaseMessageSequenceNumber] = currentChat[historyDatabaseMessageSequenceNumber];
   storeMessageInHistory(message);

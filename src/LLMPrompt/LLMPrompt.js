@@ -32,18 +32,31 @@ async function mesaureInputUsage(model, input) {
   return measuredInputUsage;
 }
 
-async function sendPrompt(){
+function serializePromptList(promptList){
+  return promptList.map(function(item){
+    return item.role + ':\r\n' + item.content;
+  }).join('\r\n\r\n');
+}
+
+async function sendPrompt(event){
+  var button = event.target;
+  var dialog = getElementPromptDialog(button);
+  
+  var promptDialogListData = getPromptDialogListData(dialog);
+  clearPromptDialogListData(dialog);
+  
   var textArea = getPromptTextArea();
   var text = textArea.value;
   
+  text = text.trim();
   // TODO: get any request options from the prompt dialog.
   var requestOptions = {};
   
   var message = {
-    text: text,
     type: 'request',
     requestOptions: requestOptions
   };
+  
   if (!currentChat) {
     updateStatus('creating-new-chat-session');
     currentChat = await newChat();
@@ -63,25 +76,57 @@ async function sendPrompt(){
     };
     message.modelParams = modelParams;
   }
-  var detectedLanguage = await detectLanguage(message.text);
-  message.detectedLanguage = detectedLanguage;
-  saveMessage(message);  
-  updateStatus('sending');
-  var messageUi = createRequestUi(text, undefined, measuredInputUsage);
-  if (detectedLanguage){
-    setMessageUiLanguage(messageUi, detectedLanguage);
-  }
-  textArea.value = '';
-  textArea.focus();
-  
+      
   if (!currentChat.requestAbortController) {
     currentChat.requestAbortController = new AbortController();
   }
   requestOptions = Object.assign(requestOptions, {
     signal: currentChat.requestAbortController.signal
   });  
+
+  var promptArg, messageForLanguageDetection;
+  if (promptDialogListData) {
+    if (text.length) {
+      // we have a list but also a new prompt. We should append it to the list.
+      // but then we need to fetch the current role from the prompt dialog.
+      var roleElement = getPromptDialogRoleElement(dialog);
+      var role = roleElement.value;
+      promptDialogListData.push({
+        role: role,
+        content: text
+      });
+    }      
+    message.promptList = promptDialogListData;
+    promptArg = promptDialogListData;
+    messageForLanguageDetection = promptDialogListData.map(function(listItem){
+      return listItem.content;
+    })
+    .join('\r\n\r\n');
+  }
+  else {
+    message.text = text;
+    messageForLanguageDetection = text;
+    promptArg = text;
+  }
+
+  updateStatus('sending');
   
-  var response = model.promptStreaming(text, requestOptions);
+  if (messageForLanguageDetection.trim().length) {
+    var detectedLanguage = await detectLanguage(messageForLanguageDetection);
+    message.detectedLanguage = detectedLanguage;
+  }
+  
+  saveMessage(message);  
+  var messageUi = createRequestUi(promptArg, undefined, measuredInputUsage);
+  if (detectedLanguage){
+    setMessageUiLanguage(messageUi, detectedLanguage);
+  }
+  
+  var response = model.promptStreaming(promptArg, requestOptions);
+  
+  textArea.value = '';
+  textArea.focus();
+  
   updateStatus('waiting for response');
   handleResponse(response);
 }
@@ -152,9 +197,10 @@ function addItemToPromptList(event){
   var roleElement = getPromptDialogRoleElement(dialog);
   var role = roleElement.value;
   
-  var list = dialog.querySelector('table tbody');
-  var rows = list.rows;
-  var row = list.insertRow(list.rows.length);
+  var list = getPromptDialogItemList(dialog);
+  var tbody = list.tBodies.item(0);
+  var rows = tbody.rows;
+  var row = tbody.insertRow(rows.length);
   var cell;
   var cells = row.cells;
   
@@ -175,7 +221,48 @@ function addItemToPromptList(event){
 }
 
 function getPromptDialogItemList(promptDialog){
+  var list = promptDialog.querySelector('label[role=tab] + input[name=tabs][type=radio][value=list] + div[role=tabpanel] > table');
+  return list;
+}
+
+function clearPromptDialogListData(promptDialog){
+  var list = getPromptDialogItemList(promptDialog);
+  var tbody = list.tBodies.item(0);
+  var rows = tbody.rows;
+  while (rows.length) {
+    tbody.deleteRow(rows.item(0));
+  }
+}
+
+function getPromptDialogListData(promptDialog){
+  var list = getPromptDialogItemList(promptDialog);
+  var tHead = list.tHead;
+  var headerRow = tHead.rows.item(0);
+  var headerCells = headerRow.cells;
   
+  var tbody = list.tBodies.item(0);
+  var rows = tbody.rows;
+  var dataRows = [];
+  for (var i = 0; i < rows.length; i++){
+    var row = rows.item(i);
+    var dataRow = {};
+    var dataCells = row.cells;
+    for (var j = 0; j < headerCells.length; j++){
+      var headerCell = headerCells.item(j);
+      var columnName = headerCell.getAttribute('data-column');
+      if (!columnName) {
+        continue;
+      }
+      var dataCell = dataCells.item(j);
+      dataRow[columnName] = dataCell.textContent;
+    }
+    dataRows.push(dataRow);
+  }
+  
+  if (!dataRows.length){
+    return undefined;
+  }
+  return dataRows;
 }
 
 function initLLMPrompts(){
