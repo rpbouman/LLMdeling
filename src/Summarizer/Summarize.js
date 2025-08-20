@@ -53,6 +53,9 @@ async function summarizationDialogStateChanged(event){
 async function initSummarizationDialog(){
 
   var summarizationDialog = getSummarizationDialog();
+  
+  var summarizeButton = summarizationDialog.querySelector('button[type=button][name=summarize]') 
+  summarizeButton.addEventListener('click', handleSummarizeClicked); 
   var summarizationDialogStateElement = summarizationDialog.querySelector(stateElementSelector);
   summarizationDialogStateElement.addEventListener('change', summarizationDialogStateChanged, true);
   
