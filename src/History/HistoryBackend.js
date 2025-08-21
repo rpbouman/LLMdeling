@@ -95,6 +95,7 @@ function serializeChatMessages(messages){
 }
 
 async function summarizeChat(messages){
+  var summary;
   try {
     var fullText = serializeChatMessages(messages);
     var summaryLength = getSummaryLength(messages);
@@ -107,10 +108,11 @@ async function summarizeChat(messages){
       context: `Summarize the conversation so it can be understood at a glance. Aim to extract the essence of the response(s) that satisfy the user's request(s). Don't dwell on the development of the dialog.`
     };
 
-    var summary = await summarize(fullText, options);
+    summary = await summarize(fullText, options);
   }
   catch(e) {
     console.warn(e);
+    return e;
   }
   finally {
   }
@@ -119,13 +121,20 @@ async function summarizeChat(messages){
 
 function getSummaryLength(messages){
   var length = messages.reduce(function(acc, curr){
-    var text = curr.text;
-    var promptList = curr.promptList;
+    var text;
     
+    var promptList = curr.promptList;
+
     if (promptList) {
       text = serializePromptList(promptList);
     }
-    acc += text.split(/\n/).length;
+    else {
+      text = curr.text;
+    }
+    
+    if (text) {
+      acc += text.split(/\n/).length;
+    }
     return acc;
   }, 0);
   if (length <= 3) {
@@ -251,6 +260,7 @@ function getChatMessages(chatId){
 
 function saveMessage(message){
   if (message.requestOptions) {
+    message = Object.assign({}, message);
     delete message.requestOptions.signal;
   }
   message[historyDatabaseChatStoreId] = currentChat[historyDatabaseChatStoreId];

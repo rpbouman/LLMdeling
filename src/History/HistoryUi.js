@@ -82,20 +82,27 @@ async function chatNodeToggleHandler(event){
     contents.appendChild(document.createTextNode(currentSummary.text));
   }
   else {
-    currentSummary = await summarizeChat(messages);
-    if (currentSummary === undefined){
-      contents.setAttribute('data-status', 'ready');
-      return;
+    try {
+      currentSummary = await summarizeChat(messages);
+      if (currentSummary === undefined){
+        contents.setAttribute('data-status', 'ready');
+        return;
+      }
+      
+      var fullSummary = [];
+      for await (var chunk of currentSummary) {
+        fullSummary.push(chunk);
+        contents.appendChild(document.createTextNode(chunk));
+        contents.scrollIntoView(false);
+      }
+      fullSummary = fullSummary.join('');
+      updateSummary(chatId, fullSummary);
     }
-    
-    var fullSummary = [];
-    for await (var chunk of currentSummary) {
-      fullSummary.push(chunk);
-      contents.appendChild(document.createTextNode(chunk));
-      contents.scrollIntoView(false);
+    catch (e){
+      if (QuotaExceededError && e instanceof QuotaExceededError){
+        debugger;
+      }
     }
-    fullSummary = fullSummary.join('');
-    updateSummary(chatId, fullSummary);
   }
 
   
@@ -224,7 +231,6 @@ function createHistoryUiChatNode(chatRecord, append){
 
   var summary = chatNode.querySelector('summary');
   var ts = chatRecord[historyDatabaseMessageStoreTimestamp];
-  summary.title = `${(new Date(ts)).toISOString()}: ${chatRecord.text}`;
   
   var span = summary.querySelector('span');
   // note: do not use textContent!! If the text contains line breaks they will be rendered as <br>. 
@@ -236,6 +242,7 @@ function createHistoryUiChatNode(chatRecord, append){
   else {
     label = chatRecord.text;
   }
+  summary.title = `${(new Date(ts)).toISOString()}: ${label}`;
   span.appendChild( document.createTextNode(label) );
   
   var chatHistoryTabPanel = getChatHistoryTabPanel();

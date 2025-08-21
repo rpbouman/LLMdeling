@@ -48,6 +48,7 @@ async function summarize(text, options, downloadProgessListener){
       context: options.context 
     };
   }
+  var inputUsage = await summarizer.measureInputUsage(text);
   var summary = summarizer.summarizeStreaming(text, summaryOptions);
   return summary;
 }
