@@ -4,7 +4,12 @@ function getSummarizationDialog(){
 }
 
 async function handleSummarizeClicked(event){
-  doSummarize();
+  try {
+    doSummarize();
+  }
+  catch(e){
+    console.error(e);
+  }
 }
 
 async function doSummarize(){
@@ -12,6 +17,10 @@ async function doSummarize(){
   var currentState = getFormStateInfo(summarizationDialog).currentState;
   
   var text = currentState['input'];
+  var context = currentState['context'];
+  if (context.trim().length === 0){
+    context = undefined;
+  }
   
   var sharedContext = currentState['sharedContext'];
   var summaryType = currentState['summaryType-picker'];
@@ -21,6 +30,7 @@ async function doSummarize(){
   setBusy(summarizationDialog);
   var summaryTextStream = await summarize(
     text, {
+    context: context,
     sharedContext: sharedContext,
     type: summaryType,            //tldr, teaser, key-points, headline
     length: summaryLength,        //short, medium, long      

@@ -128,7 +128,32 @@ async function createChat(options){
     }
   }
   updateStatus('creating-model');
-  var model = await LanguageModel.create(modelOptions);
+  var model;
+  try {
+    model = await LanguageModel.create(modelOptions);
+  }
+  catch(e) {
+    debugger;
+    e_name: switch (e.name){
+      case 'NotAllowedError': 
+        e_message: switch (e.message) {
+          case 'The model process crashed too many times for this version.':
+            showInfoDialog({
+              info: `Error: ${e.name}`,
+              details: `${e.message}.\r\nYou may try to clear the crash count in chrome://on-device-internals/` 
+            });
+            break e_name;
+          default:
+        }
+      default:
+        showInfoDialog({
+          info: `Error: ${e.name}`,
+          details: e.message
+        });
+        return;
+    }
+    console.error(e);
+  }
   if (promptsToAppend && promptsToAppend.length){
     updateStatus('appending-model-context');
     var appendResult = await model.append(promptsToAppend);
@@ -370,4 +395,8 @@ function finishResponse(status, timestamp, ui){
 function handleResponseChunk(chunk){
   responseBuffer += chunk;
   updateTextUiElement(responseUi.querySelector('section'), responseBuffer);
+}
+
+function initConversation(){
+  byId('new-chat').addEventListener('click', newChat);  
 }

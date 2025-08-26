@@ -104,8 +104,8 @@
           <li role="menuitem">
             <button 
               type="button" 
-              name="refresh"
-              value="regenerateSummary"
+              name="summarize"
+              value="summarizeChat"
               title="Regenerate the chat summary..."
             />
           </li>
@@ -281,6 +281,17 @@
           </li>
           <li role="menuitem">
             <button 
+              title="Start a new chat with options"
+              type="button"
+              id="new-chat-with-options"
+              name="new"
+              value="new-chat"
+              popovertarget="model-config-prompt"
+              popovertargetaction="show"
+            >New Chat with Options</button>
+          </li>
+          <li role="menuitem">
+            <button 
               title="Create a new prompt"
               type="button"
               id="new-prompt"
@@ -395,7 +406,7 @@
       <footer id="statusbar">
         footer
       </footer>
-
+      
       <dialog 
         class="llm-prompt"
         id="generic-prompt"
@@ -464,8 +475,8 @@
                   name="contentRole"
                   title="The role to use when loading this prompt as an item in the list."
                 >
-                  <option value="user">User</option>
                   <option value="assistant">Assistant</option>
+                  <option value="user" selected>User</option>
                 </select>
               </li>
               <li role="menuitem">
@@ -492,6 +503,19 @@
                 ></textarea>
               </div>
               <div>
+                <label role="tab" for="responseConstraint">Response Constraint</label>
+                <input id="responseConstraint" type="radio" name="tabs" value="responseSchema"/>
+                <textarea
+                  role="tabpanel"
+                  id="responseConstraint-text"
+                  name="input"
+                  required
+                  placeholder="Type your response constraint as a JSON schema or a regular expression here..."
+                  autofocus="true"
+                  tabindex="0"
+                ></textarea>
+              </div>
+              <div>
                 <label role="tab" for="genericPromptInputList">List</label>
                 <input id="genericPromptInputList" type="radio" name="tabs" value="list" />
                 <div
@@ -502,7 +526,8 @@
                     <thead>
                       <td>#</td>
                       <td data-column="role">Role</td>
-                      <td data-column="content">Content</td>
+                      <td data-column="text">Text</td>
+                      <td data-column="media">Media</td>
                     </thead>
                     <tbody>
                     </tbody>
@@ -530,7 +555,194 @@
             </form>
           </footer>
         </div>
+      </dialog>
+      
+      <dialog 
+        class="llm-prompt"
+        id="model-config-prompt"
+        aria-labelledby="model-config-prompt-title"
+        draggable="true" 
+        popover="manual"
+        closedby="closerequest"
+      >
+        <div>
+          <header>
+            <h1 
+              id="model-config-prompt-title" 
+              data-icon="&#63883;"
+            >Model Config:</h1>
+            <form role="toolbar">
+              <input 
+                name="windowstate" 
+                type="radio" 
+                value="minimize" 
+                title="Minimize"
+              />
+              <input 
+                name="windowstate" 
+                type="radio" 
+                value="maximize" 
+                title="Maximize"
+              />
+              <input 
+                name="windowstate" 
+                type="radio" 
+                value="restore"  
+                title="Restore" 
+                checked="true"
+              />
+              <button 
+                type="button"
+                popovertarget="model-config-prompt"
+                popovertargetaction="hide"
+                title="Close" 
+              />
+            </form>
+          </header>
+          <form>
+            <menu role="toolbar">
+              <li role="menuitem">
+                <label 
+                  title="Upload a text to use as prompt..."
+                  for="uploadInitialPrompt"
+                >
+                  <input
+                    id="uploadInitialPrompt"
+                    name="upload"
+                    type="file"
+                    multiple="false"
+                    accept=".csv,.html,.md,text/*,.txt,.xml"
+                  />
+                </label>
+              </li>            
+              <li role="menuitem">
+                <label 
+                  for="contentRole"
+                  title="The role to use when loading this prompt as an item in the list."
+                >Role</label>
+                <select 
+                  id="contentRole"
+                  name="contentRole"
+                  title="The role to use when loading this prompt as an item in the list."
+                >
+                  <option value="assistant">Assistant</option>
+                  <option value="system" selected>System</option>
+                  <option value="user">User</option>
+                </select>
+              </li>
+              <li role="menuitem">
+                <button
+                  title="Click to add this as an item to the list."
+                  type="button"
+                  name="add"
+                  value="add-content-item"
+                />
+              </li>
+              <li role="menuitem">
+                <label
+                  for="temperature"
+                >Temperature</label>
+                <input 
+                  id="temperature"
+                  type="range"
+                  min="0.0"
+                  max="2.0"
+                  step="0.1"
+                  value="1.0"
+                />
+              </li>
+              <li role="menuitem">
+                <label
+                  for="topK"
+                >Top-k</label>
+                <input 
+                  id="topK"
+                  type="number"
+                  step="1"
+                  min="1"
+                  max="8"
+                  value="3"
+                />
+              </li>
+              <li role="menuitem">
+                <button
+                  title="Click to check availability of a model for the configured options"
+                  type="button"
+                  name="checkModelAvailability"
+                  value="checkModelAvailability"
+                />
+              </li>
+            </menu>
+            <div role="tablist">
+              <div>
+                <label role="tab" for="initialPromptInput">Input</label>
+                <input id="initialPromptInput" type="radio" name="tabs" value="input" checked/>
+                <textarea
+                  role="tabpanel"
+                  id="initial-prompt-text"
+                  name="input"
+                  required
+                  placeholder="Type your initial prompt here..."
+                  autofocus="true"
+                  tabindex="0"
+                ></textarea>
+              </div>
+              <div>
+                <label role="tab" for="initialPromptInputList">List</label>
+                <input id="initialPromptInputList" type="radio" name="tabs" value="list" />
+                <div
+                  role="tabpanel"
+                  id="initial-prompt-list"
+                >
+                  <table>
+                    <thead>
+                      <td>#</td>
+                      <td data-column="role">Role</td>
+                      <td data-column="content">Content</td>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div>
+                <label role="tab" for="expectedInputs">Expected Inputs</label>
+                <input id="expectedInputs" type="radio" name="tabs" value="list" />
+                <div
+                  role="tabpanel"
+                  id="expected-inputs"
+                >
+                  <div>
+                    <input type="checkbox" checked="true"/>
+                    <label>Text</label>
+                  </div>
+                  <div>
+                    <input type="checkbox" />
+                    <label>Image</label>
+                  </div>
+                  <div>
+                    <input type="checkbox" />
+                    <label>Audio</label>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+          </form>
+          <footer>
+            <form role="toolbar">
+              <button
+                id="create-model"
+                type="button"
+                name="createModel"
+                value="create-model"
+                tabindex="0"
+              >Create Model</button>
+            </form>
+          </footer>
+        </div>
       </dialog>      
+      
     </main>
 
     <dialog 

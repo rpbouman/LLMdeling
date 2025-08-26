@@ -3,15 +3,15 @@
 var summarizers = {
 };
 
-async function summarize(text, options, downloadProgessListener){
+async function getSummarizer(options, downloadProgessListener){
   var props = {
     sharedContext: undefined,
     type: 'key-points',                 //tldr, teaser, key-points, headline
     format: 'markdown',                 //markdown, plain-text
     length: 'medium',                   //short, medium, long
     expectedInputLanguages: ['en'],
-    expectedOutputLanguages: ['en'],
-    outputLanguage: 'en'  //short, medium, long
+    expectedContextLanguages: ['en'],
+    outputLanguage: 'en'                //language
   };
   var summarizerOptions = Object.assign(props, options);
   delete summarizerOptions.context;
@@ -20,35 +20,141 @@ async function summarize(text, options, downloadProgessListener){
   
   var summarizerKey = JSON.stringify(summarizerOptions);
   var summarizer = summarizers[summarizerKey];
-  if (!summarizer){
-    if (typeof Summarizer === 'undefined') {
-      var msg = `This browser does not support the Summarizer global. Try to enable chrome://flags/#:~:text=Summarization%20API%20for%20Gemini%20Nano and retry.`;
-      throw new Error(msg);
-    }
-
-    var availability = await Summarizer.availability();
-    if (availability === 'unavailable') {
-      var msg = `The Summarizer API is not available.`;
-      throw new Error(msg);
-    }
-
-    if (typeof downloadProgessListener === 'function'){
-      summarizerOptions.monitor = function(m){
-        m.addEventListener('downloadprogress', downloadProgessListener);
-      };
-    }
-
-    summarizer = await Summarizer.create(summarizerOptions);
-    summarizers[summarizerKey] = summarizer;
+  if (summarizer){
+    return summarizer;
   }
   
+  if (typeof Summarizer === 'undefined') {
+    var msg = `This browser does not support the Summarizer global. Try to enable chrome://flags/#:~:text=Summarization%20API%20for%20Gemini%20Nano and retry.`;
+    throw new Error(msg);
+  }
+
+  var availability = await Summarizer.availability(summarizerOptions);
+  if (availability === 'unavailable') {
+    var msg = `The Summarizer API is not available.`;
+    throw new Error(msg);
+  }
+
+  if (typeof downloadProgessListener === 'function'){
+    summarizerOptions.monitor = function(m){
+      m.addEventListener('downloadprogress', downloadProgessListener);
+    };
+  }
+
+  try {
+    summarizer = await Summarizer.create(summarizerOptions);
+  }
+  catch(e) {
+    console.error(e);
+    throw e;
+  }
+  summarizers[summarizerKey] = summarizer;
+  return summarizer;
+}
+
+async function getSummarizerInputUsage(text, options, downloadProgessListener){
+  var summarizer = await getSummarizer(options, downloadProgessListener);  
+  var ret = {
+    inputQuota: summarizer.inputQuota
+  };
+  
+  try {
+    var inputUsage = await summarizer.measureInputUsage(text);
+    ret.inputUsage = inputUsage;
+  }
+  catch(e){
+    console.error(e);
+    ret.error = e;
+  }
+  
+  return ret;
+}
+
+async function summarize(text, options, downloadProgessListener){
+  options = options || {};
+  
+  var languageDetectionEnabled = options.languageDetectionEnabled || false;
+  delete options.languageDetectionEnabled;
+  if (languageDetectionEnabled === true && options.expectedInputLanguages === undefined) {
+    var detectedInputLanguage = await detectLanguage(
+      text, 
+      downloadProgessListener
+    );
+    if (detectedInputLanguage) {
+      options.expectedInputLanguages = [detectedInputLanguage.detectedLanguage];
+    }
+  }
+  
+  if (languageDetectionEnabled === true && options.expectedContextLanguages === undefined) {
+    var expectedContextLanguages = {};
+    
+    var detectedSharedContextLanguage;
+    if (options.sharedContext){
+      detectedSharedContextLanguage = await detectLanguage(
+        options.sharedContext, 
+        downloadProgessListener
+      );
+      if (detectedSharedContextLanguage){
+        expectedContextLanguages[detectedSharedContextLanguage.detectedLanguage] = detectedSharedContextLanguage.confidence;
+      }
+    }
+    
+    var detectedContextLanguage;
+    if (options.context) {
+      detectedContextLanguage = await detectLanguage(
+        options.context, 
+        downloadProgessListener
+      );
+      if (detectedContextLanguage){
+        expectedContextLanguages[detectedContextLanguage.detectedLanguage] = detectedContextLanguage.confidence;
+      }
+    }
+    
+    options.expectedContextLanguages = Object.keys(expectedContextLanguages);
+    if (options.expectedContextLanguages.length === 0) {
+      options.expectedContextLanguages = undefined;
+    }
+  }
+  
+  if (languageDetectionEnabled === true && options.outputLanguage === undefined) {
+    if (options.expectedContextLanguages && options.expectedContextLanguages.length){
+      options.outputLanguage = options.expectedContextLanguages[0];
+    }
+    else
+    if (options.expectedInputLanguages && options.expectedInputLanguages.length) {
+      options.outputLanguage = options.expectedInputLanguages[0];      
+    }
+  }
+  
+  var summarizer;
+  try {
+    summarizer = await getSummarizer(options, downloadProgessListener);
+  }
+  catch(e) {
+    console.error(e);
+    throw e;
+  }
+
   var summaryOptions;
   if (options.context) {
     summaryOptions = { 
       context: options.context 
     };
   }
-  var inputUsage = await summarizer.measureInputUsage(text);
-  var summary = summarizer.summarizeStreaming(text, summaryOptions);
+  
+  var inputUsage = await getSummarizerInputUsage(text, options);
+  if (inputUsage instanceof Error) {
+    inputUsage;
+  }
+  
+  var summary;
+  try {
+    summary = summarizer.summarizeStreaming(text, summaryOptions);
+  }
+  catch (e){
+    console.error(e);
+    return e;
+  }
+   
   return summary;
 }

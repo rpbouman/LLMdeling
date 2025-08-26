@@ -9,7 +9,7 @@ dialog.llm-prompt {
   This is an alternative to the :blank pseudoclass
 
 */
-dialog.llm-prompt:has( textarea[name="input-prompt"]:invalid) 
+dialog.llm-prompt:has( textarea[name="input"]:invalid) 
 {
   button[name="send-prompt"] {
     pointer-events: none;
@@ -66,14 +66,7 @@ main( [data-app-status=receiving], [data-app-status=sent] ) {
 
 }
 
-dialog.llm-prompt#generic-prompt {
-  min-width: 195px;
-  min-height: 95px;
-  width: 400px;
-  height: 200px;
-  top: calc(100% - 250px);
-  left: calc(50% - 200px);
-  
+dialog.llm-prompt {
   > div {
     > header {
     }
@@ -91,12 +84,23 @@ dialog.llm-prompt#generic-prompt {
         border-bottom-width: 1px;
         border-bottom-color: var( --dark-border-color ); 
         padding: 0px 1px 1px; 1px;
-        
-        
+                
       }
       
       > div[role=tablist] {
-        
+
+        > div {
+          > label[role=tab] + input[type=radio][name=tabs]:checked + textarea[role=tabpanel] {
+            overflow: auto;
+
+            resize: none;
+            top: 62px;
+            margin: 2px;
+            width: calc(100% - 6px);
+            height: calc(100% - 68px);
+          }
+        }
+                
         > div {
           > label[role=tab] + input[type=radio][name=tabs]:checked + *[role=tabpanel]:has( table ) {
             height: calc( 100% - 60px );
@@ -109,14 +113,69 @@ dialog.llm-prompt#generic-prompt {
             content: var( --icon-pencil);
           }
 
+          > label:has( + input[type=radio][value=responseSchema] )::before {
+            content: var( --icon-json);
+          }          
 
+          > label:has( + input[type=radio][value=media] )::before {
+            content: var( --icon-paperclip);
+          }
+          
           > label:has( + input[type=radio][value=list] )::before {
             content: var( --icon-list-numbers);
           }
-          
+
           > textarea[role=tabpanel] {
             outline: none; 
           }
+
+          > label[role=tab] + input[type=radio][value=list] + div[role=tabpanel] > table {
+
+            > thead > tr > td {
+              background-color: var( --medium-background-color );
+              top: 0px;
+              position: sticky;
+            }
+            
+            > tbody {
+              > tr {
+                > td {
+                  > label {
+                    > input[type=file] {
+                    }
+                  }
+                  
+                  > label[data-file-type^=audio]:has( > input[type=file] ),
+                  > label[data-file-type^=image]:has( > input[type=file] ){
+                    display: inline-block;
+                  }
+
+                  > label[data-file-type^=audio]:has( > input[type=file] )::before,
+                  > label[data-file-type^=image]:has( > input[type=file] )::before{
+                    display: block;
+                    font-family: var( --icon-font-family );
+                  }
+
+                  > label[data-file-type^=audio]:has( > input[type=file] )::before{
+                    content: var( --icon-ear );
+                  }
+
+                  > label[data-file-type^=image]:has( > input[type=file] )::before{
+                    content: var( --icon-photo );
+                  }
+
+                  > label[data-file-type^=audio]:has( > input[type=file] )::after,
+                  > label[data-file-type^=image]:has( > input[type=file] )::after{
+                    display: block;
+                    content: attr(data-file-name);
+                  }
+                  
+                }
+              }
+            }
+            
+          }
+
         }
         
         > div:has( > label[role=tab] + input[type=radio][value=list] + div[role=tabpanel] > table > tbody:not( tr )  ) {
@@ -153,7 +212,7 @@ dialog.llm-prompt#generic-prompt {
           > label[role=tab]::after {
             content: ' (5)';
           }
-        }        
+        }
         
       }
     }
@@ -162,12 +221,23 @@ dialog.llm-prompt#generic-prompt {
     }
   }
 
-  textarea[name="input"] {
-    resize: none;
-    top: 62px;
-    margin: 2px;
-    width: calc(100% - 6px);
-    height: calc(100% - 68px);
-  }
-  
+}
+
+dialog.llm-prompt#generic-prompt {
+  min-width: 195px;
+  min-height: 95px;
+  width: 640px;
+  height: 320px;
+  top: calc(100% - 400px);
+  left: calc(50% - 320px);
+    
+}
+
+dialog.llm-prompt#model-config-prompt {
+  min-width: 195px;
+  min-height: 95px;
+  width: 640px;
+  height: 320px;
+  top: calc(50% - 160px);
+  left: calc(50% - 320px);
 }

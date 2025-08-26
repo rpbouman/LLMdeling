@@ -14,11 +14,12 @@ async function initApiStatus(){
     {global: 'Proofreader', hash: 'proofreader_api', flag: {hash: 'proofreader-api-for-gemini-nano', name: 'Proofreader API for Gemini Nano'}},
     {global: 'Rewriter', hash: 'writer_and_rewriter_apis', flag: {hash: 'rewriter-api-for-gemini-nano', name: 'Rewriter API for Gemini Nano'}},
     {global: 'Summarizer', hash: 'summarizer_api', flag: {hash: 'summarization-api-for-gemini-nano', name: 'Summarization API for Gemini Nano'}},
-    {global: 'Translator', hash: 'translator_api', flag: {hash: 'translation-api', name: 'Experimental translation API'}},
+    // the Translator availibility call is weird - it needs a arg with languagepairs, but as long as the languages are valid, it will always report "downloadable"
+    {global: 'Translator', hash: 'translator_api', flag: {hash: 'translation-api', name: 'Experimental translation API'}, args: [{sourceLanguage: 'en', targetLanguage: 'nl'}]},
     {global: 'Writer', hash: 'writer_and_rewriter_apis', flag: {hash: 'writer-api-for-gemini-nano', name: 'Writer API for Gemini Nano'}},
   ];
   var scope = self;
-  apiInfos.forEach(function(apiInfo){
+  apiInfos.forEach(async function(apiInfo){
     var exists = typeof self[apiInfo.global] !== 'undefined';
     main.setAttribute('data-built-in-ai-' + apiInfo.global, exists);
 
@@ -31,7 +32,10 @@ async function initApiStatus(){
     dt.appendChild(docLink);
     var dd = createEl('dd');
     if (exists) {
-      dd.appendChild(document.createTextNode('available'));
+      var gbl = self[apiInfo.global];
+      var args = apiInfo.args || [];
+      var availability = await gbl.availability.apply(gbl, args);
+      dd.appendChild(document.createTextNode(availability));
     }
     else {
       dd.appendChild(document.createTextNode('Not avaiilable. Check the '));
@@ -56,7 +60,7 @@ function initUi(){
   initLLMPrompts();
   initTranslationDialog();
   initSummarizationDialog();
-  byId('new-chat').addEventListener('click', newChat);
+  initConversation();
 }
 
 function getInfoDialog(){

@@ -1,5 +1,13 @@
 :root {
 
+  --icon-json: '\f7b2';
+  
+  --icon-paperclip: '\eb02';
+
+  --icon-photo: '\eb0a';
+
+  --icon-ear: '\ebce';
+
   --icon-check: '\ea5e';
   
   --icon-send: '\eb1e';

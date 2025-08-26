@@ -84,7 +84,7 @@ async function chatNodeToggleHandler(event){
   else {
     try {
       currentSummary = await summarizeChat(messages);
-      if (currentSummary === undefined){
+      if (currentSummary instanceof Error || currentSummary === undefined){
         contents.setAttribute('data-status', 'ready');
         return;
       }
@@ -200,7 +200,7 @@ async function downloadChatHandler(event){
   downloadBlob(plainText, fileName, 'text/markdown');
 }
 
-async function regenerateSummaryHandler(event){
+async function summarizeChatHandler(event){
   var chatNode = getChatNodeFromButtonEvent(event);
   var chatId = getChatIdFromChatNode(chatNode);
 }
@@ -220,8 +220,8 @@ function createHistoryUiChatNode(chatRecord, append){
   chatNode.querySelector('button[value=copyChat]')
   .addEventListener('click', copyChatHandler);
 
-  chatNode.querySelector('button[value=regenerateSummary]')
-  .addEventListener('click', regenerateSummaryHandler);
+  chatNode.querySelector('button[value=summarizeChat]')
+  .addEventListener('click', summarizeChatHandler);
 
   chatNode.querySelector('button[value=downloadChat]')
   .addEventListener('click', downloadChatHandler);

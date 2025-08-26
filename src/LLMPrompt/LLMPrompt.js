@@ -38,11 +38,38 @@ function serializePromptList(promptList){
   }).join('\r\n\r\n');
 }
 
+function extractTextFromPromptDialogListData(promptDialogListData){
+  return promptDialogListData.map(function(listItem){
+    var content = listItem.content;
+    if (typeof content === 'string') {
+      return content;
+    }
+    else 
+    if (content instanceof Array) {
+      return content
+      .filter(function(item){
+        return item.type === 'text' && typeof item.value === 'string' && item.value.length > 0;
+      })
+      .map(function(item){
+        return item.value;
+      })
+      .join('\r\n');
+    }
+    else {
+      return undefined;
+    }
+  })
+  .filter(function(text){
+    return typeof text === 'string';
+  })
+  .join('\r\n\r\n');
+}
+
 async function sendPrompt(event){
   var button = event.target;
   var dialog = getElementPromptDialog(button);
   
-  var promptDialogListData = getPromptDialogListData(dialog);
+  var promptDialogListData = await getPromptDialogListData(dialog);
   clearPromptDialogListData(dialog);
   
   var textArea = getPromptTextArea();
@@ -65,8 +92,6 @@ async function sendPrompt(event){
   message[historyDatabaseMessageSequenceNumber] = ++currentChat[historyDatabaseMessageSequenceNumber];
   var model = currentChat.model;
   
-  var measuredInputUsage = await mesaureInputUsage(model, text);
-  message[historyDatabaseMessageMeasuredInputUsage] = measuredInputUsage;
   if (currentChat[historyDatabaseMessageSequenceNumber] === 1) {
     message.chatOptions = currentChat.options;
     var modelParams = {
@@ -98,10 +123,7 @@ async function sendPrompt(event){
     }      
     message.promptList = promptDialogListData;
     promptArg = promptDialogListData;
-    messageForLanguageDetection = promptDialogListData.map(function(listItem){
-      return listItem.content;
-    })
-    .join('\r\n\r\n');
+    messageForLanguageDetection = extractTextFromPromptDialogListData(promptDialogListData);
   }
   else {
     message.text = text;
@@ -109,6 +131,9 @@ async function sendPrompt(event){
     promptArg = text;
   }
 
+  var measuredInputUsage = await mesaureInputUsage(model, promptArg);
+  message[historyDatabaseMessageMeasuredInputUsage] = measuredInputUsage;
+ 
   updateStatus('sending');
   
   if (messageForLanguageDetection.trim().length) {
@@ -120,6 +145,11 @@ async function sendPrompt(event){
   var messageUi = createRequestUi(promptArg, undefined, measuredInputUsage);
   if (detectedLanguage){
     setMessageUiLanguage(messageUi, detectedLanguage);
+  }
+  
+  var responseConstraint = getResponseConstraint();
+  if (responseConstraint !== undefined){
+    requestOptions.responseConstraint = responseConstraint;
   }
   
   var response = model.promptStreaming(promptArg, requestOptions);
@@ -139,6 +169,43 @@ function getPromptText(){
 function getPromptTextArea(){
   var textArea = byId('prompt-text');
   return textArea;
+}
+
+function getResponseConstraintText(){
+  var textArea = getResponseConstraintTextArea();
+  return textArea.value;
+}
+
+function getResponseConstraintTextArea(){
+  var textArea = byId('responseConstraint-text');
+  return textArea;
+}
+
+function getResponseConstraint(){
+  var text = getResponseConstraintText();
+  text = text.trim();
+  
+  if (text.length === 0){
+    return;
+  }
+  
+  var jsonSchema;
+  try {
+    jsonSchema = JSON.parse(text);
+    return jsonSchema;
+  }
+  catch(e){
+  }
+  
+  var regex;
+  try {
+    regex = new RegExp(text);
+    return regex;
+  }
+  catch(e){
+  }
+  
+  return undefined;
 }
 
 function getElementPromptDialog(element){
@@ -183,6 +250,50 @@ function getPromptDialogRoleElement(promptDialog){
   return getPromptDialogElement(promptDialog, 'select[name=contentRole]');
 }
 
+function handleMediaInputChanged(event){
+  var target = event.target;
+  var label = target.parentNode;
+
+  var files = target.files;
+  var fileType, fileName;
+  switch (files.length){
+    case 0:
+      fileType = 'none';
+      fileName = '';
+      break;
+    case 1:
+      file = files.item(0);
+      fileType = file.type || 'text';
+      fileName = file.name;
+      break;
+  }
+  setAttributes(label, {
+    'data-file-type': fileType,
+    'data-file-name': fileName
+  });
+
+  var td = label.parentNode;
+  var lastMediaInput = td.lastChild;
+  if (lastMediaInput === label && fileType !== 'none'){
+    td.appendChild( createMediaInput() );
+  }
+}
+
+function createMediaInput(){  
+  var input = createEl('input', {
+    type: 'file',
+    accept: 'audio/*,image/*,text/*',
+    value: 'Browse...',
+    'data-file-type': 'none'
+  });
+  input.addEventListener('change', handleMediaInputChanged);
+  
+  var label = createEl('label', {
+  });
+  label.appendChild(input);
+  return label;
+}
+
 function addItemToPromptList(event){
   var target = event.target;
   var dialog = getElementPromptDialog(target);
@@ -215,6 +326,10 @@ function addItemToPromptList(event){
 
   cell = row.insertCell(cells.length);
   cell.textContent = value;
+
+  cell = row.insertCell(cells.length);
+  var mediaInput = createMediaInput();
+  cell.appendChild(mediaInput);
   
   inputElement.value = '';
   inputElement.focus();
@@ -234,7 +349,7 @@ function clearPromptDialogListData(promptDialog){
   }
 }
 
-function getPromptDialogListData(promptDialog){
+async function getPromptDialogListData(promptDialog){
   var list = getPromptDialogItemList(promptDialog);
   var tHead = list.tHead;
   var headerRow = tHead.rows.item(0);
@@ -254,7 +369,50 @@ function getPromptDialogListData(promptDialog){
         continue;
       }
       var dataCell = dataCells.item(j);
-      dataRow[columnName] = dataCell.textContent;
+      switch (columnName) {
+        case 'role':
+        case 'text':
+          dataRow[columnName] = dataCell.textContent;
+          break;
+        case 'media':
+          var mediaInputs = dataCell.querySelectorAll('input[type=file]');
+          if (mediaInputs && mediaInputs.length) {
+            for (var k = 0; k < mediaInputs.length; k++){
+              var mediaInput = mediaInputs.item(k);
+              var files = mediaInput.files;
+              if (files.length) {
+                var file = files.item(0);
+                var fileType = file.type || 'text';
+                var fileTypeParts = fileType.split('/');
+                var mediaRow = {
+                  type: fileTypeParts[0],
+                  value: file
+                };
+                
+                if (fileType === 'text'){
+                  mediaRow.value = await file.text();
+                }
+                
+                if (dataRow.media === undefined) {
+                  dataRow.media = [];
+                }
+                dataRow.media.push(mediaRow);
+              }
+            }
+          }
+      }
+    }
+    if (dataRow.media) {
+      if (dataRow.text) {
+        dataRow.media.unshift({type: 'text', value: dataRow.text})
+        dataRow.content = dataRow.media;
+        delete dataRow.text;
+      }
+      delete dataRow.media;      
+    }
+    else {
+      dataRow.content = dataRow.text;
+      delete dataRow.text;
     }
     dataRows.push(dataRow);
   }
@@ -263,6 +421,20 @@ function getPromptDialogListData(promptDialog){
     return undefined;
   }
   return dataRows;
+}
+
+function promptTabChanged(event){
+  var target = event.target;
+  var value = target.value;
+  
+  switch (value) {
+    case 'input':
+      break;
+    case 'responseSchema':
+      break;
+    case 'list':
+      break;
+  }
 }
 
 function initLLMPrompts(){
@@ -288,5 +460,11 @@ function initLLMPrompts(){
   for (var i = 0; i < addToListButtons.length; i++){
     var addToListButton = addToListButtons.item(i);
     addToListButton.addEventListener('click', addItemToPromptList);
+  }
+  
+  var tabRadioButtons = document.querySelectorAll('dialog.llm-prompt input[type=radio][name=tabs]');
+  for (var i = 0; i < tabRadioButtons.length; i++){
+    var tabRadioButton = tabRadioButtons.item(i);
+    tabRadioButton.addEventListener('change', promptTabChanged);
   }
 }

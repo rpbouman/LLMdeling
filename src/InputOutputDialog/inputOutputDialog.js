@@ -94,8 +94,26 @@ async function handleResponseStream(reponseStream, ui){
       ui.scrollIntoView(false);
     }
   }
-  catch(error){
+  catch(e){
+    switch (e.name){
+      case 'NotSupportedError':
+        if (e.message === 'Image not supported. Session is not initialized with image support.'){
+          // TODO: notify the user. Possibly, offer to create a new session that does support image input.
+        }
+        break;
+      case 'SyntaxError':
+        if (e.message === 'The value must be a String for type:\'text\'') {
+          // TODO: notify the user. Possibly, offer to create a new session that does support image input.
+        }
+        break;
+      case 'QuotaExceededError':
+        if (e.message === 'The input is too large.'){
+        }
+        break;
+    }
+    console.error(e);
     debugger;
+    responseText = String(e);
   }
   finally {
   }
