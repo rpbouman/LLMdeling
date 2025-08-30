@@ -1,6 +1,12 @@
 :root {
 
   --icon-json: '\f7b2';
+
+  --icon-code: '\ea77';
+
+  --icon-regex: '\f31f';
+  
+  --icon-alert-triangle: '\ea06';
   
   --icon-paperclip: '\eb02';
 

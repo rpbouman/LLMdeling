@@ -86,21 +86,28 @@ async function createChat(options){
       var message = options.conversation[i];
       newChat[historyDatabaseMessageSequenceNumber] = message[historyDatabaseMessageSequenceNumber];
       var text = message.text;
+      var requestOptions = message.requestOptions;
       var promptList = message.promptList;
       var type = message.type;
       var promptToAppend;
+      
       if (promptList) {
         promptToAppend = promptList;
       }
       else {
         promptToAppend = {content: text};
       }
+      
+      if (requestOptions && requestOptions.responseConstraint){
+        promptToAppend.responseConstraint = requestOptions.responseConstraint;
+      }
+      
       var role;
       var ui;
       switch (type){ 
         case 'request':
           ui = createRequestUi(
-            promptList || text, 
+            promptToAppend, 
             message[historyDatabaseMessageStoreTimestamp], 
             message[historyDatabaseMessageMeasuredInputUsage]
           );
@@ -288,7 +295,7 @@ function getMessageAttributes(){
   return attributes;
 }
 
-function createRequestUi(promptArg, timestamp, measuredInputUsage){
+function createRequestUi(promptToAppend, timestamp, measuredInputUsage){
   timestamp = timestamp || Date.now();
   
   var requestUi = instantiateTemplate('request-ui', getMessageAttributes());
@@ -301,12 +308,16 @@ function createRequestUi(promptArg, timestamp, measuredInputUsage){
   bindMessageActionHandlers(header);
   
   var text;
-  if (typeof promptArg === 'string'){
-    text = promptArg;
+  if (typeof promptToAppend === 'string'){
+    text = promptToAppend;
   }
   else 
-  if (promptArg instanceof Array){
+  if (promptToAppend instanceof Array){
     text = serializePromptList(promptArg);
+  }
+  else
+  if (typeof promptToAppend === 'object'){
+    text = promptToAppend.content || '';
   }
   updateTextUiElement(requestUi.querySelector('section'), text);
   
@@ -346,8 +357,6 @@ async function newChat(){
   await createChat();
   var conversation = getConversation();
   conversation.innerHTML = '';
-  var textArea = getPromptTextArea();
-  textArea.focus();
   return currentChat;
 }
 

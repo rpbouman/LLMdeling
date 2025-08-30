@@ -5,7 +5,8 @@ function getSummarizationDialog(){
 
 async function handleSummarizeClicked(event){
   try {
-    doSummarize();
+    console.log(`handleSummarizeClicked`, navigator.userActivation);
+    await doSummarize();
   }
   catch(e){
     console.error(e);
@@ -13,6 +14,7 @@ async function handleSummarizeClicked(event){
 }
 
 async function doSummarize(){
+  console.log(`doSummarize`, navigator.userActivation);
   var summarizationDialog = getSummarizationDialog();
   var currentState = getFormStateInfo(summarizationDialog).currentState;
   
@@ -28,17 +30,24 @@ async function doSummarize(){
   var summaryFormat = currentState['summaryOutputFormat-picker']
   
   setBusy(summarizationDialog);
-  var summaryTextStream = await summarize(
-    text, {
-    context: context,
-    sharedContext: sharedContext,
-    type: summaryType,            //tldr, teaser, key-points, headline
-    length: summaryLength,        //short, medium, long      
-    format: summaryFormat         //markdown, plain-text
-  });
-  
+  var summaryTextStream;
+  try {
+    summaryTextStream = await summarize(
+      text, {
+      context: context,
+      sharedContext: sharedContext,
+      type: summaryType,            //tldr, teaser, key-points, headline
+      length: summaryLength,        //short, medium, long      
+      format: summaryFormat         //markdown, plain-text
+    });
+  }
+  catch(e) {
+    showInfoDialog(e);
+  }  
   var ui = summarizationDialog.querySelector('div.response');  
-  await handleResponseStream(summaryTextStream, ui);
+  if (summaryTextStream ){
+    await handleResponseStream(summaryTextStream, ui);
+  }
   setBusy(summarizationDialog, false);
 }
 

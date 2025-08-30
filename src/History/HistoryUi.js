@@ -103,9 +103,11 @@ async function chatNodeToggleHandler(event){
         debugger;
       }
     }
+    finally {
+      contents.setAttribute('data-status', 'ready');
+    }
   }
 
-  
   contents.setAttribute('data-status', 'ready');
 }
 
@@ -237,10 +239,27 @@ function createHistoryUiChatNode(chatRecord, append){
   // by explicitly adding a text node, we avoid that.
   var label;
   if (chatRecord.promptList && chatRecord.promptList.length) {
-    label = chatRecord.promptList[0].content;
+    var text = extractTextFromPromptDialogListData(chatRecord.promptList);
+    var lines = text.split(/[\r\n]+/);
+    var line = lines.find(function(line){
+      return Boolean(line.length);
+    });
+    label = line;
   }
-  else {
+  else
+  if(chatRecord.text && chatRecord.text.length){
     label = chatRecord.text;
+  }
+  else
+  if (chatRecord.requestOptions && chatRecord.requestOptions.responseConstraint) {
+    var responseConstraint = chatRecord.requestOptions.responseConstraint;
+    if (responseConstraint instanceof RegExp){
+      label = `Regex: /${responseConstraint.source}/`;
+    }
+    else
+    if (typeof responseConstraint === 'object') {
+      label = JSON.stringify(responseConstraint);
+    }
   }
   summary.title = `${(new Date(ts)).toISOString()}: ${label}`;
   span.appendChild( document.createTextNode(label) );

@@ -65,17 +65,56 @@ function extractTextFromPromptDialogListData(promptDialogListData){
   .join('\r\n\r\n');
 }
 
+async function getPromptDialogConfig(dialog){
+  var config = {};
+  
+  var promptDialogListData = await getPromptDialogListData(dialog);
+  
+  var textArea = getPromptTextArea(dialog);
+  var text = textArea.value;
+  
+  text = text.trim();
+
+  var messageForLanguageDetection, promptArg;
+  if (promptDialogListData) {
+    if (text.length) {
+      // we have a list but also a new prompt. We should append it to the list.
+      // but then we need to fetch the current role from the prompt dialog.
+      var roleElement = getPromptDialogRoleElement(dialog);
+      var role = roleElement.value;
+      promptDialogListData.push({
+        role: role,
+        content: text
+      });
+    }      
+    promptArg = promptDialogListData;
+    messageForLanguageDetection = extractTextFromPromptDialogListData(promptDialogListData);
+  }
+  else {
+    messageForLanguageDetection = text;
+    promptArg = text;
+  }
+  config.promptArg = promptArg;
+  messageForLanguageDetection = messageForLanguageDetection.trim();
+  if (messageForLanguageDetection.length){
+    config.messageForLanguageDetection = messageForLanguageDetection;
+  }
+  
+  var responseConstraint = getResponseConstraint(dialog);
+  config.responseConstraint = responseConstraint;
+  
+  return config;
+}
+
 async function sendPrompt(event){
   var button = event.target;
   var dialog = getElementPromptDialog(button);
   
+  var config = await getPromptDialogConfig(dialog);
+  
   var promptDialogListData = await getPromptDialogListData(dialog);
   clearPromptDialogListData(dialog);
   
-  var textArea = getPromptTextArea();
-  var text = textArea.value;
-  
-  text = text.trim();
   // TODO: get any request options from the prompt dialog.
   var requestOptions = {};
   
@@ -109,36 +148,25 @@ async function sendPrompt(event){
     signal: currentChat.requestAbortController.signal
   });  
 
-  var promptArg, messageForLanguageDetection;
-  if (promptDialogListData) {
-    if (text.length) {
-      // we have a list but also a new prompt. We should append it to the list.
-      // but then we need to fetch the current role from the prompt dialog.
-      var roleElement = getPromptDialogRoleElement(dialog);
-      var role = roleElement.value;
-      promptDialogListData.push({
-        role: role,
-        content: text
-      });
-    }      
-    message.promptList = promptDialogListData;
-    promptArg = promptDialogListData;
-    messageForLanguageDetection = extractTextFromPromptDialogListData(promptDialogListData);
-  }
-  else {
-    message.text = text;
-    messageForLanguageDetection = text;
-    promptArg = text;
-  }
-
+  var promptArg = config.promptArg;
+  var messageForLanguageDetection = config.messageForLanguageDetection;
+  var responseConstraint = config.responseConstraint;
+  
+  message.promptList = typeof promptArg === 'object' ? promptArg : undefined;
+  message.text = typeof promptArg === 'string' && promptArg.length ? promptArg : undefined;
+  
   var measuredInputUsage = await mesaureInputUsage(model, promptArg);
   message[historyDatabaseMessageMeasuredInputUsage] = measuredInputUsage;
  
   updateStatus('sending');
   
-  if (messageForLanguageDetection.trim().length) {
+  if (messageForLanguageDetection) {
     var detectedLanguage = await detectLanguage(messageForLanguageDetection);
     message.detectedLanguage = detectedLanguage;
+  }
+  
+  if (responseConstraint !== undefined){    
+    requestOptions.responseConstraint = responseConstraint;
   }
   
   saveMessage(message);  
@@ -147,42 +175,42 @@ async function sendPrompt(event){
     setMessageUiLanguage(messageUi, detectedLanguage);
   }
   
-  var responseConstraint = getResponseConstraint();
-  if (responseConstraint !== undefined){
-    requestOptions.responseConstraint = responseConstraint;
-  }
+  cleanupPromptDialog(dialog);
   
   var response = model.promptStreaming(promptArg, requestOptions);
-  
-  textArea.value = '';
-  textArea.focus();
   
   updateStatus('waiting for response');
   handleResponse(response);
 }
 
-function getPromptText(){
-  var textArea = getPromptTextArea();
+function cleanupPromptDialog(dialog){
+  var promptTextArea = getPromptTextArea(dialog);
+  promptTextArea.value = '';
+  promptTextArea.focus();
+}
+
+function getPromptText(dialog){
+  var textArea = getPromptTextArea(dialog);
   return textArea.value;
 }
 
-function getPromptTextArea(){
-  var textArea = byId('prompt-text');
+function getPromptTextArea(dialog){
+  var textArea = dialog.querySelector('textarea[name=input]');
   return textArea;
 }
 
-function getResponseConstraintText(){
-  var textArea = getResponseConstraintTextArea();
+function getResponseConstraintText(dialog){
+  var textArea = getResponseConstraintTextArea(dialog);
   return textArea.value;
 }
 
-function getResponseConstraintTextArea(){
-  var textArea = byId('responseConstraint-text');
+function getResponseConstraintTextArea(dialog){
+  var textArea = dialog.querySelector('textarea[name=responseConstraint]');
   return textArea;
 }
 
-function getResponseConstraint(){
-  var text = getResponseConstraintText();
+function getResponseConstraint(dialog){
+  var text = getResponseConstraintText(dialog);
   text = text.trim();
   
   if (text.length === 0){
@@ -437,6 +465,34 @@ function promptTabChanged(event){
   }
 }
 
+function createModelHandler(event){
+  
+}
+
+function responseConstraintChanged(event){
+  var target = event.target;
+  var dialog = getElementPromptDialog(target);
+  var responseConstraint = getResponseConstraint(dialog);
+  
+  var dataAttribute;
+  if (responseConstraint === undefined) {
+    if (target.value.trim().length === 0) {
+      dataAttribute = 'undefined';
+    }
+    else {
+      dataAttribute = 'error';
+    }
+  }
+  else
+  if (responseConstraint instanceof RegExp){
+    dataAttribute = 'regex';
+  }
+  else {
+    dataAttribute = 'jsonschema';
+  }
+  target.setAttribute('data-response-constraint-type', dataAttribute);
+}
+
 function initLLMPrompts(){
   var sendPromptButtons = document.querySelectorAll('dialog.llm-prompt button[value="send-prompt"]');
   for (var i = 0; i < sendPromptButtons.length; i++){
@@ -467,4 +523,12 @@ function initLLMPrompts(){
     var tabRadioButton = tabRadioButtons.item(i);
     tabRadioButton.addEventListener('change', promptTabChanged);
   }
+  
+  var responseConstraintTextAreas = document.querySelectorAll('dialog.llm-prompt textarea[name=responseConstraint]');
+  for (var i = 0; i < responseConstraintTextAreas.length; i++){
+    var responseConstraintTextArea = responseConstraintTextAreas.item(i);
+    responseConstraintTextArea.addEventListener('change', responseConstraintChanged);
+  }
+
+  byId('create-model').addEventListener('click', createModelHandler);
 }

@@ -69,9 +69,20 @@ function getInfoDialog(){
 
 async function showInfoDialog(options){
   var infoDialog = getInfoDialog();
+  
+  if (options instanceof Error){
+    var error = options;
+    options = {
+      status: 'error',
+      title: error.name,
+      details: error.message,
+      icon: String.fromCharCode(parseInt('ff62', 16))
+    }
+  }
+  
   var status = options.status || 'info';
   if (options.status){
-    infoDialog.setAttribute('data-status', options.status);
+    infoDialog.setAttribute('data-status', status);
   }
 
   var heading = infoDialog.querySelector('div > header > h1');  

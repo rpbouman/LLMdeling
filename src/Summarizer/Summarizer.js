@@ -4,6 +4,7 @@ var summarizers = {
 };
 
 async function getSummarizer(options, downloadProgessListener){
+  console.log(`getSummarizer`, navigator.userActivation);  
   var props = {
     sharedContext: undefined,
     type: 'key-points',                 //tldr, teaser, key-points, headline
@@ -29,6 +30,7 @@ async function getSummarizer(options, downloadProgessListener){
     throw new Error(msg);
   }
 
+  console.log(`check Summarizer availability`, navigator.userActivation);  
   var availability = await Summarizer.availability(summarizerOptions);
   if (availability === 'unavailable') {
     var msg = `The Summarizer API is not available.`;
@@ -41,10 +43,29 @@ async function getSummarizer(options, downloadProgessListener){
     };
   }
 
+  summarizer = await Summarizer.create(summarizerOptions);
   try {
-    summarizer = await Summarizer.create(summarizerOptions);
+    console.log(`creating Summarizer`, navigator.userActivation);  
+    debugger;
   }
   catch(e) {
+    var name = e.name;
+    var message = e.message;
+    switch (name){
+      case 'NotAllowedError':
+        switch (message){
+          case 'Requires a user gesture when availability is "downloading" or "downloadable".':
+            break;
+        }
+        break;
+      case 'InvalidState':
+        switch (message){
+          case 'The device is unable to create a session to run the model. Please check the result of availability() first.':
+            break;
+        }
+        break;
+      default:
+    }
     console.error(e);
     throw e;
   }
@@ -53,6 +74,7 @@ async function getSummarizer(options, downloadProgessListener){
 }
 
 async function getSummarizerInputUsage(text, options, downloadProgessListener){
+  console.log(`getSummarizerInputUsage`, navigator.userActivation);  
   var summarizer = await getSummarizer(options, downloadProgessListener);  
   var ret = {
     inputQuota: summarizer.inputQuota
@@ -63,6 +85,15 @@ async function getSummarizerInputUsage(text, options, downloadProgessListener){
     ret.inputUsage = inputUsage;
   }
   catch(e){
+    switch (e.name){
+      case 'OperationError':
+        switch (e.message) {
+          case 'The usage cannot be calculated.':
+            break;
+          default:
+        }
+        break;
+    }
     console.error(e);
     ret.error = e;
   }
@@ -71,6 +102,7 @@ async function getSummarizerInputUsage(text, options, downloadProgessListener){
 }
 
 async function summarize(text, options, downloadProgessListener){
+  console.log(`summarize`, navigator.userActivation);  
   options = options || {};
   
   var languageDetectionEnabled = options.languageDetectionEnabled || false;
