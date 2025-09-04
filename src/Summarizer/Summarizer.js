@@ -43,10 +43,9 @@ async function getSummarizer(options, downloadProgessListener){
     };
   }
 
-  summarizer = await Summarizer.create(summarizerOptions);
   try {
     console.log(`creating Summarizer`, navigator.userActivation);  
-    debugger;
+    summarizer = await Summarizer.create(summarizerOptions);
   }
   catch(e) {
     var name = e.name;

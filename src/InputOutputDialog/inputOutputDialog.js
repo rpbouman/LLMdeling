@@ -110,10 +110,14 @@ async function handleResponseStream(reponseStream, ui){
         if (e.message === 'The input is too large.'){
         }
         break;
+      case 'UnknownError':
+        if (e.message === 'Other generic failures occurred.'){
+        }
+        break;
     }
     console.error(e);
-    debugger;
     responseText = String(e);
+    showInfoDialog(e)
   }
   finally {
   }
