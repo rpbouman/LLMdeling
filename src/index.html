@@ -504,7 +504,7 @@
               </div>
               <div>
                 <label role="tab" for="responseConstraint">Response Constraint</label>
-                <input id="responseConstraint" type="radio" name="tabs" value="responseSchema"/>
+                <input id="responseConstraint" type="radio" name="tabs" value="responseConstraint"/>
                 <textarea
                   role="tabpanel"
                   id="responseConstraint-text"
@@ -513,7 +513,7 @@
                   placeholder="Type your response constraint as a JSON schema or a regular expression here..."
                   autofocus="true"
                   tabindex="0"
-                  data-response-constraint-type='undefined'
+                  data-response-constraint-type="undefined"
                 ></textarea>
               </div>
               <div>
@@ -707,8 +707,22 @@
                 </div>
               </div>
               <div>
+                <label role="tab" for="responseConstraint1">Response Constraint</label>
+                <input id="responseConstraint1" type="radio" name="tabs" value="responseConstraint"/>
+                <textarea
+                  role="tabpanel"
+                  id="responseConstraint-text"
+                  name="responseConstraint"
+                  required
+                  placeholder="Type your response constraint as a JSON schema or a regular expression here..."
+                  autofocus="true"
+                  tabindex="0"
+                  data-response-constraint-type="undefined"
+                ></textarea>
+              </div>              
+              <div>
                 <label role="tab" for="expectedInputs">Expected Inputs</label>
-                <input id="expectedInputs" type="radio" name="tabs" value="list" />
+                <input id="expectedInputs" type="radio" name="tabs" value="expectedInputs" />
                 <div
                   role="tabpanel"
                   id="expected-inputs"
@@ -733,7 +747,7 @@
           <footer>
             <form role="toolbar">
               <button
-                id="create-model"
+                id="create-model-button"
                 type="button"
                 name="createModel"
                 value="create-model"

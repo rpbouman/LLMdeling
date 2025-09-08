@@ -112,7 +112,6 @@ async function sendPrompt(event){
   
   var config = await getPromptDialogConfig(dialog);
   
-  var promptDialogListData = await getPromptDialogListData(dialog);
   clearPromptDialogListData(dialog);
   
   // TODO: get any request options from the prompt dialog.
@@ -465,8 +464,11 @@ function promptTabChanged(event){
   }
 }
 
-function createModelHandler(event){
-  
+async function newModelHandler(event){
+  var target = event.target;
+  var dialog = getElementPromptDialog(target);
+  var config = await getPromptDialogConfig(dialog);
+
 }
 
 function responseConstraintChanged(event){
@@ -530,5 +532,6 @@ function initLLMPrompts(){
     responseConstraintTextArea.addEventListener('change', responseConstraintChanged);
   }
 
-  byId('create-model').addEventListener('click', createModelHandler);
+  var button = byId('create-model-button');
+  button.addEventListener('click', newModelHandler);
 }

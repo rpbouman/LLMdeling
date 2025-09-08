@@ -113,16 +113,16 @@ dialog.llm-prompt {
             content: var( --icon-pencil);
           }
 
-          > label:has( + input[type=radio][value=responseSchema] + textarea[data-response-constraint-type=undefined] )::before {
+          > label:has( + input[type=radio][value=responseConstraint] + textarea[data-response-constraint-type=undefined] )::before {
             content: var( --icon-code );
           }          
-          > label:has( + input[type=radio][value=responseSchema] + textarea[data-response-constraint-type=regex] )::before {
+          > label:has( + input[type=radio][value=responseConstraint] + textarea[data-response-constraint-type=regex] )::before {
             content: var( --icon-regex );
           }          
-          > label:has( + input[type=radio][value=responseSchema] + textarea[data-response-constraint-type=jsonschema] )::before {
+          > label:has( + input[type=radio][value=responseConstraint] + textarea[data-response-constraint-type=jsonschema] )::before {
             content: var( --icon-json);
           }          
-          > label:has( + input[type=radio][value=responseSchema] + textarea[data-response-constraint-type=error] )::before {
+          > label:has( + input[type=radio][value=responseConstraint] + textarea[data-response-constraint-type=error] )::before {
             content: var( --icon-alert-triangle);
           }          
 
