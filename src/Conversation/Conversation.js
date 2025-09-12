@@ -63,9 +63,18 @@ async function checkModelAvailability(){
 async function createChat(options){ 
   options = Object.assign({}, options);
   var modelAbortController = new AbortController();
-  var modelOptions = Object.assign({initialPrompts: options.initialPrompts || []}, options.modelOptions, {
-    signal: modelAbortController.signal
-  });
+  var modelOptions = Object.assign(
+    {
+      initialPrompts: options.initialPrompts || []
+    }, 
+    options.modelOptions, 
+    {
+      expectedInputs: options.expectedInputs
+    },
+    {
+      signal: modelAbortController.signal
+    }
+  );
 
   var newChat = {
     modelAbortController: modelAbortController,
@@ -313,7 +322,7 @@ function createRequestUi(promptToAppend, timestamp, measuredInputUsage){
   }
   else 
   if (promptToAppend instanceof Array){
-    text = serializePromptList(promptArg);
+    text = serializePromptList(promptToAppend);
   }
   else
   if (typeof promptToAppend === 'object'){
@@ -342,11 +351,12 @@ function createResponseUi(timestamp){
   return responseUi;
 }
 
-async function newChat(){
+async function newChat(options){
   if (currentChat){
     try {
       if (currentChat.model) {
         currentChat.model.destroy();
+        currentChat = null;
       }
     }
     catch(e){
@@ -354,9 +364,12 @@ async function newChat(){
       debugger;
     }
   }
-  await createChat();
+  updateStatus('creating-new-chat-session');  
+  await createChat(options);
   var conversation = getConversation();
   conversation.innerHTML = '';
+  updateStatus('new-chat-session-created');
+  updateStatus('ready');
   return currentChat;
 }
 

@@ -123,9 +123,7 @@ async function sendPrompt(event){
   };
   
   if (!currentChat) {
-    updateStatus('creating-new-chat-session');
     currentChat = await newChat();
-    updateStatus('new-chat-session-created');
   }
   message[historyDatabaseMessageSequenceNumber] = ++currentChat[historyDatabaseMessageSequenceNumber];
   var model = currentChat.model;
@@ -464,11 +462,55 @@ function promptTabChanged(event){
   }
 }
 
+function getExpectedInputs(dialog){
+  var expectedInputs = [];
+  var expectedInputCheckboxes = dialog.querySelectorAll('div[role=tablist] > div:has( > input[type=radio][name=tabs][value=expectedInputs] ) > div[role=tabpanel] input[type=checkbox]');
+  for (var i = 0; i < expectedInputCheckboxes.length; i++){
+    var expectedInputCheckbox = expectedInputCheckboxes.item(i);
+    if (!expectedInputCheckbox.checked){
+      continue;
+    }
+    expectedInputs.push({type: expectedInputCheckbox.value});
+  }
+  return expectedInputs;
+}
+
+function getDialogModelOptions(dialog){
+  var dialogToolbarForm = dialog.querySelector('form:has( menu[role=toolbar] )');
+  var dialogToolbarFormElements = dialogToolbarForm.elements;
+  var topKControl = dialogToolbarFormElements.topK;
+  var temperatureControl = dialogToolbarFormElements.temperature;
+  return {
+    topK: topKControl.valueAsNumber,
+    temperature: temperatureControl.valueAsNumber
+  };
+}
+
+function cleanupModelConfigDialog(dialog){
+  // reset everything to defaults
+}
+
 async function newModelHandler(event){
   var target = event.target;
   var dialog = getElementPromptDialog(target);
   var config = await getPromptDialogConfig(dialog);
-
+  var expectedInputs = getExpectedInputs(dialog);
+  var modelOptions = getDialogModelOptions(dialog);
+  var newChatOptions = Object.assign(
+    {}, 
+    modelOptions, {
+      expectedInputs: expectedInputs
+    },
+    {
+      initialPrompts: config.promptArg,
+      responseConstraint: config.responseConstraint
+    }
+  );
+  var currentChat = await newChat(newChatOptions);
+  dialog.hidePopover();
+  cleanupModelConfigDialog(dialog);
+  byId('generic-prompt').showPopover();
+  updateStatus('ready');
 }
 
 function responseConstraintChanged(event){

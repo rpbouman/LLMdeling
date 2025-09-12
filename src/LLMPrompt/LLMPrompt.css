@@ -102,7 +102,7 @@ dialog.llm-prompt {
         }
                 
         > div {
-          > label[role=tab] + input[type=radio][name=tabs]:checked + *[role=tabpanel]:has( table ) {
+          > label[role=tab] + input[type=radio][name=tabs]:checked + div[role=tabpanel] {
             height: calc( 100% - 60px );
           }
         }
@@ -110,7 +110,7 @@ dialog.llm-prompt {
         > div {
           
           > label:has( + input[type=radio][value=input] )::before {
-            content: var( --icon-pencil);
+            content: var( --icon-forms );
           }
 
           > label:has( + input[type=radio][value=responseConstraint] + textarea[data-response-constraint-type=undefined] )::before {
@@ -126,8 +126,8 @@ dialog.llm-prompt {
             content: var( --icon-alert-triangle);
           }          
 
-          > label:has( + input[type=radio][value=media] )::before {
-            content: var( --icon-paperclip);
+          > label:has( + input[type=radio][value=expectedInputs] )::before {
+            content: var( --icon-hexagon-letter-m );
           }
           
           > label:has( + input[type=radio][value=list] )::before {

@@ -645,6 +645,7 @@
                 >Temperature</label>
                 <input 
                   id="temperature"
+                  name="temperature"
                   type="range"
                   min="0.0"
                   max="2.0"
@@ -658,6 +659,7 @@
                 >Top-k</label>
                 <input 
                   id="topK"
+                  name="topK"
                   type="number"
                   step="1"
                   min="1"
@@ -699,7 +701,7 @@
                     <thead>
                       <td>#</td>
                       <td data-column="role">Role</td>
-                      <td data-column="content">Content</td>
+                      <td data-column="text">Content</td>
                     </thead>
                     <tbody>
                     </tbody>
@@ -728,15 +730,15 @@
                   id="expected-inputs"
                 >
                   <div>
-                    <input type="checkbox" checked="true"/>
+                    <input type="checkbox" checked="true" value="text"/>
                     <label>Text</label>
                   </div>
                   <div>
-                    <input type="checkbox" />
+                    <input type="checkbox" value="image"/>
                     <label>Image</label>
                   </div>
                   <div>
-                    <input type="checkbox" />
+                    <input type="checkbox" value="audio"/>
                     <label>Audio</label>
                   </div>
                   
