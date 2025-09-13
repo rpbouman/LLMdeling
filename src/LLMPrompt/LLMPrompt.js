@@ -34,7 +34,49 @@ async function mesaureInputUsage(model, input) {
 
 function serializePromptList(promptList){
   return promptList.map(function(item){
-    return item.role + ':\r\n' + item.content;
+    var role = item.role;
+    var content = item.content;
+    var text;
+    if (content instanceof Array){
+      text = content.map(function(part){
+        var typeofPart = typeof part;
+        switch (typeofPart){
+          case 'string':
+            return part;
+            break;
+          case 'object':
+            if (part.type){
+              switch (part.type){
+                case 'text':
+                  return part.value;
+                  break;
+                case 'image':
+                  var url = URL.createObjectURL(part.value);
+                  return `![image](${url})`;
+                  //return `<img src="${url}"/>`;
+                  break;
+                case 'audio':
+                  break;
+                default:
+                  throw new Error(`Unsupported part of type ${part.type}`);
+              }
+            }
+            else {
+              throw new Error(`Expected part to have a type property`);
+            }
+            break;
+          default:
+            throw new Error(`Don't know how to handle part of type ${typeofPart}`);
+        }
+      }).join('\r\n');
+    }
+    else {
+      text = content;
+    }
+    if (role){
+      text = `${role}:\r\n${text}`;
+    }
+    return text;
   }).join('\r\n\r\n');
 }
 
@@ -503,9 +545,32 @@ async function newModelHandler(event){
     },
     {
       initialPrompts: config.promptArg,
-      responseConstraint: config.responseConstraint
     }
   );
+  if (config.responseConstraint) {
+    
+    /*
+    Passing constriaint as part of the prompt does not appear to work
+    
+    if (!newChatOptions.initialPrompts || !newChatOptions.initialPrompts.length) {
+      var systemPrompt = 'You are a helpful assistant that provides responses structured and formatted according to the provided ';
+      if (config.responseConstraint instanceof RegExp) {
+        systemPrompt += 'regular expression.'
+      }
+      else {
+        systemPrompt += 'json schema.'
+      }
+      newChatOptions.initialPrompts = [{
+        role: 'system',
+        content: systemPrompt
+      }];
+    }
+    newChatOptions.initialPrompts[newChatOptions.initialPrompts.length - 1].responseConstraint = config.responseConstraint;
+    */
+    
+    newChatOptions.responseConstraint = config.responseConstraint;
+  }
+  
   var currentChat = await newChat(newChatOptions);
   dialog.hidePopover();
   cleanupModelConfigDialog(dialog);

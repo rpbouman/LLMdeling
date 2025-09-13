@@ -60,6 +60,15 @@ async function checkModelAvailability(){
   });
 }
 
+function clearConversation(){
+  var conversation = getConversation(); 
+  conversation.setAttribute('data-expected-input-text', true);
+  conversation.setAttribute('data-expected-input-image', false);
+  conversation.setAttribute('data-expected-input-audio', false);
+  conversation.innerHTML = '';
+  return conversation;
+}
+
 async function createChat(options){ 
   options = Object.assign({}, options);
   var modelAbortController = new AbortController();
@@ -86,8 +95,7 @@ async function createChat(options){
   
   currentChat = newChat;
   
-  var conversation = getConversation();
-  conversation.innerHTML = '';
+  var conversation = clearConversation();
   
   if (options.conversation !== undefined) {
     var promptsToAppend = [];
@@ -170,6 +178,14 @@ async function createChat(options){
     }
     console.error(e);
   }
+  
+  if (modelOptions.expectedInputs) {
+    for (var i = 0; i < modelOptions.expectedInputs.length; i++){
+      var expectedInput = modelOptions.expectedInputs[i];
+      conversation.setAttribute('data-expected-input-' + expectedInput.type, true);
+    }
+  }
+  
   if (promptsToAppend && promptsToAppend.length){
     updateStatus('appending-model-context');
     var appendResult = await model.append(promptsToAppend);
@@ -419,6 +435,10 @@ function handleResponseChunk(chunk){
   updateTextUiElement(responseUi.querySelector('section'), responseBuffer);
 }
 
+function newChatHandler(event){
+  newChat();
+}
+
 function initConversation(){
-  byId('new-chat').addEventListener('click', newChat);  
+  byId('new-chat').addEventListener('click', newChatHandler);  
 }

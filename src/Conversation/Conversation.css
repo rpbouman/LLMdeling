@@ -43,6 +43,10 @@ section.conversation {
       left: 1em;
             
     }
+    
+    img {
+      max-width: 100%;
+    }
   }
   
   > .request::after,

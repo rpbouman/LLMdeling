@@ -141,10 +141,12 @@ async function restoreChatHandler(event){
   
   if (messages && messages.length) {
     var first = messages[0];
+    var chatOptions = first.chatOptions;
     chat[historyDatabaseChatStoreId] = first[historyDatabaseChatStoreId];
     
     var modelParams = first.modelParams;
-    chat.initialPrompts = modelParams.initialPrompts;
+    chat.initialPrompts = chatOptions ? chatOptions.initialPrompts : undefined;
+    chat.expectedInputs = chatOptions ? chatOptions.expectedInputs : undefined;
     chat.modelOptions.temperature = modelParams.temperature;
     chat.modelOptions.topK = modelParams.topK;
 
