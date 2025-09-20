@@ -60,6 +60,7 @@ function initUi(){
   initLLMPrompts();
   initTranslationDialog();
   initSummarizationDialog();
+  initWriterDialog();
   initConversation();
 }
 

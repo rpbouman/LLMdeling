@@ -1,0 +1,15 @@
+nav#sidebar {
+
+  > form[role=tablist] {
+    > div:has( label[role=tab][for=modelLibrary] + input#modelLibrary[type=radio] + div[role=tabpanel]) {
+      
+      > label[role=tab][for=modelLibrary]::before {
+        content: var( --icon-ai );
+      } 
+    }
+
+    > div:has( label[role=tab][for=modelLibrary] + input#modelLibrary[type=radio] + div[role=tabpanel]:empty) {
+      display: none;
+    }
+  }
+}

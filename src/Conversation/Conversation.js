@@ -177,6 +177,7 @@ async function createChat(options){
         return;
     }
     console.error(e);
+    return;
   }
   
   if (modelOptions.expectedInputs) {
@@ -381,7 +382,10 @@ async function newChat(options){
     }
   }
   updateStatus('creating-new-chat-session');  
-  await createChat(options);
+  var chat = await createChat(options);
+  if (!chat) {
+    return;
+  }
   var conversation = getConversation();
   conversation.innerHTML = '';
   updateStatus('new-chat-session-created');

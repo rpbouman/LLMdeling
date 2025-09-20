@@ -7,6 +7,7 @@ var historyDatabaseMessageStoreTimestamp = 'timestamp';
 var historyDatabaseMessageStoreTimestampReceived = historyDatabaseMessageStoreTimestamp + 'Received';
 var historyDatabaseMessageModelInputUsage = 'inputUsage';
 var historyDatabaseMessageMeasuredInputUsage = 'measuredInputUsage';
+var historyDatabaseModelLibraryStoreName = 'models';
 
 function initHistoryBackend(callback){
   var historyDatabaseRequest = indexedDB.open(historyDatabaseName, 1);
@@ -42,6 +43,14 @@ function initHistoryBackend(callback){
     var messageSequenceIndex = messageStore.createIndex(
       historyDatabaseMessageSequenceNumber,
       historyDatabaseMessageSequenceNumber,
+      indexOptions
+    );
+    
+    var modelStore = database.createObjectStore(modelLibraryStoreName, {autoIncrement: true});
+    var indexOptions = {unique: true};
+    var modelNameIndex = modelStore.createIndex(
+      modelLibraryStoreName, 
+      modelLibraryStoreName, 
       indexOptions
     );
   }

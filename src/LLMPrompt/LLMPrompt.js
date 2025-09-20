@@ -259,7 +259,10 @@ function getResponseConstraint(dialog){
   var jsonSchema;
   try {
     jsonSchema = JSON.parse(text);
-    return jsonSchema;
+    var validationResult = hyperSchema.validate(jsonSchema);
+    if (validationResult) {
+      return jsonSchema;
+    }
   }
   catch(e){
   }
@@ -530,6 +533,8 @@ function getDialogModelOptions(dialog){
 
 function cleanupModelConfigDialog(dialog){
   // reset everything to defaults
+  clearPromptDialogListData(dialog);
+  getResponseConstraintTextArea(dialog).value = '';
 }
 
 async function newModelHandler(event){
@@ -573,8 +578,10 @@ async function newModelHandler(event){
   
   var currentChat = await newChat(newChatOptions);
   dialog.hidePopover();
+  var genericPrompt = byId('generic-prompt');
+  getResponseConstraintTextArea(genericPrompt).value = getResponseConstraintTextArea(dialog).value;
   cleanupModelConfigDialog(dialog);
-  byId('generic-prompt').showPopover();
+  genericPrompt.showPopover();
   updateStatus('ready');
 }
 
@@ -600,6 +607,10 @@ function responseConstraintChanged(event){
     dataAttribute = 'jsonschema';
   }
   target.setAttribute('data-response-constraint-type', dataAttribute);
+}
+
+function getResponseConstraintTextArea(dialog){
+  return dialog.querySelector('textarea[name=responseConstraint]');
 }
 
 function initLLMPrompts(){

@@ -10,7 +10,6 @@ function md2html(text, highlighting){
   var mk = highlighting === true ? highlightingMarked : nonHighlightingMarked;
   
   var mkHtml = mk.parse(text);
-  //var html = mkHtml;
   // TODO: make this more safe. 
   // Objective here is to allow rendering of images from object urls.
   var html = DOMPurify.sanitize(mkHtml, {ALLOW_UNKNOWN_PROTOCOLS: true});

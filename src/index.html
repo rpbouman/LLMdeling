@@ -54,7 +54,7 @@
     <link rel="stylesheet" type="text/css" href="Formatting/formats.css"/>
     <link rel="stylesheet" type="text/css" href="History/HistoryUi.css"/>
     <link rel="stylesheet" type="text/css" href="LLMPrompt/LLMPrompt.css"/>
-    <link rel="stylesheet" type="text/css" href="LLMPrompt/PromptLibrary.css"/>
+    <link rel="stylesheet" type="text/css" href="ModelLibrary/ModelLibrary.css"/>
     <link rel="stylesheet" type="text/css" href="InputOutputDialog/InputOutputDialog.css"/>
     <link rel="stylesheet" type="text/css" href="Conversation/Conversation.css"/>
     <link rel="stylesheet" type="text/css" href="LanguageTranslation/LanguageTranslationDialog.css"/>
@@ -292,15 +292,6 @@
           </li>
           <li role="menuitem">
             <button 
-              title="Create a new prompt"
-              type="button"
-              id="new-prompt"
-              name="new"
-              value="new-prompt"
-            >New Prompt</button>
-          </li>
-          <li role="menuitem">
-            <button 
               title="Translate a text"
               type="button"
               name="translate"
@@ -370,8 +361,8 @@
             <div role="tabpanel"></div>
           </div>
           <div>
-            <label role="tab" for="promptLibrary">Prompts</label>
-            <input id="promptLibrary" type="radio" name="tabs"/>
+            <label role="tab" for="modelLibrary">Models</label>
+            <input id="modelLibrary" type="radio" name="tabs"/>
             <div role="tabpanel"></div>
           </div>
         </form>
@@ -604,6 +595,18 @@
             <menu role="toolbar">
               <li role="menuitem">
                 <label 
+                  title="Save this in the model library..."
+                  for="saveModelConfig"
+                >
+                  <button
+                    id="saveModelConfig"
+                    name="save"
+                    type="button"
+                  />
+                </label>
+              </li>            
+              <li role="menuitem">
+                <label 
                   title="Upload a text to use as prompt..."
                   for="uploadInitialPrompt"
                 >
@@ -642,9 +645,11 @@
               <li role="menuitem">
                 <label
                   for="temperature"
+                  title="Temperature"
                 >Temperature</label>
                 <input 
                   id="temperature"
+                  title="Temperature"
                   name="temperature"
                   type="range"
                   min="0.0"
@@ -656,9 +661,11 @@
               <li role="menuitem">
                 <label
                   for="topK"
+                  title="Top K"
                 >Top-k</label>
                 <input 
                   id="topK"
+                  title="Top K"
                   name="topK"
                   type="number"
                   step="1"
@@ -1934,6 +1941,16 @@
 
     <script src="https://cdn.jsdelivr.net/npm/marked-highlight@2.2.2/lib/index.umd.min.js"></script>
     <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+    
+    <script type="module">
+      import {Schema} from 'https://cdn.jsdelivr.net/npm/jema.js@1.1.7/schema.min.js';
+      window.Schema = Schema;
+      var hyperSchemaResource = await fetch('https://json-schema.org/draft/2020-12/schema')
+      var hyperSchemaJson = await hyperSchemaResource.text();
+      var hyperSchemaObject = JSON.parse(hyperSchemaJson);
+      var hyperSchema = new Schema(hyperSchemaObject);
+      window.hyperSchema = hyperSchema;
+    </script>
 
     <script src="Dom/dom.js"></script>
     <script src="Clipboard/clipboard.js"></script>
@@ -1952,6 +1969,8 @@
     <script src="LanguageTranslation/Translator.js"></script>
     <script src="Summarizer/Summarizer.js"></script>
     <script src="Summarizer/Summarize.js"></script>
+    <script src="Writer/Writer.js"></script>
+    <script src="Writer/WriterDialog.js"></script>
     <script src="History/HistoryBackend.js"></script>
     <script src="History/HistoryUi.js"></script>
     <script src="Conversation/Conversation.js"></script>
