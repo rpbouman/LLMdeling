@@ -134,7 +134,12 @@ async function getPromptDialogConfig(dialog){
   }
   else {
     messageForLanguageDetection = text;
-    promptArg = text;
+    var roleElement = getPromptDialogRoleElement(dialog);
+    var role = roleElement.value;
+    promptArg = [{
+      role: role,
+      content: text
+    }];
   }
   config.promptArg = promptArg;
   messageForLanguageDetection = messageForLanguageDetection.trim();
