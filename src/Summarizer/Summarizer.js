@@ -42,6 +42,9 @@ async function getSummarizer(options, downloadProgessListener){
       m.addEventListener('downloadprogress', downloadProgessListener);
     };
   }
+  else {
+    summarizerOptions.monitor = createDownloadProgressMonitor('Summarizer', summarizerOptions);
+  }
 
   try {
     console.log(`creating Summarizer`, navigator.userActivation);  

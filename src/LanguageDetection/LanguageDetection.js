@@ -34,10 +34,13 @@ async function getLanguageDetectorInfo(downloadProgessListener){
         m.addEventListener('downloadprogress', downloadProgessListener);
       }
     };
-    languageDetectorOptions.monitor = function(m){
-      m.addEventListener('downloadprogress', downloadProgessListener);
-    };
   }
+  else {
+    languageDetectorOptions = {
+      monitor: createDownloadProgressMonitor('LanguageDetector', {})
+    }
+  }
+  
   try {
     languageDetector = await LanguageDetector.create(languageDetectorOptions);
   }

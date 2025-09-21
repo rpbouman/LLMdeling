@@ -30,6 +30,9 @@ async function getWriter(options, downloadProgessListener){
       m.addEventListener('downloadprogress', downloadProgessListener);
     };
   }
+  else {
+    writerOptions.monitor = createDownloadProgressMonitor('Writer', writerOptions);
+  }
   
   var writer;
   try {

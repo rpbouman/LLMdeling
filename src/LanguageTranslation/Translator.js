@@ -81,6 +81,9 @@ async function translate(text, options, downloadProgessListener){
         m.addEventListener('downloadprogress', downloadProgessListener);
       };
     }
+    else {
+      translatorOptions.monitor = createDownloadProgressMonitor('Translator', translatorOptions);
+    }
 
     translator = await Translator.create(translatorOptions);
     translatorInfo.translator = translators[translatorInfo.translatorKey] = translator;

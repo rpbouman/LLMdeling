@@ -72,6 +72,15 @@ function clearConversation(){
 async function createChat(options){ 
   options = Object.assign({}, options);
   var modelAbortController = new AbortController();
+
+  var downloadProgressHandler = options.downloadProgressHandler;
+  if (downloadProgressHandler){
+    delete options.downloadProgressHandler;
+  }
+  else {
+    downloadProgressHandler = globalDownloadProgressHandler;
+  }
+  
   var modelOptions = Object.assign(
     {
       initialPrompts: options.initialPrompts || []
@@ -82,6 +91,12 @@ async function createChat(options){
     },
     {
       signal: modelAbortController.signal
+    },
+    {
+      monitor: createDownloadProgressMonitor(
+        'LanguageModel',
+        modelOptions
+      )
     }
   );
 
@@ -169,12 +184,12 @@ async function createChat(options){
             break e_name;
           default:
         }
+        break;
       default:
         showInfoDialog({
           info: `Error: ${e.name}`,
           details: e.message
         });
-        return;
     }
     console.error(e);
     return;

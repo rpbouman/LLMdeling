@@ -1868,7 +1868,8 @@
       </div>
     </dialog>
     
-    <dialog id="about-dialog"
+    <dialog 
+      id="about-dialog"
       aria-labelledby="about-dialog-title"
       draggable="true" 
       popover
@@ -1935,6 +1936,74 @@
         </footer>
       </div>
     </dialog>
+    
+    <dialog 
+      id="download-progress-dialog"
+      aria-labelledby="download-progress-dialog-title"
+      draggable="true" 
+      popover
+      closedby="closerequest"            
+    >
+      <div>
+        <header>
+          <h1 
+            id="download-progress-dialog-title" 
+          >Model Download Progress</h1>
+          <form role="toolbar">
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="minimize" 
+              title="Minimize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="maximize" 
+              title="Maximize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="restore"  
+              title="Restore" 
+              checked="true"
+            />
+            <button 
+              type="button"
+              popovertarget="download-progress-dialog"
+              popovertargetaction="hide"
+              title="Close" 
+            />
+          </form>
+        </header>
+        <section>
+          <h2>Model Download Progress</h2>
+          <template id="model-download-progress-item">
+            <div class="downloadProgressItem">
+              <label for=""></label>
+              <progress 
+                max="100" 
+                value="0"
+              >
+              </progress>
+            </div>
+          </template>
+        </section>
+        <footer>
+          <form role="toolbar">
+            <button
+              name="confirm"
+              type="button"
+              tabindex="0"
+              title="Close" 
+              popovertarget="download-progress-dialog"
+              popovertargetaction="hide"
+            >Ok</button>
+          </form>
+        </footer>
+      </div>
+    </dialog>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
@@ -1955,6 +2024,7 @@
     <script src="Dom/dom.js"></script>
     <script src="Clipboard/clipboard.js"></script>
     <script src="Downloader/Downloader.js"></script>
+    <script src="DownloadProgress/DownloadProgressDialog.js"></script>
 
     <script src="lookandfeel/dialog/dialog.js"></script>
     <script src="lookandfeel/dialog/DragableDialogs.js"></script>

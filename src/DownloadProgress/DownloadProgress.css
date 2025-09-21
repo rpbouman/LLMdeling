@@ -1,0 +1,16 @@
+dialog#download-progress-dialog {
+  
+  > section {
+    
+    > div.downloadProgressItem {
+      
+      > label {
+        display: block;
+      }
+      
+      > progress {
+        display: block;
+      }
+    }
+  }
+}
