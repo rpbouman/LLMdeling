@@ -282,9 +282,21 @@ async function translationDialogStateChanged(event){
   doTranslate();  
 }
 
+function initTranslationDialogOnFirstOpen(){
+  var dialog = getTranslationDialog();
+  var eventId = 'toggle';
+  var handler = async function(toggleEvent){
+    if (toggleEvent.newState !== 'open') {
+      return;
+    }
+    await initTranslationDialog();
+    dialog.removeEventListener(eventId, handler);
+  };
+  dialog.addEventListener(eventId, handler);
+}
+
 async function initTranslationDialog(){
   var languages = await initLanguages();
-  
   var defaultLanguage = toLanguageCode(navigator.language);
   
   var preferredLanguages = (navigator.languages || [])

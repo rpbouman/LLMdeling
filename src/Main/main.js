@@ -58,7 +58,7 @@ async function initApiStatus(){
 
 function initUi(){
   initLLMPrompts();
-  initTranslationDialog();
+  initTranslationDialogOnFirstOpen();
   initSummarizationDialog();
   initWriterDialog();
   initConversation();
