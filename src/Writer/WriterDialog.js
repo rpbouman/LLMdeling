@@ -23,9 +23,9 @@ async function doWrite(){
     context = undefined;
   }
   
-  var writingTonePicker = currentState['writingTone-picker'];
-  var writingLengthPicker = currentState['writingLength-picker'];
-  var writingOutputFormatPicker = currentState['writingOutputFormat-picker'];
+  var writingTone = currentState['writingTone-picker'];
+  var writingLength = currentState['writingLength-picker'];
+  var writingOutputFormat = currentState['writingOutputFormat-picker'];
   var sharedContext = undefined;
   
   setBusy(writerDialog);
@@ -35,9 +35,12 @@ async function doWrite(){
       text, {
       context: context,
       sharedContext: sharedContext,
-      tone: writingTonePicker.value,            //tldr, teaser, key-points, headline
-      length: writingLengthPicker.value,        //short, medium, long      
-      format: writingOutputFormatPicker.value         //markdown, plain-text
+      //   "formal", "neutral", "casual" 
+      tone: writingTone,
+      //    "short", "medium", "long" 
+      length: writingLength,      
+      //  "plain-text", "markdown" 
+      format: writingOutputFormat
     });
   }
   catch(e) {

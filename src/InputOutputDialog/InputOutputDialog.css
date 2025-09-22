@@ -10,7 +10,7 @@ dialog.input-output-dialog {
 
       > *:is(div, form):has( > div[role=tablist] ) {
         > header {
-          margin-top: 3px;
+          margin-top: 6px;
         }
         
         > div[role=tablist] {
@@ -49,7 +49,7 @@ dialog.input-output-dialog {
             }
             
             > label[role=tab] + input[type=radio][name=tabs]:checked + textarea[role=tabpanel] {
-              top: 62px;
+              top: 65px;
               resize: none;
               outline-style:none;
               height: calc( 100% - 62px );

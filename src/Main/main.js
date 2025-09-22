@@ -61,6 +61,7 @@ function initUi(){
   initTranslationDialogOnFirstOpen();
   initSummarizationDialog();
   initWriterDialog();
+  initRewriterDialog();
   initConversation();
 }
 

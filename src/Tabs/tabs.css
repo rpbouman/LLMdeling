@@ -40,7 +40,7 @@
     
     > label[role=tab]:has( + input[type=radio][name=tabs]:checked) {
       cursor: default;
-      top:-1px;
+      top: 0px;
       font-weight: bold;
     }
 

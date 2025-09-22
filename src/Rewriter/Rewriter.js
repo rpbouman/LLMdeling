@@ -1,7 +1,7 @@
 // see: https://developer.chrome.com/docs/ai/writer-api 
 
-async function getWriter(options, downloadProgessListener){
-  console.log(`getWriter`, navigator.userActivation);  
+async function getRewriter(options, downloadProgessListener){
+  console.log(`getRewriter`, navigator.userActivation);  
   var props = {
     sharedContext: undefined,
     tone: 'neutral',                    //formal, neutral, casual
@@ -11,33 +11,33 @@ async function getWriter(options, downloadProgessListener){
     expectedContextLanguages: ['en'],
     outputLanguage: 'en'                //language
   };
-  var writerOptions = Object.assign(props, options);
+  var rewriterOptions = Object.assign(props, options);
     
-  if (typeof Writer === 'undefined') {
-    var msg = `This browser does not support the Writer global. Try to enable chrome://flags/#:~:text=Writer%20API%20for%20Gemini%20Nano and retry.`;
+  if (typeof Rewriter === 'undefined') {
+    var msg = `This browser does not support the Rewriter global. Try to enable chrome://flags/#:~:text=Rewriter%20API%20for%20Gemini%20Nano and retry.`;
     throw new Error(msg);
   }
 
-  console.log(`check Writer availability`, navigator.userActivation);  
-  var availability = await Writer.availability(writerOptions);
+  console.log(`check Rewriter availability`, navigator.userActivation);  
+  var availability = await Rewriter.availability(rewriterOptions);
   if (availability === 'unavailable') {
-    var msg = `The Writer API is not available.`;
+    var msg = `The Rewriter API is not available.`;
     throw new Error(msg);
   }
 
   if (typeof downloadProgessListener === 'function'){
-    writerOptions.monitor = function(m){
+    rewriterOptions.monitor = function(m){
       m.addEventListener('downloadprogress', downloadProgessListener);
     };
   }
   else {
-    writerOptions.monitor = createDownloadProgressMonitor('Writer', writerOptions);
+    rewriterOptions.monitor = createDownloadProgressMonitor('Writer', rewriterOptions);
   }
   
-  var writer;
+  var rewriter;
   try {
-    console.log(`creating Writer`, navigator.userActivation);  
-    writer = await Writer.create(writerOptions);
+    console.log(`creating Rewriter`, navigator.userActivation);  
+    rewriter = await Rewriter.create(rewriterOptions);
   }
   catch(e) {
     var name = e.name;
@@ -60,18 +60,18 @@ async function getWriter(options, downloadProgessListener){
     console.error(e);
     throw e;
   }
-  return writer;
+  return rewriter;
 }
 
-async function write(writingInstruction, options, downloadProgessListener){
-  console.log(`write`, navigator.userActivation);  
+async function rewrite(textToRewrite, options, downloadProgessListener){
+  console.log(`rewrite`, navigator.userActivation);  
   options = options || {};
   
   var languageDetectionEnabled = options.languageDetectionEnabled || false;
   delete options.languageDetectionEnabled;
   if (languageDetectionEnabled === true && options.expectedInputLanguages === undefined) {
     var detectedInputLanguage = await detectLanguage(
-      writingInstruction, 
+      textToRewrite, 
       downloadProgessListener
     );
     if (detectedInputLanguage) {
@@ -120,29 +120,29 @@ async function write(writingInstruction, options, downloadProgessListener){
     }
   }
   
-  var writer;
+  var rewriter;
   try {
-    writer = await getWriter(options, downloadProgessListener);
+    rewriter = await getRewriter(options, downloadProgessListener);
   }
   catch(e) {
     console.error(e);
     throw e;
   }
 
-  var writerOptions;
+  var rewriterOptions;
   if (options.context) {
-    writerOptions = { 
+    rewriterOptions = { 
       context: options.context 
     };
   }
     
   var output;
   try {
-    output = writer.writeStreaming(writingInstruction, writerOptions);
+    output = rewriter.rewriteStreaming(textToRewrite, rewriterOptions);
   }
   catch (e){
     console.error(e);
-    showInfoDialog(e);    
+    showInfoDialog(e);
     return e;
   }
    
