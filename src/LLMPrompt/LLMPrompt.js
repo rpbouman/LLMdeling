@@ -34,7 +34,7 @@ async function mesaureInputUsage(model, input) {
 
 function serializePromptList(promptList){
   // simple case: single suser prompt.
-  if (promptList.length === 1 && promptList[0].role === 'user') {
+  if (promptList.length === 1 && promptList[0].role === 'user' && typeof promptList[0].content === 'string') {
     return promptList[0].content;
   }
   // complicated cases
@@ -308,10 +308,22 @@ async function uploadPrompt(event){
   }
   
   var dialog = getElementPromptDialog(target);
+  var selectedTab = getSelectedTab(dialog);
   
-  var file = files.item(0);
-  var inputElement = getPromptDialogInputElement(dialog);
-  inputElement.value = await file.text();
+  var inputElement;
+  switch (selectedTab.value){
+    case 'input':
+      inputElement = getPromptDialogInputElement(dialog);
+      break;
+    case 'responseConstraint':
+      inputElement = getResponseConstraintTextArea(dialog);
+      break;
+  }
+  
+  if (inputElement){
+    var file = files.item(0);
+    inputElement.value = await file.text();
+  }
 }
 
 function getPromptDialogElement(promptDialog, elementSelector){
@@ -506,12 +518,17 @@ async function getPromptDialogListData(promptDialog){
 
 function promptTabChanged(event){
   var target = event.target;
+  var dialog = getAncestorWithTagName(target, 'DIALOG');
+  var uploadButton = dialog.querySelector('div > form > menu[role=toolbar] > li > label > input[type=file]');
+  
   var value = target.value;
   
   switch (value) {
     case 'input':
+      uploadButton.setAttribute('accept', '.csv,.html,.md,text/*,.txt,.xml');
       break;
-    case 'responseSchema':
+    case 'responseConstraint':
+      uploadButton.setAttribute('accept', '.js,.json');
       break;
     case 'list':
       break;
@@ -637,7 +654,7 @@ function initLLMPrompts(){
     abortResponseButton.addEventListener('click', abortRequest);
   }
   
-  var uploadPromptFileInputs = document.querySelectorAll('dialog.llm-prompt input[type=file][name="uploadPromptText"]');
+  var uploadPromptFileInputs = document.querySelectorAll('dialog.llm-prompt input[type=file][name="upload"]');
   for (var i = 0; i < uploadPromptFileInputs.length; i++){
     var uploadPromptFileInput = uploadPromptFileInputs.item(i);
     uploadPromptFileInput.addEventListener('change', uploadPrompt);
