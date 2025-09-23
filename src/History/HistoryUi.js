@@ -173,7 +173,7 @@ async function extractAndCompileChat(chatId){
   var lines = [];
   messages.forEach(function(message){
     var type = message.type;
-    var text = message.text;
+    var text = message.text || '';
     switch (type) {
       case 'request':
         break;
@@ -246,14 +246,15 @@ function createHistoryUiChatNode(chatRecord, append){
     var line = lines.find(function(line){
       return Boolean(line.length);
     });
-    label = line;
+    label = line || '';
   }
   else
   if(chatRecord.text && chatRecord.text.length){
     label = chatRecord.text;
   }
-  else
-  if (chatRecord.requestOptions && chatRecord.requestOptions.responseConstraint) {
+  
+  
+  if (!label || !label.length && chatRecord.requestOptions && chatRecord.requestOptions.responseConstraint) {
     var responseConstraint = chatRecord.requestOptions.responseConstraint;
     if (responseConstraint instanceof RegExp){
       label = `Regex: /${responseConstraint.source}/`;

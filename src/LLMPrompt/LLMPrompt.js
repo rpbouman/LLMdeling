@@ -33,6 +33,11 @@ async function mesaureInputUsage(model, input) {
 }
 
 function serializePromptList(promptList){
+  // simple case: single suser prompt.
+  if (promptList.length === 1 && promptList[0].role === 'user') {
+    return promptList[0].content;
+  }
+  // complicated cases
   return promptList.map(function(item){
     var role = item.role;
     var content = item.content;
@@ -214,7 +219,7 @@ async function sendPrompt(event){
   }
   
   saveMessage(message);  
-  var messageUi = createRequestUi(promptArg, undefined, measuredInputUsage);
+  var messageUi = createRequestUi(promptArg, undefined, measuredInputUsage, requestOptions.responseConstraint);
   if (detectedLanguage){
     setMessageUiLanguage(messageUi, detectedLanguage);
   }
@@ -270,6 +275,7 @@ function getResponseConstraint(dialog){
     }
   }
   catch(e){
+    //console.error(e);
   }
   
   var regex;

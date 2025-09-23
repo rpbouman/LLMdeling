@@ -141,7 +141,8 @@ async function createChat(options){
           ui = createRequestUi(
             promptToAppend, 
             message[historyDatabaseMessageStoreTimestamp], 
-            message[historyDatabaseMessageMeasuredInputUsage]
+            message[historyDatabaseMessageMeasuredInputUsage],
+            promptToAppend.responseConstraint
           );
           role = 'user';
           break;
@@ -235,6 +236,7 @@ function updateTextUiElement(uiElement, text) {
   parentNode.querySelector(':scope > pre > code.language-html').innerHTML = htmlHighlightedHtml;
   
 }
+
 
 function bindMessageActionHandlers(container){
   var actionButtons = container.querySelectorAll(':scope *[role=menuitem] > button[type=button]');
@@ -336,7 +338,7 @@ function getMessageAttributes(){
   return attributes;
 }
 
-function createRequestUi(promptToAppend, timestamp, measuredInputUsage){
+function createRequestUi(promptToAppend, timestamp, measuredInputUsage, responseConstraint){
   timestamp = timestamp || Date.now();
   
   var requestUi = instantiateTemplate('request-ui', getMessageAttributes());
@@ -360,6 +362,23 @@ function createRequestUi(promptToAppend, timestamp, measuredInputUsage){
   if (typeof promptToAppend === 'object'){
     text = promptToAppend.content || '';
   }
+  
+  if (responseConstraint){
+    var extraText = '';
+    if (responseConstraint instanceof RegExp) {
+      extraText += '```javascript\r\n' + responseConstraint.source + '\r\n```';
+    }
+    else 
+    if (typeof responseConstraint === 'object') {
+      extraText += '```json\r\n' + JSON.stringify(responseConstraint, null, 2) + '\r\n```';
+    }      
+    
+    if (extraText) {
+      extraText = '### Response Constraint:\r\n\r\n' + extraText;
+    }
+    text += '\r\n\r\n' + extraText;
+  }
+  
   updateTextUiElement(requestUi.querySelector('section'), text);
   
   var conversation = getConversation();
