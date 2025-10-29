@@ -183,9 +183,14 @@ async function createChat(options){
               details: `${e.message}.\r\nYou may try to clear the crash count in chrome://on-device-internals/` 
             });
             break e_name;
+          case 'Model capability is not available.':
+            showInfoDialog({
+              info: `Error: ${e.name}`,
+              details: `${e.message}.` 
+            });
+            break e_name;
           default:
         }
-        break;
       default:
         showInfoDialog({
           info: `Error: ${e.name}`,
