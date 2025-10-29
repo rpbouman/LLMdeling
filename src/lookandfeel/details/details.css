@@ -1,0 +1,48 @@
+details {
+
+  > summary {
+    cursor: default;
+  }
+  
+  > summary::marker {
+    cursor: pointer;
+    font-family: var( --icon-font-family );
+    font-size: var( --icon-small );
+    color: var( --icon-color-subtle );  
+  }
+
+  > summary:hover::marker {
+    color: var( --icon-color-highlight );
+  }
+
+}
+
+details:not( [open] ) {
+  > summary::marker{
+    
+    content: var( --icon-arrow-badge-right );
+  }
+}
+
+details[open] {
+  > summary::marker{
+
+    content: var( --icon-arrow-badge-down );
+  }
+}
+
+
+details[role=treeitem]:not( [open] ) {
+  > summary::marker{
+    
+    content: var( --icon-square-rounded-plus );
+  }
+}
+
+details[role=treeitem][open] {
+  > summary::marker{
+    
+    content: var( --icon-square-rounded-minus );
+  }
+}
+

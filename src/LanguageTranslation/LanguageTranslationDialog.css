@@ -1,0 +1,65 @@
+dialog.input-output-dialog#translation-dialog {
+
+  > div,
+  > form {
+
+    > header {
+      > h1::before {
+        content: var( --icon-language );
+      }
+    }
+    
+    > section {
+            
+      > form[name=translateDialogSettingForm] {
+        
+        > header {
+          
+          > menu[role=toolbar]:has(
+            input[name=autoTranslate][type=checkbox]:checked 
+          ) {
+            
+            button[name=translate][type=button] {
+              display: none;
+            }
+          
+          }                    
+        }
+      }
+      
+      > form[name=translateDialogSettingForm]:has(
+        input[name=sourceLanguage][value='']
+      ),
+      > form[name=translateDialogSettingForm]:has(
+        textarea[name=input]:invalid
+      ) {
+
+        button[name=translate][type=button] {
+          pointer-events: none;
+        }
+        
+      }
+    }
+
+  }
+}
+
+dialog[popover].input-output-dialog#translation-dialog:popover-open {
+  height: 480px;
+  width: 640px;
+  top: calc( 50vh - 240px);
+  left: calc( 50vw - 320px);
+
+  min-width: 556px;
+}
+
+/**
+* On close, animate to the position of the translate button on the toolbar
+*/
+dialog[popover].input-output-dialog#translation-dialog:not( :popover-open ) {
+  height: 26px;
+  width: 80px;
+  top: 0px;
+  left: 220px;
+}
+

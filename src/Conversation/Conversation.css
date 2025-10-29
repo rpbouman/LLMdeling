@@ -1,0 +1,150 @@
+section.conversation {
+  overflow-y: scroll;
+  padding-bottom: 1em;
+  
+  > .request, 
+  > .response {
+    border-style: solid;
+    border-width: 1px;
+    border-color: var( --darkest-border-color );
+    border-radius: 1em;
+    box-shadow: 10px 10px 10px var( --dark-background-color );
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: var( --content-background-color ); 
+        
+    > header::before,
+    > footer::before {
+
+      flex-grow: 1;
+      font-weight: bold;
+      font-size: x-small;
+      position: relative;
+      font-family: var( --ui-text-font-family );
+    }
+
+    > header {
+      display: flex;
+      flex-direction: row;
+      align-items: end;
+      padding-right: .5em;
+      
+    }
+
+  }
+  
+  > .request {
+    margin-left: 200px;
+    margin-right: 50px;
+    border-bottom-right-radius: 0em;
+
+    > header::before {
+      content: attr( data-ts-sent-string ) '. Measured input usage: ' attr( data-measured-input-usage );
+      left: 1em;
+            
+    }
+    
+    img {
+      max-width: 100%;
+    }
+  }
+  
+  > .request::after,
+  > .response::after {
+    font-family: var( --icon-font-family );
+    font-size: var( --icon-large );
+    display: inline-block;
+    position: relative;
+  }
+    
+  
+  > .request::after {
+    content: var( --icon-mood-look-left );
+    float: right;
+    top: -.7em;
+    right: -1.2em;
+    filter: drop-shadow(12px 15px 7px black);
+  }
+  
+  > .response {
+    margin-right: 200px;
+    margin-left: 50px;
+    margin-bottom: 1em;
+    border-bottom-left-radius: 0em;
+    scroll-margin-bottom: 2em;
+
+    > header::before {
+      content: attr( data-ts-received-string ) '.' ;
+      left: 1em;
+    }
+
+    > header[data-model-input-usage]::before {
+      content: attr( data-ts-received-string ) '. Input usage: ' attr( data-model-input-usage ) ;
+      left: 1em;
+    }
+    
+    > footer::before {
+      content: attr( data-ts-finished-string );
+      left: 1em;
+    }
+    
+  }
+  
+  > .response::after {
+    content: var( --icon-mood-look-right );
+    float: left;
+    bottom: 0.7em;
+    left: -1.2em;
+    filter: drop-shadow(12px 15px 7px black);
+  }
+
+  /* when receiving a response, the emoji appears to be waiting */
+  > .response[data-status="waiting for response"]::after {
+    animation-name: waiting_for_response_emoji;
+    animation-duration: 10s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  /* when receiving a response, the emoji appears to be talking */
+  > .response[data-status="in progress"]::after {
+    animation-name: bantering_emoji;
+    animation-duration: 10s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+  
+  /* when receiving a response, actions that require a complete response (translate, summary) are not available adn not visible */
+  > .response[data-status="in progress"] {
+
+    > section,
+    > pre > code {
+
+      > *:last-child:not( :has(*) )::after {
+        display: inline-block;
+        margin-left: 1em;
+        font-family: var( --icon-font-family );
+        font-size: var( --icon-normal );
+        content: '';
+        animation-name: blinking-pencil;
+        animation-duration: 1s;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+      }
+    }
+
+    > header {
+      > menu[role=toolbar] {
+        > li[role=menuitem] {
+          button[type=button] {
+            pointer-events: none;
+            opacity: 0;
+          }
+        }
+      }
+    }
+    
+  }
+  
+
+}

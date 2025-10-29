@@ -1,0 +1,74 @@
+*:has( *:is( form, div)[role=tablist] ){
+  position: relative;
+}
+
+*:is( div, form )[role=tablist] {
+  display: flex;
+  flex-direction: row;
+  padding-top: .5em;
+  padding-left: .5em;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: var( --dark-border-color );
+  
+  > div {
+
+    > label[role=tab] {
+      font-family: var( --ui-text-font-family );
+      border-style: solid solid solid none;
+      border-width: 1px 1px 2px 1px;
+      border-color: var( --dark-border-color ) var( --dark-border-color ) white var( --dark-border-color );
+      position: relative;
+      padding: .0em .2em 0em .2em;
+      top: -2px;
+      border-top-left-radius: 1em;
+      border-top-right-radius: .5em;
+    }
+
+    > label[role=tab]::before {
+      font-family: var( --icon-font-family );
+      font-size: var( --icon-medium );
+      margin: 0px 2px 0px 2px;
+      top: 2px;
+      position: relative;
+      font-weight: normal;
+    }
+    
+    > label[role=tab]:has( + input[type=radio][name=tabs]) {
+      cursor: pointer;
+    }
+    
+    > label[role=tab]:has( + input[type=radio][name=tabs]:checked) {
+      cursor: default;
+      top: 0px;
+      font-weight: bold;
+    }
+
+    > *[role=tabpanel] {
+      position: absolute;
+      left: 0px;
+      right: 0px;
+      overflow: auto;
+    }
+    
+    > label[role=tab] + input[type=radio][name=tabs] {
+      appearance: none;
+      display: none;
+    }
+
+    > label[role=tab] + input[type=radio][name=tabs]:not( :checked ) + *[role=tabpanel] {
+      display: none;
+    }
+
+    > label[role=tab] + input[type=radio][name=tabs]:checked + *[role=tabpanel] {
+      height: calc( 100% - 3em );
+      overflow: auto;
+    }
+  }
+  
+  > div:first-child {
+    > label[role=tab] {
+      border-left-style: solid ;
+    }        
+  }
+}

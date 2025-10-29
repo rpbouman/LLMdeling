@@ -1,0 +1,60 @@
+dialog.input-output-dialog#summarization-dialog {
+  > div,
+  > form {
+
+    > header {
+      > h1::before {
+        content: var( --icon-list-details );
+      }      
+    }
+    
+    > section {
+      > form[name=summarizationDialogSettingForm] {
+        > header {
+          > menu[role=toolbar]:has(
+            input[name=autoSummarize][type=checkbox]:checked 
+          ) {
+            
+            button[name=summarize][type=button] {
+              display: none;
+            }
+          
+          }                    
+        }
+        
+      }
+
+      > form[name=summarizationDialogSettingForm]:has(
+        textarea[name=input]:invalid
+      ) {
+
+        button[name=summarize][type=button] {
+          pointer-events: none;
+        }
+        
+      }
+
+    }
+    
+  }
+  
+}
+
+dialog[popover].input-output-dialog#summarization-dialog:popover-open {
+  height: 480px;
+  width: 640px;
+  top: calc( 50vh - 240px);
+  left: calc( 50vw - 320px);
+
+  min-width: 578px;
+}
+
+/**
+* On close, animate to the position of the summarize button on the toolbar
+*/
+dialog[popover].input-output-dialog#summarization-dialog:not( :popover-open ) {
+  height: 26px;
+  width: 80px;
+  top: 0px;
+  left: 320px;
+}

@@ -1,0 +1,117 @@
+dialog.input-output-dialog {
+
+  > div,
+  > form {
+
+    > section {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+
+      > *:is(div, form):has( > div[role=tablist] ) {
+        > header {
+          margin-top: 6px;
+        }
+        
+        > div[role=tablist] {
+          margin-top: 0px;
+        }
+      }
+      
+      > *:is(div, form) {
+        
+        display: flex;
+        flex-direction: column;
+        
+        > header {
+          border-bottom-style: solid;
+          border-bottom-width: 1px;
+          border-bottom-color: var( --dark-border-color ); 
+          flex-shrink: 0;
+
+        }
+        
+        > textarea {
+          flex: 1;
+          margin-top: 2px;
+          resize: none; 
+        }
+        
+        > div[role=tablist] {
+          > div {
+            
+            > label[role=tab]:has( + input[type=radio] + textarea[name=input] )::before {
+              content: var( --icon-pencil );
+            }
+
+            > label[role=tab]:has( + input[type=radio] + textarea[name=context] )::before {
+              content: var( --icon-file-pencil );
+            }
+            
+            > label[role=tab] + input[type=radio][name=tabs]:checked + textarea[role=tabpanel] {
+              top: 65px;
+              resize: none;
+              outline-style:none;
+              height: calc( 100% - 62px );
+            }
+          }
+        }
+        
+      }
+      
+      /* The top pane of the translation dialog can be resized  */
+      > *:is(div, form):first-child {
+        resize: vertical;
+        overflow: hidden;
+        padding-bottom: 0px;
+        height: calc( 40% );
+      }
+      
+      > *:is(div, form):last-child {
+        border-top-style:solid;
+        border-top-width:1px;
+        border-top-color: var( --dark-border-color ); 
+        flex: 1;
+        overflow: hidden;
+      }
+      
+      > div.response {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        overflow: hidden;
+        
+        > section,
+        > pre {
+          flex: 1;
+          overflow: scroll;  
+        }
+        
+      }
+    }
+
+  }
+  
+}
+
+dialog.input-output-dialog[aria-busy=true] {
+
+  > div,
+  > form {
+
+    > section {
+      > *:is(div, form) {
+        > header {
+          > menu[role=toolbar] {
+            pointer-events: none;
+            opacity: .5
+          }
+        }
+        
+        textarea[name=input] {
+          color: var( --placeholder-color );
+        }
+      }
+    }
+  }
+}

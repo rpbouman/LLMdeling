@@ -1,0 +1,87 @@
+menu {
+
+  > li[role=menuitem] {
+    list-style: none;
+  }  
+}
+
+menu[popover] {
+  border-style: outset;
+  border-color: buttonborder;
+  background-color: ButtonFace;
+}
+
+menu[role=menubar],
+menu[role=toolbar] {
+  margin-block-start: 2px;
+  margin-block-end: 2px;
+  padding-inline-start: 2px;
+  
+  > li {
+    display: inline-block;
+    list-style: none;
+    
+    > label[for]:has( +*:is( input, button, textarea, select ) )::after {
+      content: ':'
+    }
+        
+    > button:empty {
+      appearance: none;
+      border-style: none;
+      background-color: transparent;
+      padding: 0px;      
+    }
+            
+    
+    > label[for]:has( + button ) {
+      cursor: pointer;
+      border-style: solid;
+      border-width: 1px;
+      border-radius: .2em;
+      padding: .2em;
+      background-color: var( --medium-background-color );
+    }
+
+    > label:has( + select ) 
+      white-space: nowrap;
+      display: inline-block;
+    }
+    
+
+    /* This is a set of togglebuttons of sorts */
+    form[role=menubar]:has( input[role=menuitem][type=radio] ) {
+      padding: 0px 2px 0px 2px;
+      border-radius: .5em;
+      
+      background-color: buttonface;
+      color: buttontext;
+      display: inline-block;
+      box-sizing: border-box;
+      border-width: 1px;
+      border-style: outset;
+      border-color: buttonborder;
+      
+      
+      > input[role=menuitem][type=radio] {
+        appearance: none;
+        margin: 0px 1px 0px 1px;
+      }
+       
+      > input[role=menuitem][type=radio]::before {
+        font-family: var( --icon-font-family );
+        font-size: var( --icon-medium );
+        color: var( --icon-color-subtle );
+      }
+
+      > input[role=menuitem][type=radio]:checked::before {
+      }
+
+      > input[role=menuitem][type=radio]:hover::before,
+      > input[role=menuitem][type=radio]:checked::before {
+        color: var( --icon-color-highlight );
+      }
+
+    }
+    
+  }  
+}

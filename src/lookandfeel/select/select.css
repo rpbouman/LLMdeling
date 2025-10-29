@@ -1,0 +1,13 @@
+select {
+  option:disabled {
+    display: none;
+  }
+  
+  > optgroup {
+    display: none;
+  }
+  
+  > optgroup:has( > option:enabled  ) {
+    display: unset;
+  }
+}

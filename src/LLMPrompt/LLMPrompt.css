@@ -1,0 +1,252 @@
+dialog.llm-prompt {
+
+}
+
+/* 
+  send prompt button should be disabled when the prompt input is invalid
+  
+  Note: adding the required attribute to the input, implies it is invalid when there is no value set.
+  This is an alternative to the :blank pseudoclass
+
+*/
+dialog.llm-prompt:has( textarea[name="input"]:invalid) 
+{
+  button[name="send-prompt"] {
+    pointer-events: none;
+    color: var( --placeholder-color );
+  }
+  
+}
+
+main:not( [data-app-status=ready] ) {
+
+  dialog.llm-prompt {
+
+    button[name=send] {
+      display: none;
+    }
+
+  }
+
+}
+
+main[data-app-status=ready] {
+  
+  dialog.llm-prompt {
+
+    button[name=send] {
+      display: unset;
+    }
+
+  }
+
+}
+
+main:not( [data-app-status=receiving], [data-app-status=sent] ) {
+  
+  dialog.llm-prompt {
+    
+    button[name=abort] {
+      display: none;
+    }
+    
+  }
+  
+}
+
+main( [data-app-status=receiving], [data-app-status=sent] ) {
+
+  dialog.llm-prompt {
+    
+    button[name=abort] {
+      display: unset;
+    }
+    
+  }
+
+}
+
+dialog.llm-prompt {
+  > div {
+    > header {
+    }
+    
+    > form {
+
+      flex: 1;
+
+      display: flex;
+      flex-direction: column;
+      
+      > menu[role=toolbar] {
+        flex-shrink: 0;
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+        border-bottom-color: var( --dark-border-color ); 
+        padding: 0px 1px 1px; 1px;
+                
+      }
+      
+      > div[role=tablist] {
+
+        > div {
+          > label[role=tab] + input[type=radio][name=tabs]:checked + textarea[role=tabpanel] {
+            overflow: auto;
+
+            resize: none;
+            top: 62px;
+            margin: 2px;
+            width: calc(100% - 6px);
+            height: calc(100% - 68px);
+          }
+        }
+                
+        > div {
+          > label[role=tab] + input[type=radio][name=tabs]:checked + div[role=tabpanel] {
+            height: calc( 100% - 60px );
+          }
+        }
+        
+        > div {
+          
+          > label:has( + input[type=radio][value=input] )::before {
+            content: var( --icon-forms );
+          }
+
+          > label:has( + input[type=radio][value=responseConstraint] + textarea[data-response-constraint-type=undefined] )::before {
+            content: var( --icon-code );
+          }          
+          > label:has( + input[type=radio][value=responseConstraint] + textarea[data-response-constraint-type=regex] )::before {
+            content: var( --icon-regex );
+          }          
+          > label:has( + input[type=radio][value=responseConstraint] + textarea[data-response-constraint-type=jsonschema] )::before {
+            content: var( --icon-json);
+          }          
+          > label:has( + input[type=radio][value=responseConstraint] + textarea[data-response-constraint-type=error] )::before {
+            content: var( --icon-alert-triangle);
+          }          
+
+          > label:has( + input[type=radio][value=expectedInputs] )::before {
+            content: var( --icon-hexagon-letter-m );
+          }
+          
+          > label:has( + input[type=radio][value=list] )::before {
+            content: var( --icon-list-numbers);
+          }
+
+          > textarea[role=tabpanel] {
+            outline: none; 
+          }
+
+          > label[role=tab] + input[type=radio][value=list] + div[role=tabpanel] > table {
+
+            > thead > tr > td {
+              background-color: var( --medium-background-color );
+              top: 0px;
+              position: sticky;
+            }
+            
+            > tbody {
+              > tr {
+                > td {
+                  > label {
+                    > input[type=file] {
+                    }
+                  }
+                  
+                  > label[data-file-type^=audio]:has( > input[type=file] ),
+                  > label[data-file-type^=image]:has( > input[type=file] ){
+                    display: inline-block;
+                  }
+
+                  > label[data-file-type^=audio]:has( > input[type=file] )::before,
+                  > label[data-file-type^=image]:has( > input[type=file] )::before{
+                    display: block;
+                    font-family: var( --icon-font-family );
+                  }
+
+                  > label[data-file-type^=audio]:has( > input[type=file] )::before{
+                    content: var( --icon-ear );
+                  }
+
+                  > label[data-file-type^=image]:has( > input[type=file] )::before{
+                    content: var( --icon-photo );
+                  }
+
+                  > label[data-file-type^=audio]:has( > input[type=file] )::after,
+                  > label[data-file-type^=image]:has( > input[type=file] )::after{
+                    display: block;
+                    content: attr(data-file-name);
+                  }
+                  
+                }
+              }
+            }
+            
+          }
+
+        }
+        
+        > div:has( > label[role=tab] + input[type=radio][value=list] + div[role=tabpanel] > table > tbody:not( tr )  ) {
+          > label[role=tab]::after {
+            content: ' (0)';
+          }
+        }
+
+        > div:has( > label[role=tab] + input[type=radio][value=list] + div[role=tabpanel] > table > tbody > tr  ) {
+          > label[role=tab]::after {
+            content: ' (1)';
+          }
+        }
+
+        > div:has( > label[role=tab] + input[type=radio][value=list] + div[role=tabpanel] > table > tbody > tr:nth-child(2)  ) {
+          > label[role=tab]::after {
+            content: ' (2)';
+          }
+        }
+
+        > div:has( > label[role=tab] + input[type=radio][value=list] + div[role=tabpanel] > table > tbody > tr:nth-child(3)  ) {
+          > label[role=tab]::after {
+            content: ' (3)';
+          }
+        }
+        
+        > div:has( > label[role=tab] + input[type=radio][value=list] + div[role=tabpanel] > table > tbody > tr:nth-child(4)  ) {
+          > label[role=tab]::after {
+            content: ' (4)';
+          }
+        }
+        
+        > div:has( > label[role=tab] + input[type=radio][value=list] + div[role=tabpanel] > table > tbody > tr:nth-child(5)  ) {
+          > label[role=tab]::after {
+            content: ' (5)';
+          }
+        }
+        
+      }
+    }
+    
+    > footer {
+    }
+  }
+
+}
+
+dialog.llm-prompt#generic-prompt {
+  min-width: 195px;
+  min-height: 95px;
+  width: 640px;
+  height: 320px;
+  top: calc(100% - 400px);
+  left: calc(50% - 320px);
+    
+}
+
+dialog.llm-prompt#model-config-prompt {
+  min-width: 195px;
+  min-height: 95px;
+  width: 640px;
+  height: 320px;
+  top: calc(50% - 160px);
+  left: calc(50% - 320px);
+}

@@ -1,0 +1,106 @@
+/**
+* action buttons (as opposed to submit buttons) have type=button
+*/
+button[type=button] {
+  
+}
+
+/**
+* Generic actions
+*/
+
+button[name="confirm"]::before {
+  content: var( --icon-check );
+}
+
+button[name="send"]::before {
+  content: var( --icon-send );
+}
+
+button[name="abort"]::before {
+  content: var( --icon-cancel );
+}
+
+button[type=button][name=copy]::before {
+  content: var( --icon-copy );
+}
+
+button[type=button][name=upload]::before {
+  content: var( --icon-upload );
+}
+
+button[type=button][name=download]::before {
+  content: var( --icon-download );
+}
+
+button[type=button][name=restore]::before {
+  content: var( --icon-restore );
+}
+
+button[type=button][name=delete]::before {
+  content: var( --icon-trash );
+}
+
+button[type=button][name=summarize]::before {
+  content: var( --icon-list-details );
+}
+
+button[type=button][name=translate]::before {
+  content: var( --icon-language );
+}
+
+button[type=button][name=wizard]::before {
+  content: var( --icon-confetti );
+}
+
+button[type=button][name=print]::before {
+  content: var( --icon-printer );
+}
+
+button[type=button][name=save]::before {
+  content: var( --icon-device-floppy );
+}
+
+button[type=button][name=proofread]::before {
+  content: var( --icon-message-report );
+}
+
+button[type=button][name=about]::before {
+  content: var( --icon-info-square-rounded );
+}
+
+button[type=button][name="new"]::before {
+  content: var( --icon-plus );
+}
+
+label:has( > input[type=file] )::before{
+  content: var( --icon-upload );
+}
+
+/**
+* Specific actions
+*/
+
+button[type=button][name="new"][value=new-chat]::before {
+  content: var( --icon-messages );
+}
+
+button[type=button][name="new"][value=new-prompt]::before {
+  content: var( --icon-message-plus );
+}
+
+button[type=button][name=write]::before {
+  content: var( --icon-pencil-question );
+}
+
+button[type=button][name=rewrite]::before {
+  content: var( --icon-pencil-exclamation );
+}
+
+button[type=button][name=add][value=add-content-item]::before {
+  content: var( --icon-playlist-add );
+}
+
+button[type=button][name=remove][value=remove-content-item]::before {
+  content: var( --icon-playlist-x );
+}

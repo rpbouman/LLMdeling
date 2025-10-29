@@ -1,0 +1,8 @@
+dialog[draggable] {
+  margin: 0px;
+  position: absolute;
+}
+
+dialog[draggable] > header {
+  cursor: move;
+}

@@ -1,0 +1,312 @@
+/*
+* "bantering emoji" Icon font Animation
+* Usage:
+*
+*     div.speech::after {
+*       animation-name: bantering_emoji;
+*       animation-duration: 10s;
+*       animation-timing-function: linear;
+*       animation-iteration-count: infinite;
+*     }
+*
+*/
+
+@keyframes bantering_emoji {
+  0% { 
+
+    content: var( --icon-mood-empty);
+  }      
+  3% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+  
+  /*************** Ok, */
+  4% { 
+
+    content: var( --icon-mood-surprised); 
+  }
+  6% { 
+
+    content: var( --icon-mood-happy); 
+  }      
+  7% { 
+
+    content: var( --icon-mood-empty); 
+  }
+  
+  11% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+  /*************** Lets go! */
+  12% { 
+
+    content: var( --icon-mood-happy); 
+  }
+  13% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+  14% { 
+
+    content: var( --icon-mood-surprised); 
+  }
+  15% { 
+
+    content: var( --icon-mood-surprised); 
+  }
+  16% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+  
+  /************* BLINK */
+  17% { 
+
+    content: var( --icon-mood-smile-beam); 
+  }
+  19% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+  24% { 
+
+    content: var( --icon-mood-empty); 
+  }
+  
+  /************* */
+  25% { 
+
+    content: var( --icon-mood-surprised); 
+  }
+  26% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+  27% { 
+
+    content: var( --icon-mood-surprised); 
+  }
+  28% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+  29% { 
+
+    content: var( --icon-mood-happy); 
+  }
+  30% { 
+
+    content: var( --icon-mood-empty); 
+  } 
+  32% { 
+
+    content: var( --icon-mood-surprised); 
+  }
+  33% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+  36% { 
+
+    content: var( --icon-mood-empty); 
+  }
+  37% { 
+
+    content: var( --icon-mood-surprised); 
+  }
+  38% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+  39% { 
+
+    content: var( --icon-mood-sing); 
+  }
+  40% { 
+
+    content: var( --icon-mood-look-right); 
+  }      
+  41% { 
+
+    content: var( --icon-mood-look-right); 
+  }      
+  42% { 
+
+    content: var( --icon-mood-sing); 
+  }
+  43% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+  44% { 
+
+    content: var( --icon-mood-happy); 
+  }
+  45% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+  46% { 
+
+    content: var( --icon-mood-tongue); 
+  }
+  47% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+  49% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+
+  /************* BLINK */
+  50% { 
+
+    content: var( --icon-mood-smile-beam); 
+  }
+  51% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+  54% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+  55% { 
+
+    content: var( --icon-mood-surprised); 
+  }
+  56% { 
+
+    content: var( --icon-mood-tongue); 
+  }
+  57% { 
+
+    content: var( --icon-mood-surprised); 
+  }
+  58% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+  59% { 
+
+    content: var( --icon-mood-happy); 
+  }
+  60% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+  61% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+  /************* BLINK */
+  62% { 
+
+    content: var( --icon-mood-smile-beam); 
+  }
+  63% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+  70% { 
+
+    content: var( --icon-mood-empty); 
+  } 
+  /************* BLINK */
+  71% { 
+
+    content: var( --icon-mood-smile-beam); 
+  }
+  72% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+  74% { 
+
+    content: var( --icon-mood-empty); 
+  }
+  75% { 
+
+    content: var( --icon-mood-surprised); 
+  }
+  76% { 
+
+    content: var( --icon-mood-empty); 
+  }
+  77% { 
+
+    content: var( --icon-mood-surprised); 
+  }
+  78% { 
+
+    content: var( --icon-mood-empty); 
+  }
+  79% { 
+
+    content: var( --icon-mood-sing); 
+  }
+  80% { 
+
+    content: var( --icon-mood-empty); 
+  }
+  81% { 
+
+    content: var( --icon-mood-happy); 
+  }
+  82% { 
+
+    content: var( --icon-mood-empty); 
+  }
+  85% { 
+
+    content: var( --icon-mood-empty); 
+  }
+  /************* BLINK */
+  86% { 
+
+    content: var( --icon-mood-smile-beam); 
+  }
+  87% { 
+
+    content: var( --icon-mood-empty); 
+  }
+  
+
+  94% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+  /************* BLINK */
+  95% { 
+
+    content: var( --icon-mood-smile-beam); 
+  }
+  95.5% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+  97% { 
+
+    content: var( --icon-mood-empty); 
+  }      
+  /************* BLINK */
+  97.5% { 
+
+    content: var( --icon-mood-smile-beam); 
+  }
+  98% { 
+
+    content: var( --icon-mood-look-down); 
+  }      
+  99% { 
+
+    content: var( --icon-mood-look-down); 
+  }      
+  100% { 
+
+    content: var( --icon-mood-empty); 
+  }
+}

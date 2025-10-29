@@ -1,0 +1,2065 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content="LLMDeling lets you play with the browser's local LLM."/>
+    <link
+      rel="icon"
+      href="data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiAgd2lkdGg9IjI0IiAgaGVpZ2h0PSIyNCIgIHZpZXdCb3g9IjAgMCAyNCAyNCIgIGZpbGw9Im5vbmUiICBzdHJva2U9ImN1cnJlbnRDb2xvciIgIHN0cm9rZS13aWR0aD0iMiIgIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgIHN0cm9rZS1saW5lam9pbj0icm91bmQiICBjbGFzcz0iaWNvbiBpY29uLXRhYmxlciBpY29ucy10YWJsZXItb3V0bGluZSBpY29uLXRhYmxlci1tZXNzYWdlcyI+PHBhdGggc3Ryb2tlPSJub25lIiBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTIxIDE0bC0zIC0zaC03YTEgMSAwIDAgMSAtMSAtMXYtNmExIDEgMCAwIDEgMSAtMWg5YTEgMSAwIDAgMSAxIDF2MTAiIC8+PHBhdGggZD0iTTE0IDE1djJhMSAxIDAgMCAxIC0xIDFoLTdsLTMgM3YtMTBhMSAxIDAgMCAxIDEgLTFoMiIgLz48L3N2Zz4="
+    />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin/>
+  
+    <title>LLMdeling</title>
+
+    <style id="tabler-font"></style>
+    <script>
+    // see: https://cdn.jsdelivr.net/npm/@tabler/icons@3.24.0/
+    // see: https://github.com/tabler/tabler-icons/issues/1310
+    var tablerIconsFontVersion = '3.34.0';
+    var tablerIconsFontUrl = `https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@${tablerIconsFontVersion}/dist/fonts/tabler-icons.woff2?v${tablerIconsFontVersion}`;
+    var preloadLink = document.createElement('link');
+    preloadLink.setAttribute('rel', 'preload');
+    preloadLink.setAttribute('as', 'font');
+    preloadLink.setAttribute('href', tablerIconsFontUrl);
+    preloadLink.setAttribute('crossorigin', 'true');
+    document.head.insertBefore(preloadLink, document.getElementById('tabler-font'));
+    var tablerFontStyleSheet = document.getElementById('tabler-font');
+    document.styleSheets[0].insertRule(`
+      @font-face {
+        font-family: "tabler-icons";
+        font-style: normal;
+        font-weight: 400;
+        font-display: block;
+        src: url("${tablerIconsFontUrl}") format("woff2");
+      }
+    `);
+    </script>
+    <link rel="stylesheet" href="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/styles/default.min.css"/>
+
+    <link rel="stylesheet" type="text/css" href="lookandfeel/variables.css"/>
+    <link rel="stylesheet" type="text/css" href="lookandfeel/icons.css"/>
+    <link rel="stylesheet" type="text/css" href="lookandfeel/generic.css"/>
+
+    <link rel="stylesheet" type="text/css" href="lookandfeel/dialog/dialog.css"/>
+    <link rel="stylesheet" type="text/css" href="lookandfeel/dialog/DragableDialogs.css"/>
+    <link rel="stylesheet" type="text/css" href="lookandfeel/menu/menu.css"/>
+    <link rel="stylesheet" type="text/css" href="lookandfeel/button/button.css"/>
+    <link rel="stylesheet" type="text/css" href="lookandfeel/button/button-actions.css"/>
+    <link rel="stylesheet" type="text/css" href="lookandfeel/textarea/textarea.css"/>
+    <link rel="stylesheet" type="text/css" href="lookandfeel/details/details.css"/>
+    <link rel="stylesheet" type="text/css" href="lookandfeel/select/select.css"/>
+    
+    <link rel="stylesheet" type="text/css" href="Tabs/tabs.css"/>
+    <link rel="stylesheet" type="text/css" href="Formatting/formats.css"/>
+    <link rel="stylesheet" type="text/css" href="History/HistoryUi.css"/>
+    <link rel="stylesheet" type="text/css" href="LLMPrompt/LLMPrompt.css"/>
+    <link rel="stylesheet" type="text/css" href="ModelLibrary/ModelLibrary.css"/>
+    <link rel="stylesheet" type="text/css" href="InputOutputDialog/InputOutputDialog.css"/>
+    <link rel="stylesheet" type="text/css" href="Conversation/Conversation.css"/>
+    <link rel="stylesheet" type="text/css" href="LanguageTranslation/LanguageTranslationDialog.css"/>
+    <link rel="stylesheet" type="text/css" href="Summarizer/SummarizationDialog.css"/>
+    <link rel="stylesheet" type="text/css" href="Writer/WriterDialog.css"/>
+    <link rel="stylesheet" type="text/css" href="ReWriter/ReWriterDialog.css"/>
+    <link rel="stylesheet" type="text/css" href="Proofreader/ProofreaderDialog.css"/>
+    <link rel="stylesheet" type="text/css" href="AboutDialog/AboutDialog.css"/>
+    
+    <link rel="stylesheet" type="text/css" href="Animations/banter.css"/>
+    <link rel="stylesheet" type="text/css" href="Animations/waiting-for-response.css"/>
+    <link rel="stylesheet" type="text/css" href="Animations/blinking-pencil.css"/>
+    <link rel="stylesheet" type="text/css" href="Animations/spinners.css"/>
+    <link rel="stylesheet" type="text/css" href="Main/main.css"/>
+    <link rel="stylesheet" type="text/css" href="Main/toolbar.css"/>
+        
+    <template id="chatHistoryNode">
+      <details>
+        <summary>
+          <span></span>
+        </summary>
+        <menu role="toolbar">
+          <li role="menuitem">
+            <button 
+              type="button" 
+              name="download"
+              value="downloadChat"
+              title="Download this chat..."
+            />
+          </li>
+          <li role="menuitem">
+            <button 
+              type="button" 
+              name="copy"
+              value="copyChat"
+              title="Copy this chat to the clipboard..."
+            />
+          </li>
+          <li role="menuitem">
+            <button 
+              type="button" 
+              name="print"
+              value="printChat"
+              title="Send this chat to the printer..."
+            />
+          </li>
+          <li role="menuitem">
+            <button 
+              type="button" 
+              name="summarize"
+              value="summarizeChat"
+              title="Regenerate the chat summary..."
+            />
+          </li>
+          <li role="menuitem">
+            <button 
+              type="button" 
+              name="restore"
+              value="restoreChat"
+              title="Continue this chat..."
+            />
+          </li>
+          <li role="menuitem">
+            <button 
+              type="button" 
+              name="delete"
+              value="deleteChat"
+              title="Delete this chat from the history"
+            />
+          </li>
+        </menu>
+        <div></div>
+      </details>
+    </template>
+    
+    <template id="request-ui">
+      <div class="request">
+        <header>
+          <menu role="toolbar">
+            <li role="menuitem">
+              <button 
+                type="button" 
+                name="download"
+                value="downloadPrompt"
+                title="Download this prompt..."
+              />
+            </li>
+            <li role="menuitem">
+              <button 
+                type="button" 
+                name="copy"
+                value="copyPrompt"
+                title="Copy this prompt to the clipboard..."
+              />
+            </li>
+            <li role="menuitem">
+              <button 
+                type="button" 
+                name="print"
+                value="printPrompt"
+                title="Send this prompt to the printer..."
+              />
+            </li>
+            <li role="menuitem">
+              <button 
+                type="button" 
+                name="save"
+                value="savePrompt"
+                title="Save this prompt to the prompt library..."
+              />
+            </li>
+            <li role="menuitem">
+              <button 
+                type="button" 
+                name="wizard"
+                value="promptWizard"
+                title="Refine this prompt with the prompt wizard..."
+              />
+            </li>
+            <li role="menuitem">
+              <button 
+                type="button" 
+                name="translate"
+                value="translatePrompt"
+                title="Translate this prompt..."
+                popovertarget="translation-dialog"
+                popovertargetaction="show"
+              />
+            </li>
+          </menu>
+        </header>
+        <section></section>
+        <input type="hidden"/>
+        <footer>
+        </footer>
+      </div>
+    </template>
+
+    <template id="response-ui">
+      <div class="response">
+        <header>
+          <menu role="toolbar">
+            <li role="menuitem">
+              <button 
+                type="button" 
+                name="download"
+                value="downloadResponse"
+                title="Download this response..."
+              />
+            </li>
+            <li role="menuitem">
+              <button 
+                type="button" 
+                name="copy"
+                value="copyResponse"
+                title="Copy this response to the clipboard..."
+              />
+            </li>
+            <li role="menuitem">
+              <button 
+                type="button" 
+                name="print"
+                value="printResponse"
+                title="Send this response to the printer..."
+              />
+            </li>
+            <li role="menuitem">
+              <button 
+                type="button" 
+                name="summarize"
+                value="summarizeResponse"
+                title="Summarize this response..."
+                popovertarget="summarization-dialog"
+                popovertargetaction="show"                
+              />
+            </li>
+            <li role="menuitem">
+              <button 
+                type="button" 
+                name="translate"
+                value="translateResponse"
+                title="Translate this response..."
+                popovertarget="translation-dialog"
+                popovertargetaction="show"                
+              />
+            </li>
+            <li role="menuitem">
+              <form role="menubar">
+                <input role="menuitem" type="radio" name="format" value="formatted" checked title="View formatted"/>
+                <input role="menuitem" type="radio" name="format" value="markdown" title="View Markdown code"/>
+                <input role="menuitem" type="radio" name="format" value="html" title="View HTML code"/>
+              </form>
+            </li>
+          </menu>
+        </header>
+        <section></section>
+        <pre><code class="hljs language-markdown"></code></pre>
+        <pre><code class="hljs language-html"></code></pre>
+        <input type="hidden"/>
+        <footer>
+        </footer>
+      </div>
+    </template>
+    
+  </head>
+  <body>
+    <main
+      id="app"
+      data-app-status="booting"
+    >
+    
+      <header>
+        <menu role="toolbar">
+          <li role="menuitem">
+            <button 
+              title="Start a new chat"
+              type="button"
+              id="new-chat"
+              name="new"
+              value="new-chat"
+              popovertarget="generic-prompt"
+              popovertargetaction="show"
+            >New Chat</button>
+          </li>
+          <li role="menuitem">
+            <button 
+              title="Start a new chat with options"
+              type="button"
+              id="new-chat-with-options"
+              name="new"
+              value="new-chat"
+              popovertarget="model-config-prompt"
+              popovertargetaction="show"
+            >New Chat with Options</button>
+          </li>
+          <li role="menuitem">
+            <button 
+              title="Translate a text"
+              type="button"
+              name="translate"
+              value="translate-tool"
+              popovertarget="translation-dialog"
+              popovertargetaction="show"
+            >Translate</button>
+          </li>
+          <li role="menuitem">
+            <button 
+              title="Summarize a text"
+              type="button"
+              name="summarize"
+              value="summarization-tool"
+              popovertarget="summarization-dialog"
+              popovertargetaction="show"
+            >Summarize</button>
+          </li>
+          <li role="menuitem">
+            <button 
+              title="Write a text"
+              type="button"
+              name="write"
+              value="writer-tool"
+              popovertarget="writer-dialog"
+              popovertargetaction="show"
+            >Write</button>
+          </li>
+          <li role="menuitem">
+            <button 
+              title="Re-write a text"
+              type="button"
+              name="rewrite"
+              value="rewriter-tool"
+              popovertarget="rewriter-dialog"
+              popovertargetaction="show"
+            >Rewrite</button>
+          </li>
+          <li role="menuitem">
+            <button 
+              title="Proofread a text"
+              type="button"
+              name="proofread"
+              value="proofreader-tool"
+              popovertarget="proofreader-dialog"
+              popovertargetaction="show"
+            >Proofread</button>
+          </li>
+          <li role="menuitem">
+            <button 
+              title="About this app"
+              type="button"
+              name="about"
+              value="about"
+              popovertarget="about-dialog"
+              popovertargetaction="show"
+            >About</button>
+          </li>
+        </menu>
+      </header>
+      
+      <nav id="sidebar">
+        <form role="tablist">
+          <div>
+            <label role="tab" for="chatHistory">Chats</label>
+            <input id="chatHistory" type="radio" name="tabs" checked="true"/>
+            <div role="tabpanel"></div>
+          </div>
+          <div>
+            <label role="tab" for="modelLibrary">Models</label>
+            <input id="modelLibrary" type="radio" name="tabs"/>
+            <div role="tabpanel"></div>
+          </div>
+        </form>
+      </nav>
+      
+      <section 
+        id="conversation" 
+        class="conversation"
+      >
+        <div class="response welcome">
+          <header>
+          </header>
+          <section>
+            <p>
+              This is <a href="https://github.com/rpbouman/LLMdeling" target="llmdeling_github">LLMDeling</a> 
+              - an app to explore the capabilities of your web browser's 
+              <a href="https://webmachinelearning.github.io/incubations/" target="doc">Web Machine Learning</a> API's.
+            </p>
+            <p>
+              The following browsers currently have (experimental) implementations of (some of) these API's:            
+            </p>
+            <ul>
+              <li><a href="https://developer.chrome.com/docs/ai/built-in" target="_chrome">Google Chrome</a></li>
+              <li><a href="https://learn.microsoft.com/en-us/microsoft-edge/web-platform/prompt-api" target="_edge">Microsoft Edge</a></li>
+            </ul>
+            <p>
+              The following list shows the availability of these API's on your current browser:
+            </p>
+            <dl id="apis-list">
+            </dl>
+          </section>
+          <footer>
+          </footer>
+        </div>
+      </section>
+      
+      <footer id="statusbar">
+        footer
+      </footer>
+      
+      <dialog 
+        class="llm-prompt"
+        id="generic-prompt"
+        aria-labelledby="generic-prompt-title"
+        draggable="true" 
+        popover="manual"
+        closedby="closerequest"
+      >
+        <div>
+          <header>
+            <h1 
+              id="generic-prompt-title" 
+              data-icon="&#63883;"
+            >Prompt:</h1>
+            <form role="toolbar">
+              <input 
+                name="windowstate" 
+                type="radio" 
+                value="minimize" 
+                title="Minimize"
+              />
+              <input 
+                name="windowstate" 
+                type="radio" 
+                value="maximize" 
+                title="Maximize"
+              />
+              <input 
+                name="windowstate" 
+                type="radio" 
+                value="restore"  
+                title="Restore" 
+                checked="true"
+              />
+              <button 
+                type="button"
+                popovertarget="generic-prompt"
+                popovertargetaction="hide"
+                title="Close" 
+              />
+            </form>
+          </header>
+          <form>
+            <menu role="toolbar">
+              <li role="menuitem">
+                <label 
+                  title="Upload a text to use as prompt..."
+                  for="uploadPrompt"
+                >
+                  <input
+                    id="uploadPrompt"
+                    name="upload"
+                    type="file"
+                    multiple="false"
+                    accept=".csv,.html,.md,text/*,.txt,.xml"
+                  />
+                </label>
+              </li>            
+              <li role="menuitem">
+                <label 
+                  for="contentRole"
+                  title="The role to use when loading this prompt as an item in the list."
+                >Role</label>
+                <select 
+                  id="contentRole"
+                  name="contentRole"
+                  title="The role to use when loading this prompt as an item in the list."
+                >
+                  <option value="assistant">Assistant</option>
+                  <option value="user" selected>User</option>
+                </select>
+              </li>
+              <li role="menuitem">
+                <button
+                  title="Click to add this as an item to the list."
+                  type="button"
+                  name="add"
+                  value="add-content-item"
+                />
+              </li>
+            </menu>
+            <div role="tablist">
+              <div>
+                <label role="tab" for="genericPromptInput">Input</label>
+                <input id="genericPromptInput" type="radio" name="tabs" value="input" checked/>
+                <textarea
+                  role="tabpanel"
+                  id="prompt-text"
+                  name="input"
+                  required
+                  placeholder="Type your prompt here..."
+                  autofocus="true"
+                  tabindex="0"
+                ></textarea>
+              </div>
+              <div>
+                <label role="tab" for="responseConstraint">Response Constraint</label>
+                <input id="responseConstraint" type="radio" name="tabs" value="responseConstraint"/>
+                <textarea
+                  role="tabpanel"
+                  id="responseConstraint-text"
+                  name="responseConstraint"
+                  required
+                  placeholder="Type your response constraint as a JSON schema or a regular expression here..."
+                  autofocus="true"
+                  tabindex="0"
+                  data-response-constraint-type="undefined"
+                ></textarea>
+              </div>
+              <div>
+                <label role="tab" for="genericPromptInputList">List</label>
+                <input id="genericPromptInputList" type="radio" name="tabs" value="list" />
+                <div
+                  role="tabpanel"
+                  id="prompt-list"
+                >
+                  <table>
+                    <thead>
+                      <td>#</td>
+                      <td data-column="role">Role</td>
+                      <td data-column="text">Text</td>
+                      <td data-column="media">Media</td>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </form>
+          <footer>
+            <form role="toolbar">
+              <button
+                id="send-prompt"
+                type="button"
+                name="send"
+                value="send-prompt"
+                tabindex="0"
+              >Send</button>
+              <button
+                id="abort-request"
+                type="button"
+                name="abort"
+                value="abort-response"
+                tabindex="0"
+              >Abort</button>
+            </form>
+          </footer>
+        </div>
+      </dialog>
+      
+      <dialog 
+        class="llm-prompt"
+        id="model-config-prompt"
+        aria-labelledby="model-config-prompt-title"
+        draggable="true" 
+        popover="manual"
+        closedby="closerequest"
+      >
+        <div>
+          <header>
+            <h1 
+              id="model-config-prompt-title" 
+              data-icon="&#63883;"
+            >Model Config:</h1>
+            <form role="toolbar">
+              <input 
+                name="windowstate" 
+                type="radio" 
+                value="minimize" 
+                title="Minimize"
+              />
+              <input 
+                name="windowstate" 
+                type="radio" 
+                value="maximize" 
+                title="Maximize"
+              />
+              <input 
+                name="windowstate" 
+                type="radio" 
+                value="restore"  
+                title="Restore" 
+                checked="true"
+              />
+              <button 
+                type="button"
+                popovertarget="model-config-prompt"
+                popovertargetaction="hide"
+                title="Close" 
+              />
+            </form>
+          </header>
+          <form>
+            <menu role="toolbar">
+              <li role="menuitem">
+                <label 
+                  title="Save this in the model library..."
+                  for="saveModelConfig"
+                >
+                  <button
+                    id="saveModelConfig"
+                    name="save"
+                    type="button"
+                  />
+                </label>
+              </li>            
+              <li role="menuitem">
+                <label 
+                  title="Upload a text to use as prompt..."
+                  for="uploadInitialPrompt"
+                >
+                  <input
+                    id="uploadInitialPrompt"
+                    name="upload"
+                    type="file"
+                    multiple="false"
+                    accept=".csv,.html,.md,text/*,.txt,.xml"
+                  />
+                </label>
+              </li>            
+              <li role="menuitem">
+                <label 
+                  for="contentRole"
+                  title="The role to use when loading this prompt as an item in the list."
+                >Role</label>
+                <select 
+                  id="contentRole"
+                  name="contentRole"
+                  title="The role to use when loading this prompt as an item in the list."
+                >
+                  <option value="assistant">Assistant</option>
+                  <option value="system" selected>System</option>
+                  <option value="user">User</option>
+                </select>
+              </li>
+              <li role="menuitem">
+                <button
+                  title="Click to add this as an item to the list."
+                  type="button"
+                  name="add"
+                  value="add-content-item"
+                />
+              </li>
+              <li role="menuitem">
+                <label
+                  for="temperature"
+                  title="Temperature"
+                >Temperature</label>
+                <input 
+                  id="temperature"
+                  title="Temperature"
+                  name="temperature"
+                  type="range"
+                  min="0.0"
+                  max="2.0"
+                  step="0.1"
+                  value="1.0"
+                />
+              </li>
+              <li role="menuitem">
+                <label
+                  for="topK"
+                  title="Top K"
+                >Top-k</label>
+                <input 
+                  id="topK"
+                  title="Top K"
+                  name="topK"
+                  type="number"
+                  step="1"
+                  min="1"
+                  max="8"
+                  value="3"
+                />
+              </li>
+              <li role="menuitem">
+                <button
+                  title="Click to check availability of a model for the configured options"
+                  type="button"
+                  name="checkModelAvailability"
+                  value="checkModelAvailability"
+                />
+              </li>
+            </menu>
+            <div role="tablist">
+              <div>
+                <label role="tab" for="initialPromptInput">Input</label>
+                <input id="initialPromptInput" type="radio" name="tabs" value="input" checked/>
+                <textarea
+                  role="tabpanel"
+                  id="initial-prompt-text"
+                  name="input"
+                  required
+                  placeholder="Type your initial prompt here..."
+                  autofocus="true"
+                  tabindex="0"
+                ></textarea>
+              </div>
+              <div>
+                <label role="tab" for="initialPromptInputList">List</label>
+                <input id="initialPromptInputList" type="radio" name="tabs" value="list" />
+                <div
+                  role="tabpanel"
+                  id="initial-prompt-list"
+                >
+                  <table>
+                    <thead>
+                      <td>#</td>
+                      <td data-column="role">Role</td>
+                      <td data-column="text">Content</td>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div>
+                <label role="tab" for="responseConstraint1">Response Constraint</label>
+                <input id="responseConstraint1" type="radio" name="tabs" value="responseConstraint"/>
+                <textarea
+                  role="tabpanel"
+                  id="responseConstraint-text"
+                  name="responseConstraint"
+                  required
+                  placeholder="Type your response constraint as a JSON schema or a regular expression here..."
+                  autofocus="true"
+                  tabindex="0"
+                  data-response-constraint-type="undefined"
+                ></textarea>
+              </div>              
+              <div>
+                <label role="tab" for="expectedInputs">Expected Inputs</label>
+                <input id="expectedInputs" type="radio" name="tabs" value="expectedInputs" />
+                <div
+                  role="tabpanel"
+                  id="expected-inputs"
+                >
+                  <div>
+                    <input type="checkbox" checked="true" value="text"/>
+                    <label>Text</label>
+                  </div>
+                  <div>
+                    <input type="checkbox" value="image"/>
+                    <label>Image</label>
+                  </div>
+                  <div>
+                    <input type="checkbox" value="audio"/>
+                    <label>Audio</label>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+          </form>
+          <footer>
+            <form role="toolbar">
+              <button
+                id="create-model-button"
+                type="button"
+                name="createModel"
+                value="create-model"
+                tabindex="0"
+              >Create Model</button>
+            </form>
+          </footer>
+        </div>
+      </dialog>      
+            
+    </main>
+
+    <dialog 
+      id="info-dialog"
+      closedby="closerequest"
+      style="
+        height: 200px;
+        width: 300px;
+        top: calc( 50vh - 100px);
+        left: calc( 50vw - 150px);
+      "
+      aria-labelledby="info-dialog-title"
+      draggable="true" 
+    >
+      <div>
+        <header>
+          <h1 
+            id="info-dialog-title" 
+            data-icon="&#60101;"
+          ></h1>
+          <form role="toolbar">
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="minimize" 
+              title="Minimize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="maximize" 
+              title="Maximize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="restore"  
+              title="Restore" 
+              checked="true"
+            />
+            <button 
+              type="button"
+              popovertarget="info-dialog"
+              popovertargetaction="hide"
+              title="Close" 
+              onclick="closeModal(this)"
+            />
+          </form>
+        </header>
+        <section>
+        </section>
+        <footer>
+          <form role="toolbar">
+            <button
+              id="info-close"
+              name="confirm"
+              type="button"
+              popovertarget="info-dialog"
+              popovertargetaction="hide"
+              tabindex="0"
+              title="Close" 
+            >Ok</button>
+          </form>
+        </footer>
+      </div>
+    </dialog>
+    
+    <dialog 
+      id="translation-dialog"      
+      class="input-output-dialog"
+      aria-labelledby="translation-dialog-title"
+      draggable="true" 
+      popover="manual"
+      closedby="closerequest"      
+    >
+      <div>
+        <header>
+          <h1 id="translation-dialog-title">Translate</h1>
+          <form role="toolbar">
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="minimize" 
+              title="Minimize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="maximize" 
+              title="Maximize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="restore"  
+              title="Restore" 
+              checked="true"
+            />
+            <button 
+              type="button"
+              title="Close" 
+              popovertarget="translation-dialog"
+              popovertargetaction="hide"
+            />
+          </form>
+        </header>
+        <section>
+          <form name="translateDialogSettingForm">
+            <input 
+              type="hidden" 
+              name="state"
+            />
+            <header>
+              <menu role="toolbar">
+                <li role="menuitem">
+                  <label 
+                    title="Upload a text to translate..."
+                    for="uploadSourceText"
+                  >
+                    <input
+                      id="uploadSourceText"
+                      name="upload"
+                      type="file"
+                      multiple="false"
+                      accept=".csv,.html,.md,text/*,.txt,.xml"
+                    />
+                  </label>
+                </li>            
+                <li role="menuitem">
+                  <label 
+                    for="sourceLanguage-picker"
+                    title="Select the language of the text that is to be translated."
+                  >From</label>
+                  <select 
+                    id="sourceLanguage-picker" 
+                    name="sourceLanguage-picker"
+                    title="Select the language of the text that is to be translated."
+                  >
+                  </select>
+                  <input 
+                    type="hidden" 
+                    name="sourceLanguage"
+                    id="sourceLanguage"
+                    value=""
+                    required
+                  />
+                </li>
+                <li role="menuitem">
+                  <label for ="targetLanguage-picker">To</label>
+                  <select 
+                    id="targetLanguage-picker" 
+                    name="targetLanguage-picker"
+                    required
+                  >
+                  </select>
+                </li>
+                <li role="menuitem">
+                  <label 
+                    for="autoTranslate"
+                    title="Check to automatically update the translation."
+                  >Auto-translate</label>
+                  <input 
+                    id="autoTranslate"
+                    name="autoTranslate"
+                    type="checkbox" 
+                    title="Check to automatically update the translation."
+                  />
+                </li>
+                <li role="menuitem">
+                  <button
+                    id="translate"
+                    name="translate"
+                    type="button"
+                    value="translate"
+                    title="Click to translate."
+                  />
+                </li>
+              </menu>
+            </header>
+            <textarea 
+              name="input"
+              placeholder="Type the text to translate"
+              spellcheck="true"
+              required
+              autofocus
+            ></textarea>
+          </form>
+          <div class="response">
+            <header>
+              <menu role="toolbar">
+                <li role="menuitem">
+                  <button 
+                    type="button" 
+                    name="download"
+                    value="downloadTargetText"
+                    title="Download the translated text..."
+                  />
+                </li>
+                <li role="menuitem">
+                  <button 
+                    type="button" 
+                    name="copy"
+                    value="copyChat"
+                    title="Copy this chat to the clipboard..."
+                  />
+                </li>
+                <li role="menuitem">
+                  <form role="menubar">
+                    <input role="menuitem" type="radio" name="format" value="formatted" checked title="View formatted"/>
+                    <input role="menuitem" type="radio" name="format" value="markdown" title="View Markdown code"/>
+                    <input role="menuitem" type="radio" name="format" value="html" title="View HTML code"/>
+                  </form>
+                </li>              
+              </menu>
+            </header>
+            <section></section>
+            <pre><code class="hljs language-markdown"></code></pre>
+            <pre><code class="hljs language-html"></code></pre>
+            <input type="hidden" name="output"/>
+          </div>
+        </section>
+        <footer>
+          <form role="toolbar">
+            <button
+              name="confirm"
+              type="button"
+              tabindex="0"
+              title="Close" 
+              popovertarget="translation-dialog"
+              popovertargetaction="hide"\              
+            >Ok</button>
+          </form>
+        </footer>
+      </div>
+    </dialog>
+
+    <dialog 
+      id="summarization-dialog"
+      class="input-output-dialog"      
+      aria-labelledby="summarization-dialog-title"
+      draggable="true" 
+      popover="manual"
+      closedby="closerequest"            
+    >
+      <div>
+        <header>
+          <h1 
+            id="summarization-dialog-title" 
+          >Summarize</h1>
+          <form role="toolbar">
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="minimize" 
+              title="Minimize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="maximize" 
+              title="Maximize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="restore"  
+              title="Restore" 
+              checked="true"
+            />
+            <button 
+              type="button"
+              popovertarget="summarization-dialog"
+              popovertargetaction="hide"
+              title="Close" 
+            />
+          </form>
+        </header>
+        <section>
+          <form name="summarizationDialogSettingForm">
+            <input 
+              type="hidden" 
+              name="state"
+            />
+            <header>
+              <menu role="toolbar">
+                <li role="menuitem">
+                  <label 
+                    title="Upload a text to summarize..."
+                    for="uploadLongText"
+                  >
+                    <input
+                      id="uploadLongText"
+                      name="upload"
+                      type="file"
+                      multiple="false"
+                      accept=".csv,.html,.md,text/*,.txt,.xml"
+                    />
+                  </label>
+                </li>
+                <li role="menuitem">
+                  <label 
+                    for="summaryType-picker"
+                    title="The type of the summarization, with the allowed values key-points (default), tldr, teaser, and headline"
+                  >Type</label>
+                  <select 
+                    id="summaryType-picker" 
+                    name="summaryType-picker"
+                    title="The type of the summarization, with the allowed values key-points (default), tldr, teaser, and headline"
+                    required
+                  >
+                    <option value="tldr" label="TL;DR" title="Summary should be short and to the point, providing a quick overview of the input, suitable for a busy reader."/>
+                    <option value="teaser" label="Teaser"	" title="Summary should focus on the most interesting or intriguing parts of the input, designed to draw the reader in to read more."/>
+                    <option value="key-points" label="Key Points" selected title="Summary should extract the most important points from the input, presented as a bulleted list."/>
+                    <option value="headline" label="Headline" title="Summary should effectively contain the main point of the input in a single sentence, in the format of an article headline."/>
+                  </select>                  
+                </li>
+                <li role="menuitem">
+                  <label for="summaryLength-picker">Length</label>
+                  <select 
+                    id="summaryLength-picker" 
+                    name="summaryLength-picker"
+                    title="The length of the summarization, with the allowed values short, medium (default), and long. The meanings of these lengths vary depending on the type requested."
+                    required
+                  >
+                    <option value="short" label="Short"/>
+                    <option value="medium" label="Medium" selected/>
+                    <option value="long" label="Long"/>
+                  </select>                  
+                </li>
+                <li role="menuitem">
+                  <label for="summaryOutputFormat-picker">Format</label>
+                  <select
+                    id="summaryOutputFormat-picker"
+                    name="summaryOutputFormat-picker"
+                    title="The desired output format for the summary"
+                    required
+                  >
+                    <option value="markdown" label="Markdown" selected title="Create a markdown formatted summary"/>
+                    <option value="plain-text" label="Plaintext" title="Create a plaintext formatted summary"/>
+                  </select>
+                </li>
+                <li role="menuitem">
+                  <label 
+                    for="autoSummarize"
+                    title="Check to automatically summarize."
+                  >Auto-summarize</label>
+                  <input 
+                    id="autoSummarize" 
+                    name="autoSummarize"
+                    type="checkbox" 
+                    title="Check to automatically summarize."
+                  />
+                </li>
+                <li role="menuitem">
+                  <button
+                    id="summarize"
+                    name="summarize"
+                    type="button"
+                    value="summarize"
+                    title="Click to summarize."
+                  />
+                </li>
+              </menu>
+            </header>
+            <div role="tablist">
+              <div>
+                <label role="tab" for="textInput">Input</label>
+                <input id="textInput" type="radio" name="tabs" checked="true" value="input"/>
+                <textarea 
+                  role="tabpanel"
+                  name="input"
+                  placeholder="Type the text to summarize"
+                  spellcheck="true"
+                  required
+                  autofocus
+                ></textarea>
+              </div>
+              <div>
+                <label role="tab" for="contextInput">Context</label>
+                <input id="contextInput" type="radio" name="tabs" value="context"/>
+                <textarea 
+                  role="tabpanel"
+                  name="context"
+                  placeholder="Type a text to provide context about your desired summary"
+                  spellcheck="true"
+                  required
+                  autofocus
+                ></textarea>
+              </div>
+            </div>            
+          </form>
+          <div class="response">
+            <header>
+              <menu role="toolbar">
+                <li role="menuitem">
+                  <button 
+                    type="button" 
+                    name="download"
+                    value="downloadOutput"
+                    title="Download the summary..."
+                  />
+                </li>
+                <li role="menuitem">
+                  <button 
+                    type="button" 
+                    name="copy"
+                    value="copyOutput"
+                    title="Copy this summary to the clipboard..."
+                  />
+                </li>
+                <li role="menuitem">
+                  <form role="menubar">
+                    <input role="menuitem" type="radio" name="format" value="formatted" checked title="View formatted"/>
+                    <input role="menuitem" type="radio" name="format" value="markdown" title="View Markdown code"/>
+                    <input role="menuitem" type="radio" name="format" value="html" title="View HTML code"/>
+                  </form>
+                </li>              
+              </menu>
+            </header>
+            <section></section>
+            <pre><code class="hljs language-markdown"></code></pre>
+            <pre><code class="hljs language-html"></code></pre>
+            <input type="hidden" id="summarizedText-text" name="summarizedText-text"/>
+          </div>
+        </section>
+        <footer>
+          <form role="toolbar">
+            <button
+              name="confirm"
+              type="button"
+              tabindex="0"
+              title="Close" 
+              popovertarget="summarization-dialog"
+              popovertargetaction="hide"
+            >Ok</button>
+          </form>
+        </footer>
+      </div>
+    </dialog>
+
+    <dialog 
+      id="writer-dialog"
+      class="input-output-dialog"      
+      aria-labelledby="writer-dialog-title"
+      draggable="true" 
+      popover="manual"
+      closedby="closerequest"            
+    >
+      <div>
+        <header>
+          <h1 
+            id="writer-dialog-title" 
+          >Write</h1>
+          <form role="toolbar">
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="minimize" 
+              title="Minimize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="maximize" 
+              title="Maximize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="restore"  
+              title="Restore" 
+              checked="true"
+            />
+            <button 
+              type="button"
+              popovertarget="writer-dialog"
+              popovertargetaction="hide"
+              title="Close" 
+            />
+          </form>
+        </header>
+        <section>
+          <form name="writerDialogSettingForm">
+            <input 
+              type="hidden" 
+              name="state"
+            />
+            <header>
+              <menu role="toolbar">
+                <li role="menuitem">
+                  <label 
+                    title="Upload writing instructions..."
+                    for="uploadWritingInstructions"
+                  >
+                    <input
+                      id="uploadWritingInstructions"
+                      name="upload"
+                      type="file"
+                      multiple="false"
+                      accept=".csv,.html,.md,text/*,.txt,.xml"
+                    />
+                  </label>
+                </li>
+                <li role="menuitem">
+                  <label 
+                    for="writingTone-picker"
+                    title="Writing tone can refer to the style, character, or attitude of the content"
+                  >Tone</label>
+                  <select 
+                    id="writingTone-picker" 
+                    name="writingTone-picker"
+                    title="Writing tone can refer to the style, character, or attitude of the content"
+                    required
+                  >
+                    <option value="casual" label="Casual" />
+                    <option value="formal" label="Formal" />
+                    <option value="neutral" label="Neutral" selected/>
+                  </select>                  
+                </li>
+                <li role="menuitem">
+                  <label for="summaryLength-picker">Length</label>
+                  <select 
+                    id="writingLength-picker" 
+                    name="writingLength-picker"
+                    title="The length of the writing output."
+                    required
+                  >
+                    <option value="short" label="Short"/>
+                    <option value="medium" label="Medium" selected/>
+                    <option value="long" label="Long"/>
+                  </select>                  
+                </li>
+                <li role="menuitem">
+                  <label for="writingOutputFormat-picker">Format</label>
+                  <select
+                    id="writingOutputFormat-picker"
+                    name="writingOutputFormat-picker"
+                    title="The desired output format for the writing output"
+                    required
+                  >
+                    <option value="markdown" label="Markdown" selected />
+                    <option value="plain-text" label="Plaintext" />
+                  </select>
+                </li>
+                <li role="menuitem">
+                  <label 
+                    for="autoWrite"
+                    title="Check to automatically write."
+                  >Auto-write</label>
+                  <input 
+                    id="autoWrite" 
+                    name="autoWrite"
+                    type="checkbox" 
+                    title="Check to automatically write."
+                  />
+                </li>
+                <li role="menuitem">
+                  <button
+                    id="write"
+                    name="write"
+                    type="button"
+                    value="write"
+                    title="Click to write."
+                  />
+                </li>
+              </menu>
+            </header>
+            <div role="tablist">
+              <div>
+                <label role="tab" for="writingInstructions">Input</label>
+                <input id="writingInstructions" type="radio" name="tabs" checked="true" value="input"/>
+                <textarea 
+                  id="writingInstructionsInput"
+                  role="tabpanel"
+                  name="input"
+                  placeholder="Type the writing instructions"
+                  spellcheck="true"
+                  required
+                  autofocus
+                ></textarea>
+              </div>
+              <div>
+                <label role="tab" for="writingContext">Context</label>
+                <input id="writingContext" type="radio" name="tabs" value="context"/>
+                <textarea 
+                  id="writingContextInput"
+                  role="tabpanel"
+                  name="context"
+                  placeholder="Type the context for your writing task"
+                  spellcheck="true"
+                  required
+                  autofocus
+                ></textarea>
+              </div>
+            </div>            
+          </form>
+          <div class="response">
+            <header>
+              <menu role="toolbar">
+                <li role="menuitem">
+                  <button 
+                    type="button" 
+                    name="download"
+                    value="downloadOutput"
+                    title="Download the writing output..."
+                  />
+                </li>
+                <li role="menuitem">
+                  <button 
+                    type="button" 
+                    name="copy"
+                    value="copyOutput"
+                    title="Copy this writing output to the clipboard..."
+                  />
+                </li>
+                <li role="menuitem">
+                  <form role="menubar">
+                    <input role="menuitem" type="radio" name="format" value="formatted" checked title="View formatted"/>
+                    <input role="menuitem" type="radio" name="format" value="markdown" title="View Markdown code"/>
+                    <input role="menuitem" type="radio" name="format" value="html" title="View HTML code"/>
+                  </form>
+                </li>              
+              </menu>
+            </header>
+            <section></section>
+            <pre><code class="hljs language-markdown"></code></pre>
+            <pre><code class="hljs language-html"></code></pre>
+            <input type="hidden" id="writtenText-text" name="writtenText-text"/>
+          </div>
+        </section>
+        <footer>
+          <form role="toolbar">
+            <button
+              name="confirm"
+              type="button"
+              tabindex="0"
+              title="Close" 
+              popovertarget="writer-dialog"
+              popovertargetaction="hide"
+            >Ok</button>
+          </form>
+        </footer>
+      </div>
+    </dialog>
+    
+    <dialog 
+      id="rewriter-dialog"
+      class="input-output-dialog"      
+      aria-labelledby="rewriter-dialog-title"
+      draggable="true" 
+      popover="manual"
+      closedby="closerequest"            
+    >
+      <div>
+        <header>
+          <h1 
+            id="rewriter-dialog-title" 
+          >Rewrite</h1>
+          <form role="toolbar">
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="minimize" 
+              title="Minimize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="maximize" 
+              title="Maximize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="restore"  
+              title="Restore" 
+              checked="true"
+            />
+            <button 
+              type="button"
+              popovertarget="rewriter-dialog"
+              popovertargetaction="hide"
+              title="Close" 
+            />
+          </form>
+        </header>
+        <section>
+          <form name="rewriterDialogSettingForm">
+            <input 
+              type="hidden" 
+              name="state"
+            />
+            <header>
+              <menu role="toolbar">
+                <li role="menuitem">
+                  <label 
+                    title="Upload text to rewrite..."
+                    for="uploadTextToRewrite"
+                  >
+                    <input
+                      id="uploadTextToRewrite"
+                      name="upload"
+                      type="file"
+                      multiple="false"
+                      accept=".csv,.html,.md,text/*,.txt,.xml"
+                    />
+                  </label>
+                </li>
+                <li role="menuitem">
+                  <label 
+                    for="rewritingTone-picker"
+                    title="Pick the tone for the rewrite"
+                  >Tone</label>
+                  <select 
+                    id="rewritingTone-picker" 
+                    name="writingTone-picker"
+                    title="Pick the tone for the rewrite"
+                    required
+                  >
+                    <option value="as-is" label="As-is" selected/>
+                    <option value="more-casual" label="More Casual" />
+                    <option value="more-formal" label="More Formal" />
+                  </select>                  
+                </li>
+                <li role="menuitem">
+                  <label for="rewritingLength-picker">Length</label>
+                  <select 
+                    id="rewritingLength-picker" 
+                    name="writingLength-picker"
+                    title="The length of the rewrite."
+                    required
+                  >
+                    <option value="as-is" label="As-is" selected/>
+                    <option value="longer" label="Longer"/>
+                    <option value="shorter" label="Shorter"/>
+                  </select>                  
+                </li>
+                <li role="menuitem">
+                  <label for="rewritingOutputFormat-picker">Format</label>
+                  <select
+                    id="rewritingOutputFormat-picker"
+                    name="writingOutputFormat-picker"
+                    title="The desired output format for the rewrite"
+                    required
+                  >
+                    <option value="as-is" label="As-is" selected />
+                    <option value="markdown" label="Markdown" />
+                    <option value="plain-text" label="Plaintext" />
+                  </select>
+                </li>
+                <li role="menuitem">
+                  <label 
+                    for="autoRewrite"
+                    title="Check to automatically rewrite."
+                  >Auto-rewrite</label>
+                  <input 
+                    id="autoRewrite" 
+                    name="autoRewrite"
+                    type="checkbox" 
+                    checked="true"
+                    title="Check to automatically rewrite."
+                  />
+                </li>
+                <li role="menuitem">
+                  <button
+                    id="re`write"
+                    name="rewrite"
+                    type="button"
+                    value="rerewrite"
+                    title="Click to rewrite."
+                  />
+                </li>
+              </menu>
+            </header>
+            <div role="tablist">
+              <div>
+                <label role="tab" for="rewriteInput">Input</label>
+                <input id="rewriteInput" type="radio" name="tabs" checked="true" value="input"/>
+                <textarea 
+                  id="rewritInputText"
+                  role="tabpanel"
+                  name="input"
+                  placeholder="Type the text to rewrite"
+                  spellcheck="true"
+                  required
+                  autofocus
+                ></textarea>
+              </div>
+              <div>
+                <label role="tab" for="rewritingContext">Context</label>
+                <input id="rewritingContext" type="radio" name="tabs" value="context"/>
+                <textarea 
+                  id="rewritingContextInput"
+                  role="tabpanel"
+                  name="context"
+                  placeholder="Type the context for your rewriting task"
+                  spellcheck="true"
+                  required
+                  autofocus
+                ></textarea>
+              </div>
+            </div>            
+          </form>
+          <div class="response">
+            <header>
+              <menu role="toolbar">
+                <li role="menuitem">
+                  <button 
+                    type="button" 
+                    name="download"
+                    value="downloadOutput"
+                    title="Download the rewrite..."
+                  />
+                </li>
+                <li role="menuitem">
+                  <button 
+                    type="button" 
+                    name="copy"
+                    value="copyOutput"
+                    title="Copy this rewrite to the clipboard..."
+                  />
+                </li>
+                <li role="menuitem">
+                  <form role="menubar">
+                    <input role="menuitem" type="radio" name="format" value="formatted" checked title="View formatted"/>
+                    <input role="menuitem" type="radio" name="format" value="markdown" title="View Markdown code"/>
+                    <input role="menuitem" type="radio" name="format" value="html" title="View HTML code"/>
+                  </form>
+                </li>              
+              </menu>
+            </header>
+            <section></section>
+            <pre><code class="hljs language-markdown"></code></pre>
+            <pre><code class="hljs language-html"></code></pre>
+            <input type="hidden" id="writtenText-text" name="writtenText-text"/>
+          </div>
+        </section>
+        <footer>
+          <form role="toolbar">
+            <button
+              name="confirm"
+              type="button"
+              tabindex="0"
+              title="Close" 
+              popovertarget="rewriter-dialog"
+              popovertargetaction="hide"
+            >Ok</button>
+          </form>
+        </footer>
+      </div>
+    </dialog>
+    
+    <dialog 
+      id="proofreader-dialog"
+      class="input-output-dialog"      
+      aria-labelledby="proofreader-dialog-title"
+      draggable="true" 
+      popover="manual"
+      closedby="closerequest"            
+    >
+      <div>
+        <header>
+          <h1 
+            id="proofreader-dialog-title" 
+          >Proofreading</h1>
+          <form role="toolbar">
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="minimize" 
+              title="Minimize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="maximize" 
+              title="Maximize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="restore"  
+              title="Restore" 
+              checked="true"
+            />
+            <button 
+              type="button"
+              popovertarget="proofreader-dialog"
+              popovertargetaction="hide"
+              title="Close" 
+            />
+          </form>
+        </header>
+        <section>
+          <form name="proofreadingDialogSettingForm">
+            <input 
+              type="hidden" 
+              name="state"
+            />
+            <header>
+              <menu role="toolbar">
+                <li role="menuitem">
+                  <label 
+                    title="Upload a text to proofread..."
+                    for="uploadDraftText"
+                  >
+                    <input
+                      id="uploadDraftText"
+                      name="uploadLongText"
+                      type="file"
+                      multiple="false"
+                      accept=".csv,.html,.md,text/*,.txt,.xml"
+                    />
+                  </label>
+                </li>            
+                <li role="menuitem">
+                  <label 
+                    for="expectedInputLanguage-picker"
+                    title="Select the expected input language(s)."
+                  >Input Languages</label>
+                  <select 
+                    id="expectedInputLanguage-picker" 
+                    name="expectedInputLanguage-picker"
+                    title="Select the expected input lagnuage(s)."
+                  >
+                  </select>
+                  <input 
+                    type="hidden" 
+                    name="detectedInputLanguage"
+                    id="detectedInputLanguage"
+                    value=""
+                    required
+                  />
+                </li>
+                <li role="menuitem">
+                  <label 
+                    title="The language for suggested corrections"
+                    for="correctionExplanationLanguage-picker"
+                  >Explanation Language</label>
+                  <select 
+                    id="correctionExplanationLanguage-picker" 
+                    title="The language for suggested corrections"
+                    name="correctionExplanationLanguage-picker"
+                    required
+                  >
+                  </select>
+                </li>
+                <li role="menuitem">
+                  <button
+                    type="button"
+                    popovertarget="correctionOptions"
+                    popovertargetaction="toggle"
+                  >Correction Options</button>
+                  <menu 
+                    id="correctionOptions"
+                    popover
+                  >
+                    <li role="menuitem">
+                      <input 
+                        id="correctionOptionCapitalization"
+                        type="checkbox" 
+                        checked
+                      />
+                      <label
+                        for="correctionOptionCapitalization"
+                      >Capitalization</label>
+                    </li>
+                    <li role="menuitem">
+                      <input 
+                        id="correctionOptionGrammar"
+                        type="checkbox" 
+                        checked
+                      />
+                      <label
+                        for="correctionOptionGrammar"
+                      >Grammar</label>
+                    </li>
+                    <li role="menuitem">
+                      <input 
+                        id="correctionOptionMissingWords"
+                        type="checkbox" 
+                        checked
+                      />
+                      <label
+                        for="correctionOptionMissingWords"
+                      >Missing Words</label>
+                    </li>
+                    <li role="menuitem">
+                      <input 
+                        id="correctionOptionPreposition"
+                        type="checkbox" 
+                        checked
+                      />
+                      <label
+                        for="correctionOptionPreposition"
+                      >Preposition</label>
+                    </li>
+                    <li role="menuitem">
+                      <input 
+                        id="correctionOptionPunctuation"
+                        type="checkbox" 
+                        checked
+                      />
+                      <label
+                        for="correctionOptionPunctuation"
+                      >Punctuation</label>
+                    </li>
+                    <li role="menuitem">
+                      <input 
+                        id="correctionOptionSpelling"
+                        type="checkbox" 
+                        checked
+                      />
+                      <label
+                        for="correctionOptionSpelling"
+                      >Spelling</label>
+                    </li>
+                  </menu>
+                </li>
+                <li role="menuitem">
+                  <label 
+                    for="autoProofread"
+                    title="Check to automatically update the corrections and explanations."
+                  >Auto-proofread</label>
+                  <input 
+                    id="autoProofread"
+                    name="autoProofread"
+                    type="checkbox" 
+                    title="Check to automatically preoofread the draft."
+                  />
+                </li>
+                <li role="menuitem">
+                  <button
+                    id="proofread"
+                    name="proofread"
+                    type="button"
+                    value="proofread"
+                    title="Click to proofread."
+                  />
+                </li>
+                
+              </menu>
+            </header>
+            <textarea 
+              id="draft-text"
+              name="input"
+              placeholder="Type the text to proofread"
+              spellcheck="true"
+              required
+              autofocus
+            >THE PROOFREADER IS NOT YET IMPLEMENTED, SORRY</textarea>
+          </form>
+          <div class="response">
+            <header>
+              <menu role="toolbar">
+                <li role="menuitem">
+                  <button 
+                    type="button" 
+                    name="download"
+                    value="downloadOutput"
+                    title="Download the summary..."
+                  />
+                </li>
+                <li role="menuitem">
+                  <button 
+                    type="button" 
+                    name="copy"
+                    value="copyOutput"
+                    title="Copy this summary to the clipboard..."
+                  />
+                </li>
+                <li role="menuitem">
+                  <form role="menubar">
+                    <input role="menuitem" type="radio" name="format" value="formatted" checked title="View formatted"/>
+                    <input role="menuitem" type="radio" name="format" value="markdown" title="View Markdown code"/>
+                    <input role="menuitem" type="radio" name="format" value="html" title="View HTML code"/>
+                  </form>
+                </li>              
+              </menu>
+            </header>
+            <section></section>
+            <pre><code class="hljs language-markdown"></code></pre>
+            <pre><code class="hljs language-html"></code></pre>
+            <input type="hidden" id="proofread-text" name="proofread-text"/>
+          </div>
+        </section>
+        <footer>
+          <form role="toolbar">
+            <button
+              name="confirm"
+              type="button"
+              tabindex="0"
+              title="Close" 
+              popovertarget="proofreader-dialog"
+              popovertargetaction="hide"
+            >Ok</button>
+          </form>
+        </footer>
+      </div>
+    </dialog>
+    
+    <dialog 
+      id="about-dialog"
+      aria-labelledby="about-dialog-title"
+      draggable="true" 
+      popover
+      closedby="closerequest"            
+    >
+      <div>
+        <header>
+          <h1 
+            id="about-dialog-title" 
+          >About LLMDeling</h1>
+          <form role="toolbar">
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="minimize" 
+              title="Minimize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="maximize" 
+              title="Maximize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="restore"  
+              title="Restore" 
+              checked="true"
+            />
+            <button 
+              type="button"
+              popovertarget="about-dialog"
+              popovertargetaction="hide"
+              title="Close" 
+            />
+          </form>
+        </header>
+        <section>
+          <h2>Explore built-in AI</h2>
+          <p>
+            This app lets you explore and experiment with the browser's built-in AI API's.
+            At the moment, these API's are available in 
+            <a href="https://developer.chrome.com/docs/ai/built-in" target="_chrome">Google Chrome</a>
+            and
+            <a href="https://learn.microsoft.com/en-us/microsoft-edge/web-platform/prompt-api" target="_edge">Microsoft Edge</a>
+          </p>
+          <ul>
+            <li><a href="https://github.com/rpbouman/LLMdeling" target="_blank">Github Project page...</a></li>
+            <li><a href="https://github.com/rpbouman/LLMdeling/blob/dev/LICENSE" target="_blank">License (MIT)...</a></li>
+            <li><a href="https://github.com/rpbouman/LLMdeling/issues" target="_blank">Request a feature or Report an issue...</a></li>
+            <li><a href="https://github.com/sponsors/rpbouman?o=nsm&sc=t" target="_blank">Become a sponsor...</a></li>
+          </ul>
+          <p><a href="https://www.paypal.com/donate/?hosted_button_id=776A6UNZ35M84" target="_blank">Donations help to keep this app in good shape!</a></p>
+        </section>
+        <footer>
+          <form role="toolbar">
+            <button
+              name="confirm"
+              type="button"
+              tabindex="0"
+              title="Close" 
+              popovertarget="about-dialog"
+              popovertargetaction="hide"
+            >Ok</button>
+          </form>
+        </footer>
+      </div>
+    </dialog>
+    
+    <dialog 
+      id="download-progress-dialog"
+      aria-labelledby="download-progress-dialog-title"
+      draggable="true" 
+      popover
+      closedby="closerequest"            
+    >
+      <div>
+        <header>
+          <h1 
+            id="download-progress-dialog-title" 
+          >Model Download Progress</h1>
+          <form role="toolbar">
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="minimize" 
+              title="Minimize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="maximize" 
+              title="Maximize"
+            />
+            <input 
+              name="windowstate" 
+              type="radio" 
+              value="restore"  
+              title="Restore" 
+              checked="true"
+            />
+            <button 
+              type="button"
+              popovertarget="download-progress-dialog"
+              popovertargetaction="hide"
+              title="Close" 
+            />
+          </form>
+        </header>
+        <section>
+          <h2>Model Download Progress</h2>
+          <template id="model-download-progress-item">
+            <div class="downloadProgressItem">
+              <label for=""></label>
+              <progress 
+                max="100" 
+                value="0"
+              >
+              </progress>
+            </div>
+          </template>
+        </section>
+        <footer>
+          <form role="toolbar">
+            <button
+              name="confirm"
+              type="button"
+              tabindex="0"
+              title="Close" 
+              popovertarget="download-progress-dialog"
+              popovertargetaction="hide"
+            >Ok</button>
+          </form>
+        </footer>
+      </div>
+    </dialog>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked-highlight@2.2.2/lib/index.umd.min.js"></script>
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+    
+    <script type="module">
+      import {Schema} from 'https://cdn.jsdelivr.net/npm/jema.js@1.1.7/schema.min.js';
+      window.Schema = Schema;
+      var hyperSchemaResource = await fetch('https://json-schema.org/draft/2020-12/schema')
+      var hyperSchemaJson = await hyperSchemaResource.text();
+      var hyperSchemaObject = JSON.parse(hyperSchemaJson);
+      var hyperSchema = new Schema(hyperSchemaObject);
+      window.hyperSchema = hyperSchema;
+    </script>
+
+    <script src="Dom/dom.js"></script>
+    <script src="Clipboard/clipboard.js"></script>
+    <script src="Downloader/Downloader.js"></script>
+    <script src="DownloadProgress/DownloadProgressDialog.js"></script>
+
+    <script src="lookandfeel/dialog/dialog.js"></script>
+    <script src="lookandfeel/dialog/DragableDialogs.js"></script>
+    <script src="lookandfeel/select/select.js"></script>
+
+    <script src="Tabs/tabs.js"></script>
+    <script src="FormState/FormState.js"></script>
+    <script src="InputOutputDialog/inputOutputDialog.js"></script>
+
+    <script src="LanguageDetection/LanguageDetection.js"></script>
+    <script src="LanguageTranslation/LanguageTranslation.js"></script>
+    <script src="LanguageTranslation/Translator.js"></script>
+    <script src="Summarizer/Summarizer.js"></script>
+    <script src="Summarizer/Summarize.js"></script>
+    <script src="Writer/Writer.js"></script>
+    <script src="Writer/WriterDialog.js"></script>
+    <script src="Rewriter/Rewriter.js"></script>
+    <script src="Rewriter/RewriterDialog.js"></script>
+    <script src="History/HistoryBackend.js"></script>
+    <script src="History/HistoryUi.js"></script>
+    <script src="Conversation/Conversation.js"></script>
+    <script src="LLMPrompt/LLMPrompt.js"></script>
+    <script src="Formatting/Formatting.js"></script>
+    <script src="Main/main.js"></script>
+    
+    <script>
+      init();
+    </script>
+  </body>
+</html>

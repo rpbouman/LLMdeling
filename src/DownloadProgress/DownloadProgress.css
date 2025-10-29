@@ -1,0 +1,24 @@
+dialog#download-progress-dialog {
+  
+  > div {
+    > header {
+      > h1::before {
+        content: var( --icon-world-download );
+      }
+    }
+  }  
+  
+  > section {
+    
+    > div.downloadProgressItem {
+      
+      > label {
+        display: block;
+      }
+      
+      > progress {
+        display: block;
+      }
+    }
+  }
+}

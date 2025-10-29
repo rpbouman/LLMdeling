@@ -1,0 +1,92 @@
+nav#sidebar {
+
+  > form[role=tablist] {
+    
+    > div:has( label[role=tab][for=chatHistory] + input#chatHistory[type=radio] + div[role=tabpanel]) {
+      
+      > label[role=tab][for=chatHistory]::before {
+        content: var( --icon-messages );
+      } 
+
+      > div[role=tabpanel] {
+        padding: .5em;
+                
+        > details {
+          
+          color: var( --foreground-color );
+          font-family: var( --ui-text-font-family );
+          
+          > summary {
+            white-space: nowrap;
+              
+            > span {
+              display: inline-block;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              position: relative;
+              top: 4px;
+              width: calc(100% - 16px);
+            }
+          }
+
+          > menu[role=toolbar] {
+            display: inline-block;
+            left: 1em;
+            position: relative;
+            list-style-type: none;
+            margin-block: 0px;
+            padding-inline-start: 0px;
+            margin-top: 6px;
+            margin-bottom: 4px;
+            
+            > li[role=menuitem] {
+
+              > button[type=button][name=restore]::before {
+                content: var( --icon-messages );
+              }
+            }
+          }
+
+          > div {
+            padding: .2em;
+            margin-left: 1em;
+            font-size: smaller;
+            font-family: var( --content-text-font-family );
+          }
+          
+          > div::before {
+            display: block;
+            white-space: nowrap;
+            content: attr(data-timespan) " ("  attr(data-messageCount) " messages)";
+            font-weight: bold;
+            font-size: small;
+          }
+          
+          > div[data-status="in progress"]::after {
+            display: inline-block;
+            margin-left: 1em;
+            font-family: var( --icon-font-family );
+            font-size: var( --icon-normal );
+            content: '';
+            animation-name: blinking-pencil;
+            animation-duration: 1s;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+          }
+
+          > div[data-status="ready"]::after {
+            content: '';
+          }
+        }
+      }
+    }
+
+    > div:has( label[role=tab][for=chatHistory] + input#chatHistory[type=radio] + div[role=tabpanel]:empty) {
+      display: none;
+    }
+  }
+
+  
+}
+

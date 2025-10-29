@@ -1,0 +1,43 @@
+dialog#about-dialog {
+
+  > div,
+  > form {
+
+    > header {
+      > h1::before {
+        content: var( --icon-info-square-rounded );
+      }
+    }
+    
+    > section {
+      padding: 0em 1em 0em 1em;
+      
+      h2 {
+        margin-top: .2em
+      }
+      
+      ul {
+        margin-block-start: 0px;
+        margin-block-end: 0px;
+      }
+    }
+  }
+  
+}
+
+dialog[popover]#about-dialog:popover-open {
+  height: 288px;
+  width: 420px;
+  top: calc( 50vh - 144px);
+  left: calc( 50vw - 210px);
+
+  min-height: 288px;
+  min-width: 420px;
+}
+
+dialog[popover]#about-dialog:not( :popover-open ) {
+  height: 26px;
+  width: 65px;
+  top: 0px;
+  left: 680px;
+}

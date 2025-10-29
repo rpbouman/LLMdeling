@@ -1,0 +1,22 @@
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+* {
+  scrollbar-color: var( --medium-background-color );
+  color: var( --foreground-color );
+}
+
+*::placeholder {
+  color: var( --placeholder-color );
+}
+
+*[aria-busy=true] {
+  cursor: wait;
+}
+
+a[href] {
+  color: var( --link-color );
+}
