@@ -1,4 +1,5 @@
 # LLMdeling
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/rpbouman/LLMDeling)
 A pet project about and around local browser AI features.
 
 Checkout the Youtube video for a [2 minute intro](https://www.youtube.com/watch?v=Ma0daVmjzd4)
