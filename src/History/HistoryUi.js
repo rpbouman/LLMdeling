@@ -173,7 +173,14 @@ async function extractAndCompileChat(chatId){
   var lines = [];
   messages.forEach(function(message){
     var type = message.type;
-    var text = message.text || '';
+    var text;
+    if (message.promptList){
+      text = serializePromptList(message.promptList);
+    }
+    else
+    if (message.text) {
+      text = message.text;
+    };
     switch (type) {
       case 'request':
         break;

@@ -14,7 +14,7 @@ button::before {
 }
 
 label:has( > input[type=file] ):hover::before,
-button:hover::before {
+button:not([disabled]):hover::before {
   color: var( --icon-color-highlight );
 }
 

@@ -191,6 +191,16 @@ async function createChat(options){
             break e_name;
           default:
         }
+      case 'NotSupportedError':
+        e_message: switch(e.message){
+          case 'The device is unable to create a session to run the model. Please check the result of availability() first.':
+            showInfoDialog({
+              info: `Error: ${e.name}`,
+              details: `${e.message}.\r\nYou may try to enable some extra feature flags` 
+            });
+            break e_name;
+          default:
+        }
       default:
         showInfoDialog({
           info: `Error: ${e.name}`,

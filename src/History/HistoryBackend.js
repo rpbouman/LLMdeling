@@ -46,11 +46,11 @@ function initHistoryBackend(callback){
       indexOptions
     );
     
-    var modelStore = database.createObjectStore(modelLibraryStoreName, {autoIncrement: true});
+    var modelStore = database.createObjectStore(historyDatabaseModelLibraryStoreName, {autoIncrement: true});
     var indexOptions = {unique: true};
     var modelNameIndex = modelStore.createIndex(
-      modelLibraryStoreName, 
-      modelLibraryStoreName, 
+      historyDatabaseModelLibraryStoreName, 
+      historyDatabaseModelLibraryStoreName, 
       indexOptions
     );
   }
